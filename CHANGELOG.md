@@ -25,6 +25,10 @@ crates, in the imperative, one line each, with the `storypole` task key in paren
   `.gaugeblock/docs.toml`.
 - `docs/SPEC.md` (behavioural invariants and wire contracts) and `docs/ROADMAP.md` (milestones and
   horizons) as the single source of truth for the delivery plan.
+- `docs/decisions/README.md`: MADR index, status vocabulary (including `Proposed`) and the record
+  template, with the `storypole ask-decision` / `decide` handshake documented.
+- `ADR-0005` (proposed): the tracker concurrency model is recorded as an open question with four
+  options, instead of `ARCHITECTURE.md` hedging between two designs.
 
 ### Fixed
 
