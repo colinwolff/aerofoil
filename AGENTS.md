@@ -279,9 +279,11 @@ its first member. `chalkline docs check` now runs and reports 9 present, 0 missi
    attribute unconditional by putting its tests in `tests/`; the `no_std` CI job compiles it for
    `thumbv7em-none-eabi`. No such target is installed on the development machine, so a local
    `cargo check` proves nothing about it — trust the CI job, or `rustup target add` first.
-3. **`verification_commands` is empty** in `.gaugeblock/config.toml`, so `storypole verify --run`
-   certifies only what you ran by hand. Register the per-crate Tier 2 commands (`AF-4`) before
-   treating a `VerificationReceipt` as evidence.
+3. **`verification_commands` covers one crate.** `.gaugeblock/config.toml` maps
+   `aerofoil-common` to `cargo nextest run -p aerofoil-common` and falls back to
+   `cargo nextest run --workspace` for the repository, so `storypole verify --run` now executes a
+   command and records its exit code. Add an entry per crate as it lands, before treating that
+   crate's receipts as evidence.
 4. **`enforce_readme_cli_flags` is off** in `.gaugeblock/docs.toml` because no CLI crate exists.
    Flip it to `true` when `aerofoil-cli` lands, so every subcommand and long flag is documented.
 5. **No crates published.** Nothing has been tagged; the first release tag (`v0.1.0`) is Milestone 4.

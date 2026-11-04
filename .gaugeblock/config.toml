@@ -21,11 +21,11 @@ allowed_crates = [
 ]
 claim_ttl_minutes = 60
 
-# `crate_or_repo -> Tier 2 command` pairs executed by `storypole verify --run`, e.g.
-#   verification_commands = [
-#       ["aerofoil-1090", "cargo nextest run -p aerofoil-1090"],
-#       ["aerofoil-978", "cargo nextest run -p aerofoil-978"],
-#   ]
-# Empty until the workspace manifest lands (docs/ROADMAP.md §0), so a VerificationReceipt
-# currently certifies only what the agent ran by hand.
-verification_commands = []
+# `crate_or_repo -> Tier 2 command` pairs executed by `storypole verify --run`. The lookup tries the
+# crate name first, then the repository name, so `aerofoil` is the fallback for any crate that has no
+# entry of its own yet. A receipt produced by `--run` therefore records a command that actually ran,
+# instead of certifying what an agent claims to have run by hand.
+verification_commands = [
+    ["aerofoil", "cargo nextest run --workspace"],
+    ["aerofoil-common", "cargo nextest run -p aerofoil-common"],
+]
