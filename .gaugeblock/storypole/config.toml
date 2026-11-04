@@ -1,0 +1,15 @@
+# Legacy storypole path. The unified `.gaugeblock/config.toml` [storypole] table takes
+# precedence; this file is kept in sync so a direct read of the legacy path agrees.
+ticket_prefix = "AF"
+allowed_repos = ["aerofoil"]
+allowed_crates = [
+    "aerofoil-common",
+    "aerofoil-1090",
+    "aerofoil-978",
+    "aerofoil-tracker",
+    "aerofoil-server",
+    "aerofoil-cli",
+    "aerofoil-mcp",
+]
+claim_ttl_minutes = 60
+verification_commands = []

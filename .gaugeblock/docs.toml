@@ -1,0 +1,59 @@
+# Canonical 9-document map for `aerofoil`.
+#
+# Audited by `chalkline docs check -d .`. Paths are repository-relative: the technical
+# documents live under `docs/` (the specification of record) while the repository root
+# carries the process and legal surface (README, CONTRIBUTING, CHANGELOG, AGENTS, licenses).
+
+[docs.readme]
+path = "README.md"
+required = true
+
+[docs.contributing]
+path = "CONTRIBUTING.md"
+required = true
+
+# The product definition (vision, scope, personas, success criteria).
+[docs.product]
+path = "docs/PROJECT.md"
+required = true
+
+[docs.architecture]
+path = "docs/ARCHITECTURE.md"
+required = true
+
+# Behavioural invariants and wire contracts.
+[docs.spec]
+path = "docs/SPEC.md"
+required = true
+
+# Algorithms, bit-level math and ADR-backed trade-offs.
+[docs.design]
+path = "docs/DESIGN.md"
+required = true
+
+[docs.roadmap]
+path = "docs/ROADMAP.md"
+required = true
+
+[docs.changelog]
+path = "CHANGELOG.md"
+required = true
+
+[docs.agents]
+path = "AGENTS.md"
+required = true
+
+[policies]
+# SPEC.md must name every boundary/contract public type once crates exist.
+enforce_public_type_contracts = true
+# ARCHITECTURE.md must name every workspace member crate.
+enforce_crate_topology = true
+# No document may exceed 500 lines without being split.
+enforce_file_loc_limits = true
+# No CLI crate exists yet (docs/ROADMAP.md §3); flip to true when `aerofoil-cli` lands so
+# every subcommand and long flag must be documented in README.md.
+enforce_readme_cli_flags = false
+# CHANGELOG.md must keep a live `## [Unreleased]` heading.
+enforce_changelog_unreleased = true
+# CONTRIBUTING.md must state the toolchain version declared by the workspace.
+enforce_contributing_toolchains = true

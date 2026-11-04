@@ -1,0 +1,31 @@
+# gaugeblock suite configuration for the `aerofoil` workspace.
+#
+# This file is TRACKED (see `.gitignore`): it is canonical, reproducible state, not
+# machine state. Derived artefacts (`storypole/index.sqlite`, `spool/`, `worktrees/`)
+# are per-machine and ignored.
+
+[storypole]
+# Task keys are `AF-<n>`. This unified `[storypole]` table takes precedence over the
+# legacy `.gaugeblock/storypole/config.toml` — both are kept in sync so either read
+# path yields the same configuration.
+ticket_prefix = "AF"
+allowed_repos = ["aerofoil"]
+allowed_crates = [
+    "aerofoil-common",
+    "aerofoil-1090",
+    "aerofoil-978",
+    "aerofoil-tracker",
+    "aerofoil-server",
+    "aerofoil-cli",
+    "aerofoil-mcp",
+]
+claim_ttl_minutes = 60
+
+# `crate_or_repo -> Tier 2 command` pairs executed by `storypole verify --run`, e.g.
+#   verification_commands = [
+#       ["aerofoil-1090", "cargo nextest run -p aerofoil-1090"],
+#       ["aerofoil-978", "cargo nextest run -p aerofoil-978"],
+#   ]
+# Empty until the workspace manifest lands (docs/ROADMAP.md §0), so a VerificationReceipt
+# currently certifies only what the agent ran by hand.
+verification_commands = []
