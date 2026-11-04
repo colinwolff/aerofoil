@@ -284,8 +284,9 @@ its first member. `chalkline docs check` now runs and reports 9 present, 0 missi
    tracked as `AF-19`. Do not delete the disabled job to make the pipeline look complete.
 2. **`no_std` is proven in CI, not locally.** `aerofoil-common` is `#![no_std]` and keeps the
    attribute unconditional by putting its tests in `tests/`; the `no_std` CI job compiles it for
-   `thumbv7em-none-eabi`. No such target is installed on the development machine, so a local
-   `cargo check` proves nothing about it — trust the CI job, or `rustup target add` first.
+   `thumbv7em-none-eabi` and passed on the first push to `main`. No such target is installed on the
+   development machine, so a local `cargo check` proves nothing about it — trust the job, or
+   `rustup target add thumbv7em-none-eabi` first.
 3. **`verification_commands` covers one crate.** `.gaugeblock/config.toml` maps
    `aerofoil-common` to `cargo nextest run -p aerofoil-common` and falls back to
    `cargo nextest run --workspace` for the repository, so `storypole verify --run` now executes a
