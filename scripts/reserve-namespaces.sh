@@ -120,24 +120,29 @@ EOF
   echo "Staged in $STAGING (gitignored). Next: scripts/reserve-namespaces.sh publish --yes"
 }
 
-# crates.io rate-limits new crates; a 429 carries a retry hint we honour with a fixed backoff.
+# crates.io rate-limits new crates per window, and a single retry is not enough: the first retry
+# landed inside the same window and aborted the whole run. Retry with a bounded budget instead.
 publish_one() {
-  local crate="$1" dir="$2" output
-  if output=$(cd "$dir" && cargo publish 2>&1); then
-    echo "  published $crate@$VERSION"
-    return 0
-  fi
-  case "$output" in
-    *429*|*"Too Many Requests"*|*"try again after"*)
-      echo "  rate limited on $crate; waiting 305s"
-      sleep 305
-      (cd "$dir" && cargo publish)
-      ;;
-    *)
-      echo "$output" >&2
-      return 1
-      ;;
-  esac
+  local crate="$1" dir="$2" attempt=1 output
+  while [ "$attempt" -le 6 ]; do
+    if output=$(cd "$dir" && cargo publish 2>&1); then
+      echo "  published $crate@$VERSION"
+      return 0
+    fi
+    case "$output" in
+      *429*|*"Too Many Requests"*|*"try again after"*)
+        echo "  rate limited on $crate (attempt $attempt/6); waiting 305s"
+        sleep 305
+        attempt=$((attempt + 1))
+        ;;
+      *)
+        echo "$output" >&2
+        return 1
+        ;;
+    esac
+  done
+  echo "  gave up on $crate after 6 attempts" >&2
+  return 1
 }
 
 cmd_publish() {
@@ -150,6 +155,8 @@ cmd_publish() {
     exit 1
   fi
   local i crate dir
+  local -a failed
+  failed=()
   for i in "${!CRATES[@]}"; do
     crate="${CRATES[$i]}"
     dir="$STAGING/$crate"
@@ -158,8 +165,17 @@ cmd_publish() {
       echo "  $crate already exists on crates.io; skipping"
       continue
     fi
-    publish_one "$crate" "$dir"
+    # One crate failing must not abandon the rest of the set: a partially reserved namespace is
+    # still better than one that stopped at the first rate limit.
+    if ! publish_one "$crate" "$dir"; then
+      failed+=("$crate")
+    fi
   done
+  if [ "${#failed[@]}" -gt 0 ]; then
+    echo "not published: ${failed[*]}" >&2
+    exit 1
+  fi
+  echo "all ${#CRATES[@]} names reserved"
 }
 
 case "${1:-check}" in
