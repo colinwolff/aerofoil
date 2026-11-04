@@ -29,6 +29,7 @@ accepted record destroy the audit trail — write `ADR-NNNN` that supersedes it 
 | [0001](./ADR-0001.md) | Accepted | Virtual Cargo workspace with zero-allocation `no_std` core decoders |
 | [0002](./ADR-0002.md) | Accepted | Dedicated DO-282B Reed-Solomon codec instead of a generic crate |
 | [0003](./ADR-0003.md) | Accepted | Dual-tier, address-filtered single-bit correction for 1090ES parity |
+| [0004](./ADR-0004.md) | Accepted | Single-bit correction consults an injected `AddressFilter`, never the tracker |
 
 ## Process
 

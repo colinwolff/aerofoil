@@ -33,3 +33,10 @@ crates, in the imperative, one line each, with the `storypole` task key in paren
   Invariant 5 of `docs/SPEC.md`; the scope section still promised double-bit correction.
 - Align the MCP tool name in `docs/DESIGN.md` with the specification: `get_airspace_summary`, as
   named in `docs/SPEC.md` §5 and `docs/ROADMAP.md`.
+
+### Changed
+
+- `ADR-0004`: single-bit correction now consults an `aerofoil_common::AddressFilter` injected by the
+  caller instead of reaching up into `aerofoil-tracker`, so `aerofoil-1090` stays `no_std` and the
+  crate layering has no cycle. `docs/ARCHITECTURE.md`, `docs/SPEC.md` Invariant 5 and
+  `docs/decisions/README.md` follow the decision.

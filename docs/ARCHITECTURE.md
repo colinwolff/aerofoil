@@ -56,13 +56,15 @@ The system is organized into decoupled layers, separating bit-level math and par
   * Zero dynamic allocations (`#![no_std]` core with optional `alloc`).
   * Pure functions receiving fixed-size byte slices (`&[u8]`) or small arrays (`[u8; 14]`, `[u8; 48]`).
   * Explicit, non-panicking error handling returning typed error enums (`DecodeError::ChecksumMismatch`, `DecodeError::UncorrectableRs`).
+* **Error Recovery Takes Its Trust Input by Injection:** single-bit correction consults an `AddressFilter` supplied by the caller (`aerofoil_common::AddressFilter`) and never reaches upward into stateful tracking, so the crate stays `no_std` and the layer order holds (`ADR-0004`).
 
 ### 2.2 Shared Domain Models (`aerofoil-common`)
 * Canonical representations for coordinates (WGS-84 micro-degrees or fixed-point integers to avoid rounding drifts), barometric/geometric altitude, squawk codes, emitter categories, and navigation accuracy categories (NACp, SIL).
 * Implementation of global and local Compact Position Reporting (CPR) algorithms per DO-260B §2.2.3.2.5.
 
 ### 2.3 State Fusion Engine (`aerofoil-tracker`)
-* **Data Structure:** Sharded hash table partitioned across CPU cores (e.g., using 64 independent striped `parking_lot::RwLock` segments or lock-free hash primitives) keyed by 24-bit integer addresses.
+* **Data Structure:** Sharded hash table partitioned across CPU cores. The concurrency mechanism is still open and is the subject of `ADR-0005`.
+* **Address Filter Implementation:** the tracker implements `aerofoil_common::AddressFilter` over its verified-address set, so a decoder's single-bit correction can consult tracking state without depending on it (`ADR-0004`).
 * **Target Disambiguation:** Tracks are keyed by `(AddressType, u32)` to isolate standard ICAO transponders from anonymous UAT self-assigned addresses.
 * **ADS-R Cross-Band Deduplication:** Prioritizes direct reception over re-broadcast targets within a spatial-temporal window ($\Delta t \le 1.0\text{s}, \Delta d \le 0.001^\circ$).
 

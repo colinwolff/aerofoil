@@ -57,8 +57,11 @@ A change that violates a clause here is a defect regardless of which crate it la
 
 ### Invariant 5: Bounded Error Correction
 
-- Single-bit correction is permitted **only** when the corrected ICAO address already exists in the
-  tracker's verified address set (ADR-0003). Corrected frames never create a new track.
+- Single-bit correction is permitted **only** when the corrected ICAO address is accepted by the
+  `AddressFilter` handed to the decoder, which the tracker implements over its verified-address set
+  (ADR-0003, ADR-0004). Corrected frames never create a new track.
+- The decoder never reaches into tracking state: given `DenyAll` (or no filter), correction is off and
+  every non-zero syndrome is `DecodeError::ChecksumMismatch`.
 - Two-bit and blind multi-bit search are out of scope: a frame is dropped rather than guessed. The
   recovery rate is reported per receiver, not silently spent.
 
