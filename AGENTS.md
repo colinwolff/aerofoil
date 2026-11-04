@@ -270,12 +270,15 @@ its first member. `chalkline docs check` now runs and reports 9 present, 0 missi
 
 **Still open.** Close these; never paper over one by weakening a gate in §3.6:
 
-1. **No CI workflow yet** (`AF-3`). Until it exists, Tier 2/3 are discipline rather than enforcement.
-2. **`no_std` is asserted, not yet proven.** `aerofoil-common` is `#![no_std]` and its tests are
-   integration tests under `tests/`, so the attribute stays unconditional instead of being weakened
-   with `cfg_attr(not(test), no_std)`. But no bare-metal target is installed on this machine, so
-   nothing has compiled the crate for one yet. `AF-3` adds a `thumbv7em-none-eabi` build to CI;
-   until then the guarantee rests on the attribute and on review, not on a machine check.
+1. **CI runs the cargo gates only.** `.github/workflows/ci.yml` enforces format, clippy, nextest,
+   doc tests, a release build, the MSRV build and the `no_std` target. `miter audit`,
+   `miter deps` and `chalkline docs check` are present as a deliberately disabled job, because the
+   suite tools are built from local checkouts and are not installable from a registry; the gap is
+   tracked as `AF-19`. Do not delete the disabled job to make the pipeline look complete.
+2. **`no_std` is proven in CI, not locally.** `aerofoil-common` is `#![no_std]` and keeps the
+   attribute unconditional by putting its tests in `tests/`; the `no_std` CI job compiles it for
+   `thumbv7em-none-eabi`. No such target is installed on the development machine, so a local
+   `cargo check` proves nothing about it — trust the CI job, or `rustup target add` first.
 3. **`verification_commands` is empty** in `.gaugeblock/config.toml`, so `storypole verify --run`
    certifies only what you ran by hand. Register the per-crate Tier 2 commands (`AF-4`) before
    treating a `VerificationReceipt` as evidence.

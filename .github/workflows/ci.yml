@@ -1,0 +1,92 @@
+name: CI
+
+# The gates `AGENTS.md` §3.6 asks for, made enforced rather than remembered. A failing gate fails
+# the build; nothing here is advisory.
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+# A newer push to the same ref cancels the older run: these checks are deterministic, so a stale
+# run only burns minutes.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  gates:
+    name: Tier 2/3 gates
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: "1.99"
+          components: rustfmt, clippy
+
+      - uses: Swatinem/rust-cache@v2
+
+      - uses: taiki-e/install-action@nextest
+
+      # Tier 2 — the commit gate. `--all-targets` so test and bench code is linted too.
+      - name: Format
+        run: cargo fmt --all -- --check
+
+      - name: Clippy
+        run: cargo clippy --workspace --all-targets --all-features -- -D warnings
+
+      # Tier 3 — the merge gate. nextest is the preferred runner; it fails when it finds no tests,
+      # which is the behaviour we want (a crate whose tests stopped being discovered is a defect).
+      - name: Tests
+        run: cargo nextest run --workspace
+
+      - name: Doc tests
+        run: cargo test --doc --workspace
+
+      - name: Release build
+        run: cargo build --workspace --release
+
+  msrv:
+    # The declared `rust-version` must actually build the workspace, not just be written down.
+    name: MSRV 1.99
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: "1.99"
+      - run: cargo check --workspace --all-targets
+
+  no_std:
+    # Proves the guarantee `aerofoil-common` claims with `#![no_std]`: it has to compile for a
+    # target that has no `std` at all (AGENTS.md §7).
+    name: no_std (thumbv7em-none-eabi)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: "1.99"
+          targets: thumbv7em-none-eabi
+      - run: cargo check -p aerofoil-common --target thumbv7em-none-eabi
+
+  suite-gates:
+    # miter (file-length ceiling, dependency hygiene) and chalkline (nine-document audit) are built
+    # from this workspace's sibling repositories today and are not installable from a registry, so
+    # they cannot run here yet. Left as a visibly disabled job instead of an omitted gate: a silent
+    # omission would read as coverage we do not have. Flip to `if: true` once every tool installs.
+    name: Suite gates (miter, chalkline)
+    if: false
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          echo "Blocked: gaugeblock suite tools are not distributable yet."
+          echo "See AGENTS.md §7 for the recorded gap."
+          exit 1

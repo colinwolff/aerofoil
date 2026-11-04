@@ -39,6 +39,10 @@ crates, in the imperative, one line each, with the `storypole` task key in paren
   Invariant 3 (`Display` without allocation, `core::error::Error`, `Copy`), and the fixed-point unit
   types `Altitude`/`AltitudeKind`, `Squawk` and `Heading`, covered by 18 tests. Tests live in
   `tests/` so the crate keeps an unconditional `#![no_std]`.
+- CI (`.github/workflows/ci.yml`): format, clippy, nextest, doc tests, release build, an MSRV 1.99
+  build and a `thumbv7em-none-eabi` build that proves the `no_std` guarantee. The suite gates
+  (`miter`, `chalkline`) are a visibly disabled job because those tools are not yet installable
+  from a registry (`AF-19`).
 
 ### Fixed
 
