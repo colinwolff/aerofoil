@@ -14,7 +14,7 @@
 set -euo pipefail
 
 VERSION="0.1.0-alpha.1"
-REPO="https://github.com/gaugeblock/aerofoil"
+REPO="https://github.com/colinwolff/aerofoil"
 AUTHOR="Colin Wolff"
 AUTHOR_EMAIL="1562545+colinwolff@users.noreply.github.com"
 LICENSE="Apache-2.0 OR MIT"

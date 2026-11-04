@@ -20,7 +20,7 @@ clang --version                        # LLVM, for benchmarking the SIMD CRC pat
 ```
 
 ```bash
-git clone https://github.com/gaugeblock/aerofoil.git
+git clone https://github.com/colinwolff/aerofoil.git
 cd aerofoil
 cargo check --workspace --all-targets
 ```

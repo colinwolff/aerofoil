@@ -3,9 +3,11 @@
 Operational instructions and runtime guardrails for autonomous coding agents working in this
 repository. Read this before touching a file: it is the contract every change is verified against.
 
-> **Organization:** `gaugeblock` (https://gaugeblock.dev)
-> **Built with:** `miter`, `storypole`, `chalkline`, `dado`, `batten`, `joiner`, `benchwork`,
-> `rabbet`, `outfeed`, `sawhorse`
+> **Maintainer:** Colin Wolff
+> **Built with (dogfooding only):** the `gaugeblock` suite — `miter`, `storypole`, `chalkline`,
+> `dado`, `batten`, `joiner`, `benchwork`, `rabbet`, `outfeed`, `sawhorse`. `aerofoil` is an
+> independent project: it is not part of, owned by, governed by, or released under that suite or its
+> organisation. Those tools are used here as a consumer, because they are good ones.
 > **Language:** Rust, edition 2024, MSRV **1.99** (`edition`/`rust-version` pinned in
 > `[workspace.package]` once the manifest lands — edition 2024's own floor is 1.85, so 1.99 is a
 > deliberate choice, not the edition requirement)
@@ -182,9 +184,9 @@ storypole defer "<title>" --kind <bug|tech-debt|feature|refactor|spike> \
 
 ## 4. Dogfooding the `gaugeblock` Suite
 
-We are a customer of our own suite, not just its author. Every tool below is a real gate or a real
-context-slicer for this repository — if a tool is not useful here, that is a suite bug worth
-filing upstream.
+We dogfood the `gaugeblock` suite: these tools are used here as a consumer, on a project that is
+not part of that suite. Every tool below is a real gate or a real context-slicer for this
+repository — if a tool is not useful here, that is a suite bug worth filing upstream.
 
 State lives under `.gaugeblock/` and is split by ownership:
 

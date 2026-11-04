@@ -1,7 +1,9 @@
 # Product Definition: `aerofoil`
 
 > **Domain:** 1090 MHz Mode S / 1090ES (DO-260B) and 978 MHz UAT (DO-282B) decoding, FEC and state fusion  
-> **Ecosystem:** `gaugeblock` — built and verified with the suite (`miter`, `storypole`, `chalkline`, `outfeed`)  
+> **Tooling:** verification uses the `gaugeblock` suite as a dogfooded dependency of the *process*
+> (`miter`, `storypole`, `chalkline`, `outfeed`). `aerofoil` is an independent project and is not
+> part of that suite or its organisation.  
 > **License:** Apache-2.0 OR MIT
 
 This document defines *who the product is for and what it covers*. Delivery order and status live in

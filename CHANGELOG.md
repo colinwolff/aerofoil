@@ -46,9 +46,6 @@ crates, in the imperative, one line each, with the `storypole` task key in paren
 - `.gaugeblock/config.toml` registers the verification command per crate, so `storypole verify --run`
   executes `cargo nextest run` and records its exit code instead of certifying what an agent claims
   to have run.
-- `ADR-0007` (proposed): the namespace-reservation decision — eight free crate names, `aerofoil`
-  unavailable as a GitHub organisation (held by a user account since 2023), the `0.1.0-alpha.1`
-  reservation / `0.1.0-beta.1` dogfood ladder, and the placeholder mechanics.
 
 ### Fixed
 
@@ -57,6 +54,10 @@ crates, in the imperative, one line each, with the `storypole` task key in paren
   Invariant 5 of `docs/SPEC.md`; the scope section still promised double-bit correction.
 - Align the MCP tool name in `docs/DESIGN.md` with the specification: `get_airspace_summary`, as
   named in `docs/SPEC.md` §5 and `docs/ROADMAP.md`.
+- Remove the false ownership attribution: `Cargo.toml`, `CONTRIBUTING.md`, `scripts/` and the
+  `AGENTS.md`/`docs/PROJECT.md` headers named a `gaugeblock` organisation or URL. `aerofoil` is an
+  independent project that *dogfoods* that suite; it is not part of it. The metadata now points at
+  the maintainer account, and both headers say plainly that the relationship is tooling only.
 
 ### Changed
 

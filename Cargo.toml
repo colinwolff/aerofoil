@@ -20,8 +20,8 @@ edition = "2024"
 rust-version = "1.99"
 authors = ["Colin Wolff <1562545+colinwolff@users.noreply.github.com>"]
 license = "Apache-2.0 OR MIT"
-repository = "https://github.com/gaugeblock/aerofoil"
-homepage = "https://github.com/gaugeblock/aerofoil"
+repository = "https://github.com/colinwolff/aerofoil"
+homepage = "https://github.com/colinwolff/aerofoil"
 
 [workspace.lints.rust]
 unsafe_code = "deny"
