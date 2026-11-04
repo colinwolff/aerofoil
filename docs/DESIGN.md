@@ -62,7 +62,7 @@ To preserve embedded determinism, the $NL(\text{lat})$ transition table is preco
 
 ```json
 {
-  "name": "get_airspace_snapshot",
+  "name": "get_airspace_summary",
   "description": "Returns current tracked aircraft within bounding box or radius",
   "inputSchema": {
     "type": "object",
