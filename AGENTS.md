@@ -132,7 +132,7 @@ cargo fmt --check -p <crate>
 cargo clippy -p <crate> --all-targets -- -D warnings
 cargo nextest run -p <crate>                    # fallback: cargo test -p <crate>
 miter audit --path . --threshold 250            # hard ceiling; non-zero exit on any file >= 250
-chalkline docs check -d .                       # 9-doc compliance; needs the manifest (§7.1)
+chalkline docs check -d .                       # 9-document compliance, zero drift
 ```
 
 **Tier 3 — Task completion gate (before merge to `main`, before `storypole verify`).** Whole
@@ -263,28 +263,30 @@ benchwork snapshot -r .
 
 **In place from bootstrap:** the nine canonical documents (mapped in `.gaugeblock/docs.toml`), dual
 licensing (`LICENSE-APACHE`, `LICENSE-MIT`, `NOTICE`), `CONTRIBUTING.md`, a live `CHANGELOG.md`
-`[Unreleased]` section, the operating contract in this file, and gaugeblock suite state with
-`ticket_prefix = "AF"` in both the unified and legacy storypole config.
+`[Unreleased]` section, the operating contract in this file, gaugeblock suite state with
+`ticket_prefix = "AF"` in both the unified and legacy storypole config, and a buildable Cargo
+workspace — edition 2024, MSRV 1.99, lockstep `version`, inherited lints, with `aerofoil-common` as
+its first member. `chalkline docs check` now runs and reports 9 present, 0 missing, 0 drifted.
 
 **Still open.** Close these; never paper over one by weakening a gate in §3.6:
 
-1. **No `Cargo.toml` yet.** The workspace and its members are described in `README.md` and
-   `docs/ARCHITECTURE.md` but not yet materialized (Milestone 1, `docs/ROADMAP.md`). The manifest
-   must declare `edition = "2024"`, `rust-version = "1.99"`, `version` (lockstep), the dual
-   license, and the `unwrap_used`/`expect_used`/`unsafe_code` deny lints. Tier 1–4 cargo commands
-   become runnable as members land.
-2. **No CI workflow yet.** Until one exists, Tier 2/3 are discipline rather than enforcement.
-   `chalkline docs check` is in the Tier 2 list but cannot run yet: its AST pass requires a
-   `Cargo.toml` (`invalid workspace layout`), so it starts enforcing the moment gap 1 closes.
+1. **No CI workflow yet** (`AF-3`). Until it exists, Tier 2/3 are discipline rather than enforcement.
+2. **`nextest` has nothing to run.** The single member crate has no tests yet, and nextest treats
+   "no tests" as a failure by design; use the documented `cargo test` fallback until `AF-6` adds the
+   first API and its tests. Do not silence it with `--no-tests=pass` permanently — that would also
+   hide a crate whose tests stopped being discovered.
 3. **`verification_commands` is empty** in `.gaugeblock/config.toml`, so `storypole verify --run`
-   certifies only what you ran by hand. Register the per-crate Tier 2 commands before treating a
-   `VerificationReceipt` as evidence.
+   certifies only what you ran by hand. Register the per-crate Tier 2 commands (`AF-4`) before
+   treating a `VerificationReceipt` as evidence.
 4. **`enforce_readme_cli_flags` is off** in `.gaugeblock/docs.toml` because no CLI crate exists.
    Flip it to `true` when `aerofoil-cli` lands, so every subcommand and long flag is documented.
 5. **No crates published.** Nothing has been tagged; the first release tag (`v0.1.0`) is Milestone 4.
 6. **The backlog holds the M0 and M1 wave only.** `AF-1`–`AF-18` are open; M2–M4 are epics awaiting
    children on milestone entry. Nothing is created to fill a gap, and no leaf is invented for a
    milestone whose constraints are still unknown.
+7. **One member crate exists.** `aerofoil-1090`, `aerofoil-978`, `aerofoil-tracker`, `aerofoil-server`
+   and the two apps join the workspace as their milestones land; until then `cargo check --workspace`
+   proves only what is present.
 
 ## 8. Definition of Done for Any Task
 

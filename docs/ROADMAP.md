@@ -16,7 +16,8 @@ when its crates compile, its tests pass and the tiered gates in `AGENTS.md` §3.
       Keep a Changelog and the four-tier gate.
 - [x] Contributor guide, dual licensing (Apache-2.0 OR MIT), changelog with an `[Unreleased]` section.
 - [x] gaugeblock suite state and the canonical 9-document map (`.gaugeblock/docs.toml`).
-- [ ] Workspace manifest (`Cargo.toml`) with `[workspace.package]`, shared lints and `rust-version`.
+- [x] Workspace manifest (`Cargo.toml`) with `[workspace.package]`, shared lints and `rust-version`,
+      plus `aerofoil-common` as the first member so the workspace is buildable (`AF-2`).
 - [ ] CI workflow running Tier 2/3 on every push.
 - [ ] Per-crate `verification_commands` registered in `.gaugeblock/config.toml`.
 

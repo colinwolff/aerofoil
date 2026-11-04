@@ -1,0 +1,13 @@
+[package]
+name = "aerofoil-common"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+description = "Core aircraft state models, CPR coordinate transforms, units and shared decoder traits for aerofoil"
+
+[lints]
+workspace = true

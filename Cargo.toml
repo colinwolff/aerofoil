@@ -1,0 +1,30 @@
+# `aerofoil` — Cargo virtual workspace.
+#
+# Members join as their crates land (`docs/ROADMAP.md`): `aerofoil-common` and `aerofoil-978` in M1,
+# the rest in M2–M4. The manifest must list at least one member from the start: a virtual manifest
+# with an empty member list is not buildable, and `cargo check`, `cargo clippy` and `cargo fmt` all
+# fail against it, which would leave the Tier 2 gate unable to run at all.
+
+[workspace]
+resolver = "3"
+members = ["crates/common"]
+
+[workspace.package]
+# Lockstep SemVer: every member inherits this one version (`AGENTS.md` §3.4).
+version = "0.1.0"
+edition = "2024"
+# Edition 2024's own floor is 1.85; 1.99 is a deliberate MSRV (`AGENTS.md` header).
+rust-version = "1.99"
+authors = ["Colin Wolff <1562545+colinwolff@users.noreply.github.com>"]
+license = "Apache-2.0 OR MIT"
+repository = "https://github.com/gaugeblock/aerofoil"
+homepage = "https://github.com/gaugeblock/aerofoil"
+
+[workspace.lints.rust]
+unsafe_code = "deny"
+missing_debug_implementations = "warn"
+
+[workspace.lints.clippy]
+# `unwrap`/`expect` are how a decoder starts panicking on hostile input (`docs/SPEC.md` §1).
+unwrap_used = "deny"
+expect_used = "deny"

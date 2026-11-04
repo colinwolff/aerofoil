@@ -25,8 +25,8 @@ cd aerofoil
 cargo check --workspace --all-targets
 ```
 
-No crate has been published yet; the workspace manifest arrives with Milestone 1
-(`docs/ROADMAP.md`).
+No crate has been published yet. The workspace manifest exists with `aerofoil-common` as its first
+member; the remaining crates join as their milestones land (`docs/ROADMAP.md`).
 
 ---
 
