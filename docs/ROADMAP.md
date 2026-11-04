@@ -26,7 +26,8 @@ when its crates compile, its tests pass and the tiered gates in `AGENTS.md` §3.
 ## 1. Milestone 1 — Core Primitives & 978 UAT Foundation
 
 - [ ] `aerofoil-common`: `no_std` state models, units, CPR latitude/longitude decoders with the fixed
-      60-entry `NL` table (`SPEC.md` Invariant 9).
+      60-entry `NL` table (`SPEC.md` Invariant 9). The error model and unit types landed with `AF-6`;
+      CPR is the remainder.
 - [ ] `aerofoil-978`: `GF(2^8)` arithmetic and `RS(48, 34)` decoder validated against DO-282B
       Appendix vectors (`SPEC.md` Invariant 7).
 - [ ] `aerofoil-978`: Downlink State Vector (SV) and Mode Status (MS) bitfield parsing.

@@ -271,10 +271,11 @@ its first member. `chalkline docs check` now runs and reports 9 present, 0 missi
 **Still open.** Close these; never paper over one by weakening a gate in §3.6:
 
 1. **No CI workflow yet** (`AF-3`). Until it exists, Tier 2/3 are discipline rather than enforcement.
-2. **`nextest` has nothing to run.** The single member crate has no tests yet, and nextest treats
-   "no tests" as a failure by design; use the documented `cargo test` fallback until `AF-6` adds the
-   first API and its tests. Do not silence it with `--no-tests=pass` permanently — that would also
-   hide a crate whose tests stopped being discovered.
+2. **`no_std` is asserted, not yet proven.** `aerofoil-common` is `#![no_std]` and its tests are
+   integration tests under `tests/`, so the attribute stays unconditional instead of being weakened
+   with `cfg_attr(not(test), no_std)`. But no bare-metal target is installed on this machine, so
+   nothing has compiled the crate for one yet. `AF-3` adds a `thumbv7em-none-eabi` build to CI;
+   until then the guarantee rests on the attribute and on review, not on a machine check.
 3. **`verification_commands` is empty** in `.gaugeblock/config.toml`, so `storypole verify --run`
    certifies only what you ran by hand. Register the per-crate Tier 2 commands (`AF-4`) before
    treating a `VerificationReceipt` as evidence.

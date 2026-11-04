@@ -35,6 +35,10 @@ crates, in the imperative, one line each, with the `storypole` task key in paren
 - Cargo workspace manifest: edition 2024, MSRV 1.99, lockstep `version`, dual license, and
   workspace-wide lints denying `unwrap_used`, `expect_used` and `unsafe_code`. The first member,
   `aerofoil-common`, is a `#![no_std]` skeleton that the M1 tickets fill in; `Cargo.lock` is tracked.
+- `aerofoil-common` gains its first API: `DecodeError`, the rejection model of `docs/SPEC.md`
+  Invariant 3 (`Display` without allocation, `core::error::Error`, `Copy`), and the fixed-point unit
+  types `Altitude`/`AltitudeKind`, `Squawk` and `Heading`, covered by 18 tests. Tests live in
+  `tests/` so the crate keeps an unconditional `#![no_std]`.
 
 ### Fixed
 
