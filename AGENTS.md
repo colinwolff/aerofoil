@@ -206,9 +206,10 @@ State lives under `.gaugeblock/` and is split by ownership:
 | `rabbet` | Telemetry roll-up from `.gaugeblock/spool/outbox.jsonl` into training corpora. Downstream of the work; never a gate. |
 | `sawhorse` | Provider runtime for the synthesis tools. Not invoked directly by hand-written changes. |
 
-**Backlog state:** the backlog is intentionally empty at bootstrap (`storypole list` → no tasks).
-Tickets are opened only when a roadmap milestone in `docs/PROJECT.md` is sliced into work, and they
-are never invented just to have something to claim.
+**Backlog state:** the first wave is open — `AF-1`…`AF-18` cover M0 close-out and M1, and
+`storypole next` returns one actionable leaf (start with `AF-2`, the workspace manifest). M2–M4 exist
+as epics whose children are added when the preceding milestone verifies, so no leaf is written a
+milestone ahead of the constraints that decide it.
 
 ## 5. Agent Execution Loop
 
@@ -281,7 +282,9 @@ licensing (`LICENSE-APACHE`, `LICENSE-MIT`, `NOTICE`), `CONTRIBUTING.md`, a live
 4. **`enforce_readme_cli_flags` is off** in `.gaugeblock/docs.toml` because no CLI crate exists.
    Flip it to `true` when `aerofoil-cli` lands, so every subcommand and long flag is documented.
 5. **No crates published.** Nothing has been tagged; the first release tag (`v0.1.0`) is Milestone 4.
-6. **The backlog is empty on purpose.** No tickets exist, and none are created to fill the gap.
+6. **The backlog holds the M0 and M1 wave only.** `AF-1`–`AF-18` are open; M2–M4 are epics awaiting
+   children on milestone entry. Nothing is created to fill a gap, and no leaf is invented for a
+   milestone whose constraints are still unknown.
 
 ## 8. Definition of Done for Any Task
 
