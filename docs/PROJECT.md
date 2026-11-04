@@ -23,7 +23,7 @@ topology lives in [`ARCHITECTURE.md`](./ARCHITECTURE.md).
 ### In Scope
 * **Protocol Ingestion & Framing:** Parsing Beast binary, raw AVR hex, and demodulated byte streams.
 * **Forward Error Correction (FEC):**
-  * Mode S: Table-driven / SIMD-accelerated 24-bit CRC syndrome computation; single- and double-bit error correction against known ICAO addresses.
+  * Mode S: Table-driven / SIMD-accelerated 24-bit CRC syndrome computation; single-bit error correction against addresses already verified by the tracker (`ADR-0003`). Multi-bit correction is out of scope: an uncorrectable frame is dropped, never guessed.
   * UAT: Galois Field arithmetic over $GF(2^8)$, Berlekamp-Massey / Forney syndrome solving for Downlink $RS(48, 34)$ and Uplink $RS(92, 72)$ frames.
 * **Aircraft State & Tracking:** CPR (Compact Position Reporting) decoding, velocity/heading calculation, ADS-R / TIS-B spatial deduplication, anonymous address tracking.
 * **Frontends:** Unix pipes (`aerofoil-cli`), streaming server (`aerofoil-server`), and Agent API (`aerofoil-mcp`).

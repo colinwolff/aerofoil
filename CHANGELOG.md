@@ -29,3 +29,5 @@ crates, in the imperative, one line each, with the `storypole` task key in paren
 ### Fixed
 
 - Correct the UAT uplink frame width in `docs/SPEC.md`: `RS(92, 72)` occupies 92 bytes, not 96.
+- Restate Mode S error correction as single-bit only in `docs/PROJECT.md`, matching `ADR-0003` and
+  Invariant 5 of `docs/SPEC.md`; the scope section still promised double-bit correction.
