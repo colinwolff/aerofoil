@@ -46,6 +46,13 @@ crates, in the imperative, one line each, with the `storypole` task key in paren
 - `.gaugeblock/config.toml` registers the verification command per crate, so `storypole verify --run`
   executes `cargo nextest run` and records its exit code instead of certifying what an agent claims
   to have run.
+- `ADR-0007` (accepted): the namespace-reservation decision — eight free crate names, `aerofoil`
+  unavailable as a GitHub organisation (held by a user account since 2023), the `0.1.0-alpha.1`
+  reservation / `0.1.0-beta.1` dogfood ladder, and the placeholder mechanics. Names are held from
+  the maintainer account; the long-term owner is added later.
+- `ADR-0008` (proposed): the long-term organisation handle, with `aerofoil-labs`, `aerofoil-rs` and
+  `aerofoil-hq` verified free, the confusion and trademark factors recorded, and the trigger for
+  deciding (first satellite repository or second maintainer).
 
 ### Fixed
 
