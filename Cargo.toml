@@ -8,6 +8,9 @@
 [workspace]
 resolver = "3"
 members = ["crates/common"]
+# `scripts/reserve-namespaces.sh` writes throwaway placeholder crates here to claim the names on
+# crates.io. They live inside this directory, so Cargo must be told they are not members.
+exclude = ["reserve-staging"]
 
 [workspace.package]
 # Lockstep SemVer: every member inherits this one version (`AGENTS.md` §3.4).

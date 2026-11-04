@@ -43,6 +43,12 @@ crates, in the imperative, one line each, with the `storypole` task key in paren
   build and a `thumbv7em-none-eabi` build that proves the `no_std` guarantee. The suite gates
   (`miter`, `chalkline`) are a visibly disabled job because those tools are not yet installable
   from a registry (`AF-19`).
+- `.gaugeblock/config.toml` registers the verification command per crate, so `storypole verify --run`
+  executes `cargo nextest run` and records its exit code instead of certifying what an agent claims
+  to have run.
+- `ADR-0007` (proposed): the namespace-reservation decision — eight free crate names, `aerofoil`
+  unavailable as a GitHub organisation (held by a user account since 2023), the `0.1.0-alpha.1`
+  reservation / `0.1.0-beta.1` dogfood ladder, and the placeholder mechanics.
 
 ### Fixed
 

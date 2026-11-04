@@ -64,6 +64,13 @@ tarpaulin-report.html
 critcmp.json
 
 # =============================================================================
+# Namespace Reservation Staging (ADR-0007)
+# =============================================================================
+# `scripts/reserve-namespaces.sh scaffold` writes throwaway placeholder crates here to claim the
+# crate names on crates.io. They are not workspace members and must never be committed.
+/reserve-staging/
+
+# =============================================================================
 # Capture Corpora
 # =============================================================================
 # Raw IQ / Beast recordings are large and not reproducible. Small, reviewed
