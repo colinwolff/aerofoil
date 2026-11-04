@@ -120,19 +120,40 @@ EOF
   echo "Staged in $STAGING (gitignored). Next: scripts/reserve-namespaces.sh publish --yes"
 }
 
-# crates.io rate-limits new crates per window, and a single retry is not enough: the first retry
-# landed inside the same window and aborted the whole run. Retry with a bounded budget instead.
+# crates.io's 429 names the moment the window reopens. A fixed guess sent the retry into the same
+# window twice and burned attempts, so honour the timestamp when it is present.
+rate_limit_delay() {
+  local output="$1" stamp target now delay
+  stamp=$(printf '%s' "$output" \
+    | grep -oE '[A-Za-z]{3}, [0-9]{2} [A-Za-z]{3} [0-9]{4} [0-9]{2}:[0-9]{2}:[0-9]{2} GMT' \
+    | head -n1)
+  if [ -n "$stamp" ]; then
+    target=$(date -j -f '%a, %d %b %Y %H:%M:%S %Z' "$stamp" +%s 2>/dev/null \
+          || date -d "$stamp" +%s 2>/dev/null \
+          || echo "")
+    now=$(date +%s)
+    if [ -n "$target" ] && [ "$target" -gt "$now" ]; then
+      delay=$((target - now + 15))
+      echo "$delay"
+      return
+    fi
+  fi
+  # No usable timestamp: wait out the window we know about, then try again.
+  echo 305
+}
+
 publish_one() {
-  local crate="$1" dir="$2" attempt=1 output
-  while [ "$attempt" -le 6 ]; do
+  local crate="$1" dir="$2" attempt=1 output delay
+  while [ "$attempt" -le 8 ]; do
     if output=$(cd "$dir" && cargo publish 2>&1); then
       echo "  published $crate@$VERSION"
       return 0
     fi
     case "$output" in
       *429*|*"Too Many Requests"*|*"try again after"*)
-        echo "  rate limited on $crate (attempt $attempt/6); waiting 305s"
-        sleep 305
+        delay=$(rate_limit_delay "$output")
+        echo "  rate limited on $crate (attempt $attempt/8); waiting ${delay}s"
+        sleep "$delay"
         attempt=$((attempt + 1))
         ;;
       *)
@@ -141,7 +162,7 @@ publish_one() {
         ;;
     esac
   done
-  echo "  gave up on $crate after 6 attempts" >&2
+  echo "  gave up on $crate after 8 attempts" >&2
   return 1
 }
 
