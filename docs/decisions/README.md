@@ -34,6 +34,7 @@ accepted record destroy the audit trail — write `ADR-NNNN` that supersedes it 
 | [0006](./ADR-0006.md) | Proposed | Server egress transport: SSE, WebSocket, both, or gRPC streaming only |
 | [0007](./ADR-0007.md) | Accepted | Reserve the eight crate names and the repository from the maintainer account |
 | [0008](./ADR-0008.md) | Proposed | Long-term organisation handle: `aerofoil-labs`, `aerofoil-rs`, `aerofoil-hq`, stay personal, or a coined name |
+| [0009](./ADR-0009.md) | Accepted | Persistence seam now, storage engine later; live track state is never persisted across restarts |
 
 ## Process
 

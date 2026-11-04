@@ -53,6 +53,10 @@ crates, in the imperative, one line each, with the `storypole` task key in paren
 - `ADR-0008` (proposed): the long-term organisation handle, with `aerofoil-labs`, `aerofoil-rs` and
   `aerofoil-hq` verified free, the confusion and trademark factors recorded, and the trigger for
   deciding (first satellite repository or second maintainer).
+- `ADR-0009` (accepted): persistence gets a seam now (`aerofoil-persistence` with a `RecordSink`
+  trait and a dependency-free JSONL implementation recording band-tagged frames) and an engine later,
+  chosen on evidence — a benchmark spike on Pi-class hardware plus a real query requirement. Live
+  track state is explicitly never persisted across restarts.
 
 ### Fixed
 
