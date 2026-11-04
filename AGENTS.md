@@ -188,6 +188,11 @@ We dogfood the `gaugeblock` suite: these tools are used here as a consumer, on a
 not part of that suite. Every tool below is a real gate or a real context-slicer for this
 repository — if a tool is not useful here, that is a suite bug worth filing upstream.
 
+**Ownership metadata is a fact about this project, never inherited from tooling.** The
+`repository`/`homepage` fields in `Cargo.toml`, the clone URL in `CONTRIBUTING.md` and any constant
+in `scripts/` name *this* project's home. They were once copied from the suite's own manifests and
+named the wrong owner; a template is a source of conventions, not of identity.
+
 State lives under `.gaugeblock/` and is split by ownership:
 
 - **Tracked (shared, reproducible):** `.gaugeblock/config.toml`, `.gaugeblock/docs.toml`,
