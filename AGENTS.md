@@ -70,7 +70,10 @@ logic leaking downward. `miter deps --path . --unused` proves declared dependenc
   crates' fixes, never "while I was in here" cleanups — those go to `storypole defer` (§3.7).
 - Conventional Commits v1.0.0: `<type>(<scope>): <summary>`.
   - Types: `feat`, `fix`, `refactor`, `perf`, `test`, `docs`, `style`, `chore`, `ci`, `build`.
-  - Scopes: `common`, `1090`, `978`, `tracker`, `server`, `cli`, `mcp`, `workspace`, `docs`, `deps`.
+  - Scopes: a crate name (`common`, `1090`, `978`, `tracker`, `server`, `cli`, `mcp`), a
+    documentation area (`product`, `spec`, `design`, `architecture`, `roadmap`, `decisions`,
+    `readme`, `agents`, `contributing`, `changelog`), or `workspace` / `deps`. Omit the scope for a
+    repo-wide change that touches no single area.
   - Footers: `Task: <KEY>` when the commit closes a backlog item, `BREAKING CHANGE:` when it breaks
     a public interface.
 - Every commit must pass the Tier 2 gate (§3.6) on the crates it touches, and `git bisect` must
