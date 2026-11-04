@@ -57,6 +57,10 @@ crates, in the imperative, one line each, with the `storypole` task key in paren
   trait and a dependency-free JSONL implementation recording band-tagged frames) and an engine later,
   chosen on evidence — a benchmark spike on Pi-class hardware plus a real query requirement. Live
   track state is explicitly never persisted across restarts.
+- `ADR-0010` (accepted): ingest is frames in, one fusion process over N band-tagged sources.
+  Demodulation lives in a feature-gated `aerofoil-sdr` crate that emits Beast and depends on nothing
+  in this workspace, so it doubles as a dump1090 replacement; correction stays in `aerofoil-1090`
+  because it needs the address filter, and UAT uplink demodulation is deferred.
 
 ### Fixed
 
@@ -69,6 +73,10 @@ crates, in the imperative, one line each, with the `storypole` task key in paren
   `AGENTS.md`/`docs/PROJECT.md` headers named a `gaugeblock` organisation or URL. `aerofoil` is an
   independent project that *dogfoods* that suite; it is not part of it. The metadata now points at
   the maintainer account, and both headers say plainly that the relationship is tooling only.
+- Stop claiming the decoders demodulate. `README.md` described `aerofoil-1090` as a demodulator and
+  `docs/PROJECT.md` implied samples entered a demodulator/framer here, while no milestone scheduled
+  one; `docs/ARCHITECTURE.md` now states that sources hand the pipeline framed bytes, and the ingest
+  stage states the band-tag and multi-source model.
 
 ### Changed
 

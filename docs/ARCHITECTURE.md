@@ -7,7 +7,7 @@ The system is organized into decoupled layers, separating bit-level math and par
 ```
                            +--------------------------+
                            |  Raw Stream Sources      |
-                           |  (RTL-SDR, Beast, AVR)   |
+                           |  (Beast, AVR, frames)    |
                            +------------+-------------+
                                         |
                  +----------------------+----------------------+
@@ -47,6 +47,10 @@ The system is organized into decoupled layers, separating bit-level math and par
 +------------------+          +-------------------+          +------------------+
 ```
 
+Sources hand this pipeline **framed bytes, never samples**: demodulation for both bands lives in
+`aerofoil-sdr` or in an external demodulator such as dump1090 or dump978, both of which speak Beast.
+That keeps the decoders `no_std`, allocation-free and testable without hardware (`ADR-0010`).
+
 ---
 
 ## 2. Core Subsystems
@@ -72,7 +76,7 @@ The system is organized into decoupled layers, separating bit-level math and par
 
 ## 3. Concurrency & Dataflow Model
 
-1. **Ingest Stage:** Fast non-blocking socket or stdin readers push fixed frame buffers into bounded, lock-free ring buffers (SPSC / MPMC channels).
+1. **Ingest Stage:** Fast non-blocking socket or stdin readers push fixed frame buffers into bounded, lock-free ring buffers (SPSC / MPMC channels). Every source carries a **band tag** (1090 or 978) and a source id, and one process accepts many: fusion needs both bands in the same track table (`SPEC.md` Invariant 10), so `aerofoil-server` takes one named source per band while `aerofoil-cli` stays single-stream by design (`ADR-0010`).
 2. **Worker Pool (Rayon / Dedicated Core Threads):**
    * Worker threads pull raw frames, execute CRC/Reed-Solomon verification, parse bitfields, and resolve position.
    * Invalid or uncorrectable frames are dropped immediately without hitting the tracker.

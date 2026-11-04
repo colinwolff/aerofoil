@@ -65,7 +65,7 @@ frame on the hot path.
 
 ## 4. Milestone 4 — Networking & MCP Agent Integration
 
-- [ ] `aerofoil-server`: TCP Beast ingest (30005/30978), SSE and gRPC streams with backpressure.
+- [ ] `aerofoil-server`: TCP Beast ingest as two named, band-tagged sources in one process (30005 for 1090, 30978 for 978), SSE and gRPC streams with backpressure; `aerofoil-cli` stays single-stream (`ADR-0010`).
 - [ ] `aerofoil-mcp`: tools `get_airspace_summary`, `get_track(icao)`, `find_closest(lat, lon)`
       over JSON-RPC 2.0 stdio; logs to stderr only (`SPEC.md` §5).
 - [ ] End-to-end test on a recorded high-density airport dataset.

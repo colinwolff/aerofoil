@@ -31,7 +31,7 @@ topology lives in [`ARCHITECTURE.md`](./ARCHITECTURE.md).
 * **Frontends:** Unix pipes (`aerofoil-cli`), streaming server (`aerofoil-server`), and Agent API (`aerofoil-mcp`).
 
 ### Out of Scope (Initial Milestones)
-* **Direct SDR RF Frontends:** Direct USB/PCIe sample streaming from RTL-SDR, HackRF, or BladeRF will not be embedded in the core parser crates. External tools (`rtl_sdr`, `soapy_power`) pipe samples into the demodulator/framer.
+* **Direct SDR RF Frontends:** USB/PCIe sample streaming from RTL-SDR, HackRF or BladeRF will not be embedded in the decoder crates. Demodulation belongs to `aerofoil-sdr` — a sibling crate that hands framed bytes to this workspace and can stand in for dump1090 — or to an external demodulator such as dump1090 or dump978 (`ADR-0010`).
 * **Full FIS-B Product Rendering:** Decoding NEXRAD graphic bitmaps or full meteorological raster products into PNGs. The parser extracts the APDU payload blocks; rendering is deferred to user applications.
 
 ---
