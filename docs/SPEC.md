@@ -16,7 +16,8 @@ A change that violates a clause here is a defect regardless of which crate it la
 ### Invariant 1: Fixed-Size, Zero-Allocation Frames
 
 - A decoded frame is a value, never a heap graph: `[u8; 14]` for Mode S long frames, `[u8; 7]` for
-  short frames, `[u8; 48]` for UAT downlink, `[u8; 96]` for UAT uplink.
+  short frames, `[u8; 48]` for UAT downlink (`RS(48, 34)`) and `[u8; 92]` for UAT uplink
+  (`RS(92, 72)`).
 - No decoder, FEC routine, or bitfield accessor allocates. `aerofoil-common`, `aerofoil-1090` and
   `aerofoil-978` are `#![no_std]` with `alloc` behind an optional feature that no decode path uses.
 - All buffers are caller-owned or stack-resident; no global mutable state.

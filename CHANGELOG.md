@@ -25,3 +25,7 @@ crates, in the imperative, one line each, with the `storypole` task key in paren
   `.gaugeblock/docs.toml`.
 - `docs/SPEC.md` (behavioural invariants and wire contracts) and `docs/ROADMAP.md` (milestones and
   horizons) as the single source of truth for the delivery plan.
+
+### Fixed
+
+- Correct the UAT uplink frame width in `docs/SPEC.md`: `RS(92, 72)` occupies 92 bytes, not 96.
