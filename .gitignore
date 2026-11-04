@@ -1,0 +1,99 @@
+# =============================================================================
+# Rust / Cargo Build Artifacts
+# =============================================================================
+target/
+**/target/
+**/*.rs.bk
+
+# Cargo.lock is intentionally TRACKED: every workspace member must keep a fresh
+# lockfile (`outfeed lockfiles .` is the gate). Never add it here.
+
+# =============================================================================
+# Embedded Databases & Machine State (derived, rebuilt on demand)
+# =============================================================================
+*.redb
+*.redb.lock
+*.sqlite
+*.sqlite3
+*.sqlite-wal
+*.sqlite-shm
+*.db
+*.db-wal
+*.db-shm
+*.db-journal
+
+# =============================================================================
+# gaugeblock Suite State
+# =============================================================================
+# Canonical project state is TRACKED and shared across machines:
+#   .gaugeblock/config.toml
+#   .gaugeblock/docs.toml            (once adopted)
+#   .gaugeblock/miter/*.toml         (allowlists are gate inputs, not machine state)
+#   .gaugeblock/storypole/ledger.jsonl
+#   .gaugeblock/storypole/plans/
+# Everything below is per-machine output. An exception that lives on one machine
+# is a gate nobody else can reproduce.
+.gaugeblock/spool/
+.gaugeblock/worktrees/
+.gaugeblock/datasets/
+.gaugeblock/chat/
+.gaugeblock/.env
+.gaugeblock/**/*.sqlite
+.gaugeblock/**/*.sqlite-wal
+.gaugeblock/**/*.sqlite-shm
+.gaugeblock/miter/*
+!.gaugeblock/miter/*.toml
+
+# Legacy pre-`.gaugeblock/` tool directories, ignored so a stray invocation from
+# the repo root cannot commit them.
+.storypole/index.sqlite*
+.miter/
+**/.miter/
+.dado/
+
+# =============================================================================
+# Benchmarks, Profiling & Coverage
+# =============================================================================
+*.profraw
+*.profdata
+perf.data
+perf.data.old
+flamegraph.svg
+lcov.info
+tarpaulin-report.html
+critcmp.json
+
+# =============================================================================
+# Capture Corpora
+# =============================================================================
+# Raw IQ / Beast recordings are large and not reproducible. Small, reviewed
+# fixtures belong in tests/vectors/; bulk captures stay local.
+/captures/
+*.cu8
+*.sc16
+*.iq
+
+# =============================================================================
+# Environment & Secrets
+# =============================================================================
+.env
+.env.*
+!.env.example
+
+# =============================================================================
+# Editors, OS & Agent Ephemera
+# =============================================================================
+.vscode/
+.idea/
+*.iml
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+.cline/
+.cursor/
+*.code-workspace
+!aerofoil.code-workspace
+agent_scratchpad.md
+agent_todo.md
+*.log
