@@ -29,6 +29,9 @@ crates, in the imperative, one line each, with the `storypole` task key in paren
   template, with the `storypole ask-decision` / `decide` handshake documented.
 - `ADR-0005` (proposed): the tracker concurrency model is recorded as an open question with four
   options, instead of `ARCHITECTURE.md` hedging between two designs.
+- `ADR-0006` (proposed): the server egress transport is recorded as an open question. SSE had been
+  asserted in four documents without ever being decided, and the charter's WebSocket mention vanished
+  in the rewrite.
 
 ### Fixed
 

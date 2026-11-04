@@ -31,6 +31,7 @@ accepted record destroy the audit trail — write `ADR-NNNN` that supersedes it 
 | [0003](./ADR-0003.md) | Accepted | Dual-tier, address-filtered single-bit correction for 1090ES parity |
 | [0004](./ADR-0004.md) | Accepted | Single-bit correction consults an injected `AddressFilter`, never the tracker |
 | [0005](./ADR-0005.md) | Proposed | Tracker concurrency model: striped `RwLock`, lock-free map, snapshot actor or per-field atomics |
+| [0006](./ADR-0006.md) | Proposed | Server egress transport: SSE, WebSocket, both, or gRPC streaming only |
 
 ## Process
 
