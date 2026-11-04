@@ -31,6 +31,8 @@ CRATES=(
   "aerofoil-server"
   "aerofoil-cli"
   "aerofoil-mcp"
+  "aerofoil-sdr"
+  "aerofoil-persistence"
 )
 DESCRIPTIONS=(
   "Umbrella namespace for the aerofoil ADS-B and UAT decoding suite."
@@ -41,6 +43,8 @@ DESCRIPTIONS=(
   "Streaming daemon exposing aerofoil tracks over Beast, AVR, JSON-lines and gRPC."
   "Unix-friendly CLI for decoding ADS-B and UAT feeds into JSON."
   "Model Context Protocol server exposing aerofoil airspace queries to agents."
+  "RTL-SDR device handling and 1090/978 demodulation emitting Beast frames for aerofoil."
+  "Recording, replay and optional storage adapters for aerofoil frame and track streams."
 )
 
 # 404 means the name is free; 200 means somebody already holds it.
@@ -63,7 +67,7 @@ cmd_check() {
       verdict="TAKEN"
       taken=$((taken + 1))
     fi
-    printf '  %-18s %s\n' "$crate" "$verdict"
+    printf '  %-22s %s\n' "$crate" "$verdict"
   done
   echo "-------------------------------------------------------------"
   echo "$free free, $taken taken"

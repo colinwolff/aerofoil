@@ -18,6 +18,8 @@ allowed_crates = [
     "aerofoil-server",
     "aerofoil-cli",
     "aerofoil-mcp",
+    "aerofoil-sdr",
+    "aerofoil-persistence",
 ]
 claim_ttl_minutes = 60
 
