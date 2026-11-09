@@ -96,6 +96,7 @@ An unlisted DF is `DecodeError::UnsupportedFormat`, not an inference.
 
 - UAT downlink bytes are transmitted interleaved across four message phases and must be
   de-interleaved before syndrome computation; de-interleaving is a fixed permutation, not a sort.
+- Downlink frames are represented by `UatDownlinkFrame` and classified by `UatFrameKind`.
 - A frame whose payload length field disagrees with its Reed-Solomon geometry is rejected before FEC
   is attempted (`DecodeError::InvalidField`), so FEC is never asked to repair a framing error.
 - A successfully corrected frame reports `corrected_symbols: u8` so consumers can weight it; a frame
