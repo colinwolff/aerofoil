@@ -13,6 +13,7 @@ crates, in the imperative, one line each, with the `storypole` task key in paren
 
 ### Added
 
+- Add fixed-point micro-degree `Latitude`, `Longitude` and `Position` primitives to `aerofoil-common` (`AF-7`).
 - Repository bootstrap: product definition, architecture specification, low-level design notes and
   MADR decision records under `docs/`.
 - `AGENTS.md` operating contract: 250-line file ceiling with a 200-line warning band, atomic
