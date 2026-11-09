@@ -34,6 +34,7 @@ target/
 # Everything below is per-machine output. An exception that lives on one machine
 # is a gate nobody else can reproduce.
 .gaugeblock/spool/
+.gaugeblock/telemetry/
 .gaugeblock/worktrees/
 .gaugeblock/datasets/
 .gaugeblock/chat/
