@@ -13,6 +13,7 @@ crates, in the imperative, one line each, with the `storypole` task key in paren
 
 ### Added
 
+- Implement UAT framing, de-interleaving and Reed-Solomon geometry validation in `aerofoil-978` (`AF-13`).
 - Implement the DO-282B $RS(48,34)$ Reed-Solomon decoder in `aerofoil-978` (`AF-12`).
 - Scaffold `aerofoil-978` with $GF(2^8)$ arithmetic over primitive polynomial `0x11D` (`AF-11`).
 - Implement global CPR decoding with a 10-second pair window and zone-anomaly rejection in `aerofoil-common` (`AF-9`).

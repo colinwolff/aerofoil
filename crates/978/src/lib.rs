@@ -3,13 +3,18 @@
 //! This crate implements zero-allocation decoding and forward error correction (FEC) for 978 MHz
 //! UAT broadcasts according to RTCA DO-282B.
 //!
-//! Landed so far: $GF(2^8)$ Galois Field arithmetic over primitive polynomial `0x11D` ([`gf`])
-//! and $RS(48,34)$ Reed-Solomon forward error correction ([`rs`]).
+//! Landed so far: $GF(2^8)$ Galois Field arithmetic over primitive polynomial `0x11D` ([`gf`]),
+//! $RS(48,34)$ Reed-Solomon forward error correction ([`rs`]), and framing/de-interleaving ([`frame`]).
 #![no_std]
 
+pub mod frame;
 pub mod gf;
 pub mod rs;
 
+pub use frame::{
+    UatDownlinkFrame, UatFrameKind, deinterleave_downlink, deinterleave_uplink,
+    interleave_downlink, interleave_uplink,
+};
 pub use rs::{
     RS_BLOCK_LEN, RS_DATA_LEN, RS_FCR, RS_MAX_CORRECTABLE, RS_PARITY_LEN, Rs48_34, decode_rs_48_34,
 };
