@@ -114,6 +114,9 @@ An unlisted DF is `DecodeError::UnsupportedFormat`, not an inference.
   window the pair is rejected and the local (reference-position) decoder is used instead.
 - Global decoding that crosses a zone-boundary anomaly (`NL` mismatch between the pair) is rejected
   rather than snapped to the nearest plausible cell. A wrong position is worse than no position.
+- Errors encountered during CPR decoding are strongly typed as `CprError`:
+  `CprError::SameParity`, `CprError::PairWindowExceeded`, `CprError::OutOfRangeCoordinate`,
+  `CprError::InvalidLatitude`, `CprError::InvalidLongitude`, and `CprError::ZoneMismatch`.
 - Latitude and longitude are represented in fixed-point micro-degrees; no `f32`/`f64` value is ever
   the stored form of a position.
 
