@@ -5,6 +5,9 @@ version = 4
 [[package]]
 name = "aerofoil-978"
 version = "0.1.0"
+dependencies = [
+ "aerofoil-common",
+]
 
 [[package]]
 name = "aerofoil-common"
