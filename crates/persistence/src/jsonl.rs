@@ -71,7 +71,6 @@ impl JsonlRecordSink {
 
         let worker = thread::spawn(move || -> Result<(), String> {
             let (lock, cvar) = &*worker_state;
-            let mut batch = Vec::with_capacity(64);
 
             loop {
                 let mut guard = lock
@@ -87,19 +86,13 @@ impl JsonlRecordSink {
                         .map_err(|e| format!("cvar poisoned in worker: {e}"))?;
                 }
 
-                while let Some(item) = guard.queue.pop_front() {
-                    batch.push(item);
-                    if batch.len() >= 64 {
-                        break;
-                    }
-                }
-
+                let item = guard.queue.pop_front();
                 let is_flush = guard.queue.is_empty() && guard.flush_req > guard.flush_ack;
                 let is_shutdown = guard.shutdown && guard.queue.is_empty();
                 drop(guard);
 
-                for item in batch.drain(..) {
-                    let mut json = serde_json::to_vec(&item)
+                if let Some(frame) = item {
+                    let mut json = serde_json::to_vec(&frame)
                         .map_err(|e| format!("serialization error: {e}"))?;
                     json.push(b'\n');
                     writer.write_all(&json).map_err(|e| e.to_string())?;
