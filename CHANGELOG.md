@@ -11,10 +11,7 @@ crates, in the imperative, one line each, with the `storypole` task key in paren
 
 ## [Unreleased]
 
-### Changed
-
-- Accept ADR-0006 choosing SSE plus WebSocket for server egress transport (`AF-18`).
-- Accept ADR-0005 choosing striped parking_lot::RwLock shards for aerofoil-tracker (`AF-17`).
+## [0.1.0-beta.1] - 2026-11-10
 
 ### Added
 
@@ -39,7 +36,6 @@ crates, in the imperative, one line each, with the `storypole` task key in paren
 - Implement runtime-detected SIMD CLMUL/PMULL CRC-24 acceleration in `aerofoil-1090` (`AF-31`).
 - Implement address-filtered single-bit error correction for Mode S DF11/DF17/DF18 frames in `aerofoil-1090` (`AF-30`).
 - Implement zero-copy Mode S Downlink Format bitfield parsers for DF0, DF4, DF5, DF11, DF17, DF18, DF20, and DF21 in `aerofoil-1090` (`AF-29`).
-
 - Scaffold `aerofoil-1090` with Mode S CRC-24 polynomial division and precomputed lookup table (`AF-28`).
 - Add Terminal UI dashboard (`aerofoil-tui`), TypeScript SDK (`sdk/`), and web radar demo (`examples/web-radar`) to architecture specifications and delivery roadmap.
 - Add optional `export-ts` feature to `aerofoil-common` using `ts-rs` for TypeScript definitions (`AF-27`).
@@ -102,6 +98,15 @@ crates, in the imperative, one line each, with the `storypole` task key in paren
   in this workspace, so it doubles as a dump1090 replacement; correction stays in `aerofoil-1090`
   because it needs the address filter, and UAT uplink demodulation is deferred.
 
+### Changed
+
+- Accept ADR-0006 choosing SSE plus WebSocket for server egress transport (`AF-18`).
+- Accept ADR-0005 choosing striped parking_lot::RwLock shards for aerofoil-tracker (`AF-17`).
+- `ADR-0004`: single-bit correction now consults an `aerofoil_common::AddressFilter` injected by the
+  caller instead of reaching up into `aerofoil-tracker`, so `aerofoil-1090` stays `no_std` and the
+  crate layering has no cycle. `docs/ARCHITECTURE.md`, `docs/SPEC.md` Invariant 5 and
+  `docs/decisions/README.md` follow the decision.
+
 ### Fixed
 
 - Correct the UAT uplink frame width in `docs/SPEC.md`: `RS(92, 72)` occupies 92 bytes, not 96.
@@ -118,9 +123,5 @@ crates, in the imperative, one line each, with the `storypole` task key in paren
   one; `docs/ARCHITECTURE.md` now states that sources hand the pipeline framed bytes, and the ingest
   stage states the band-tag and multi-source model.
 
-### Changed
-
-- `ADR-0004`: single-bit correction now consults an `aerofoil_common::AddressFilter` injected by the
-  caller instead of reaching up into `aerofoil-tracker`, so `aerofoil-1090` stays `no_std` and the
-  crate layering has no cycle. `docs/ARCHITECTURE.md`, `docs/SPEC.md` Invariant 5 and
-  `docs/decisions/README.md` follow the decision.
+[Unreleased]: https://github.com/colinwolff/aerofoil/compare/v0.1.0-beta.1...HEAD
+[0.1.0-beta.1]: https://github.com/colinwolff/aerofoil/releases/tag/v0.1.0-beta.1
