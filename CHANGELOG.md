@@ -18,6 +18,7 @@ crates, in the imperative, one line each, with the `storypole` task key in paren
 
 ### Changed
 
+- Promote web radar from `examples/web-radar` to first-class workspace application `apps/web` (`@aerofoil/web-radar`) (`AF-51`).
 - Upgrade workspace Cargo dependencies, bump frontend packages to Vite v8, TypeScript v7, and Leaflet 2.0 beta (`AF-48`).
 - Align architectural decision records with chalkline MADR schema and monotonic date ordering (`AF-47`).
 

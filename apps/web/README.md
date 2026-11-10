@@ -19,7 +19,7 @@ cargo run -p aerofoil-server -- --port-1090 30005 --port-978 30978 --port-egress
 Install dependencies and start the Vite dev server:
 
 ```bash
-cd examples/web-radar
+cd apps/web
 bun install
 bun run dev
 ```
