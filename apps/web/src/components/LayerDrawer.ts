@@ -29,22 +29,19 @@ export class LayerDrawer {
     if (!container) {
       container = document.createElement("div");
       container.id = containerId;
-      container.className = "layer-drawer-hud";
       document.body.appendChild(container);
     }
+    container.classList.add("layer-drawer-hud");
     this.drawerEl = container;
 
     const basemaps = this.basemapMgr.getAvailableBasemaps();
     const basemapOptions = basemaps.map((b) => `<option value="${b.id}">${b.name}</option>`).join("");
 
     container.innerHTML = `
-      <div class="hud-pill" id="hud-toggle-btn" title="Toggle Airspace Overlays">
-        <span class="hud-icon">⛯</span><span class="hud-label">Layers</span>
-      </div>
       <div class="hud-panel hidden" id="hud-panel">
         <div class="hud-header">
-          <h4>Airspace Layers</h4>
-          <button id="hud-info-btn" class="hud-info-btn" title="Legal notices & provider licenses">ℹ</button>
+          <h4>Airspace & Chart Layers</h4>
+          <button id="hud-close-btn" class="modal-close-btn">&times;</button>
         </div>
         <div class="hud-section">
           <label class="hud-section-label">Basemap / Chart</label>
@@ -64,14 +61,23 @@ export class LayerDrawer {
       </div>
     `;
 
-    document.getElementById("hud-toggle-btn")?.addEventListener("click", () => this.toggle());
-    document.getElementById("hud-info-btn")?.addEventListener("click", () => this.legalModal.show());
+    document.getElementById("hud-close-btn")?.addEventListener("click", () => this.toggle());
     this.bindControls();
   }
 
-  public toggle(): void {
+  public toggle(): boolean {
     this.isCollapsed = !this.isCollapsed;
-    document.getElementById("hud-panel")?.classList.toggle("hidden", this.isCollapsed);
+    const panel = document.getElementById("hud-panel");
+    if (this.isCollapsed) {
+      panel?.classList.add("hidden");
+    } else {
+      panel?.classList.remove("hidden");
+    }
+    return !this.isCollapsed;
+  }
+
+  public isPanelOpen(): boolean {
+    return !this.isCollapsed;
   }
 
   public toggleWeather(): boolean {

@@ -104,6 +104,17 @@ pub fn serve_http_response(
         return stream.flush();
     }
 
+    if request_line.starts_with("GET /api/config") {
+        let body = crate::config::ServerWebConfig::from_env().to_json();
+        let resp = format!(
+            "HTTP/1.1 200 OK\r\nContent-Type: application/json\r\nContent-Length: {}\r\nConnection: close\r\n\r\n{}",
+            body.len(),
+            body
+        );
+        stream.write_all(resp.as_bytes())?;
+        return stream.flush();
+    }
+
     if request_line.starts_with("GET ") {
         let req_path = request_line
             .split_whitespace()

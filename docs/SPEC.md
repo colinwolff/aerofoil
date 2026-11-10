@@ -169,6 +169,9 @@ and transponder capability by `TransponderCapability`. Airborne position reports
 - The MCP stdio surface formats wire interactions using JSON-RPC 2.0 boundary structures:
   `JsonRpcRequest` (id, method, params), `JsonRpcResponse` (id, result, error), and
   `JsonRpcError` (code, message, data).
+- The HTTP/1.1 web API exposes server runtime configuration via `GET /api/config`, specified by the
+  `ServerWebConfig` boundary model (`receiver_lat`, `receiver_lon`, `receiver_name`, `default_basemap`,
+  `carto_key`, `mapbox_token`, `custom_tile_url`, `units`, `weather_enabled`, `airspace_enabled`).
 - Field definitions, types, optionality, units, and versioning schemas across all egress surfaces
   are specified in [`CONTRACTS.md`](CONTRACTS.md), which serves as the single field-level source of truth.
 

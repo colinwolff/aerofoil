@@ -5,6 +5,7 @@
 //! WebSocket (`/ws`), and health endpoints.
 
 pub mod beast;
+pub mod config;
 pub mod cpr;
 pub mod dispatch;
 pub mod egress;

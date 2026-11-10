@@ -1,12 +1,12 @@
 :root {
-  --bg-dark: #0a0e14;
-  --bg-panel: #111822;
-  --bg-glass: rgba(17, 24, 34, 0.85);
+  --bg-dark: #06090e;
+  --bg-panel: #0e1520;
+  --bg-glass: rgba(14, 21, 32, 0.9);
   --border-color: #1e293b;
-  --border-glass: rgba(56, 189, 248, 0.2);
-  --text-main: #e2e8f0;
+  --border-glass: rgba(56, 189, 248, 0.25);
+  --text-main: #f1f5f9;
   --text-dim: #94a3b8;
-  --radar-green: #00ff66;
+  --radar-green: #10b981;
   --radar-cyan: #00d2ff;
   --radar-amber: #f59e0b;
   --radar-emergency: #ef4444;
@@ -17,7 +17,7 @@
 body.dark-theme {
   background-color: var(--bg-dark);
   color: var(--text-main);
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, monospace;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   display: flex;
   flex-direction: column;
   height: 100vh;
@@ -25,17 +25,14 @@ body.dark-theme {
 }
 
 #header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0.6rem 1.25rem;
+  height: 44px;
   background-color: var(--bg-panel);
   border-bottom: 1px solid var(--border-color);
   z-index: 100;
 }
 
 .toolbar-btn {
-  background: rgba(30, 41, 59, 0.7);
+  background: rgba(30, 41, 59, 0.6);
   border: 1px solid var(--border-color);
   color: var(--text-main);
   padding: 0.25rem 0.65rem;
@@ -61,7 +58,7 @@ body.dark-theme {
   border: 1px solid var(--border-color);
   border-radius: 6px;
   min-width: 175px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.7);
   z-index: 1000;
   display: flex;
   flex-direction: column;
@@ -98,7 +95,7 @@ body.dark-theme {
 #map { height: 100%; width: 100%; background: #06090e; }
 
 .dark-tiles .leaflet-tile-pane {
-  filter: brightness(0.6) invert(1) contrast(3) hue-rotate(200deg) saturate(0.3);
+  filter: brightness(0.65) invert(1) contrast(2.8) hue-rotate(200deg) saturate(0.25);
 }
 
 .splitter-gutter {
@@ -108,38 +105,58 @@ body.dark-theme {
   transition: background 0.15s ease;
   z-index: 60;
   user-select: none;
+  position: relative;
 }
 
-.splitter-gutter:hover, .splitter-gutter.dragging {
-  background: var(--radar-cyan);
+.splitter-gutter:hover, .splitter-gutter.dragging { background: var(--radar-cyan); }
+
+.splitter-gutter.collapsed {
+  width: 10px;
+  background: rgba(30, 41, 59, 0.8);
+  cursor: pointer;
 }
+
+.splitter-gutter.collapsed:hover { background: var(--radar-cyan); }
 
 #table-container {
-  width: 450px;
+  width: 440px;
   min-width: 280px;
   max-width: 70vw;
   background-color: var(--bg-panel);
   display: flex;
   flex-direction: column;
-  padding: 1rem;
+  padding: 0.75rem 1rem;
   z-index: 50;
+  border-left: 1px solid var(--border-color);
 }
 
-#table-container h2 {
-  font-size: 0.95rem;
+.sidebar-header h2 {
+  font-size: 0.85rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   color: var(--text-dim);
-  margin-bottom: 0.75rem;
+  font-weight: 600;
 }
+
+.collapse-icon-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-dim);
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 0 0.25rem;
+}
+
+.collapse-icon-btn:hover { color: var(--radar-cyan); }
 
 .table-scroll { flex: 1; overflow-y: auto; }
 
 table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 0.8rem;
-  font-family: monospace;
+  font-size: 0.78rem;
+  font-family: "JetBrains Mono", Menlo, Monaco, Consolas, monospace;
+  font-variant-numeric: tabular-nums;
   text-align: left;
 }
 
@@ -148,14 +165,18 @@ th {
   top: 0;
   background-color: var(--bg-panel);
   color: var(--text-dim);
-  padding: 0.5rem 0.4rem;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.45rem 0.4rem;
   border-bottom: 1px solid var(--border-color);
 }
 
-td { padding: 0.45rem 0.4rem; border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
+td { padding: 0.4rem 0.4rem; border-bottom: 1px solid rgba(255, 255, 255, 0.04); }
+tbody tr:hover { background: rgba(30, 41, 59, 0.5); }
 
 tr.emergency {
-  background-color: rgba(239, 68, 68, 0.2);
+  background-color: rgba(239, 68, 68, 0.25);
   color: #fca5a5;
   font-weight: bold;
 }

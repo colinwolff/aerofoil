@@ -142,3 +142,43 @@ fn test_egress_static_web_serving() {
 
     server.shutdown();
 }
+
+#[test]
+fn test_egress_api_config() {
+    let tracker = Arc::new(Tracker::new());
+    let Ok(server) = aerofoil_server::EgressServer::start(tracker, 0) else {
+        panic!("failed to start egress server");
+    };
+    let port = server.port();
+
+    let Ok(mut stream) = TcpStream::connect(("127.0.0.1", port)) else {
+        panic!("failed to connect");
+    };
+    assert!(
+        stream
+            .write_all(b"GET /api/config HTTP/1.1\r\nHost: localhost\r\n\r\n")
+            .is_ok()
+    );
+
+    let mut response = String::new();
+    let mut reader = std::io::BufReader::new(stream);
+    let mut line = String::new();
+    while std::io::BufRead::read_line(&mut reader, &mut line).is_ok() && !line.is_empty() {
+        response.push_str(&line);
+        if line == "\r\n" {
+            let mut body = String::new();
+            let _ = std::io::Read::read_to_string(&mut reader, &mut body);
+            response.push_str(&body);
+            break;
+        }
+        line.clear();
+    }
+
+    assert!(response.contains("HTTP/1.1 200 OK"));
+    assert!(response.contains("application/json"));
+    assert!(response.contains("\"receiverLat\":"));
+    assert!(response.contains("\"defaultBasemap\":"));
+    assert!(response.contains("\"units\":"));
+
+    server.shutdown();
+}

@@ -73,7 +73,7 @@ when its crates compile, its tests pass and the tiered gates in `AGENTS.md` §3.
 
 ## 5. Milestone 5 — Production Web Radar, Multi-Topology Containerization & Cloud Deployment (in progress)
 
-> **Target:** `0.1.0-beta.2` (lockstep SemVer) · **Scope:** `ADR-0013`, `ADR-0014`
+> **Target:** `0.1.0-beta.2` (lockstep SemVer) · **Scope:** `ADR-0013`, `ADR-0014`, `ADR-0015`
 
 - [x] Dependency modernization & Leaflet 2.0 sync: audit and upgrade all workspace Cargo crates and npm packages to latest releases; rebase `feat/leaflet-2.0` with OpenStreetMap basemap (`AF-48`).
 - [x] Kinematic trajectory simulation & real-world capture: add multi-waypoint flight loops to `dual_band_hub.beast` and live hub capture to `scripts/download-datasets.sh` (`AF-49`).
@@ -81,6 +81,7 @@ when its crates compile, its tests pass and the tiered gates in `AGENTS.md` §3.
 - [x] Multi-topology API & egress integration: implement unified embedded web UI serving on `aerofoil-server` (`GET /`), alongside decoupled ingress and edge CDN topologies (`AF-52`).
 - [x] Containerization & Kubernetes orchestration: multi-stage distroless Dockerfile, Docker Compose stack, and Kubernetes deployment manifests / Helm chart (`AF-53`).
 - [x] Best-in-class Web Radar UI/UX & Legal Governance: 12-class SVG aircraft icon matrix, pluggable `AirspaceMapEngine` (Leaflet 2.0 / MapLibre GL), TopoJSON FAA airspace boundaries, FAA VFR/IFR chart tiles with fallback, dynamic range rings and azimuths, RainViewer NEXRAD weather radar with scrubber dock, dynamic attribution control, and legal compliance modal (`AF-54`).
+- [x] Multi-tier configuration architecture & avionics glass-cockpit redesign: 3-tier config hierarchy (ENV -> server `GET /api/config` -> UI `localStorage`), collapsible/resizable sidebar, restored glassmorphic modals, and competitive parity matrix in `docs/COMPARISON.md` and `apps/web/DESIGN.md` (`AF-55`).
 
 **Exit criteria:** `0.1.0-beta.2` tagged with lockstep SemVer; `apps/web` operating cleanly under unified Docker container and decoupled Kubernetes Ingress; dynamic multi-waypoint replay verified across TUI and browser.
 

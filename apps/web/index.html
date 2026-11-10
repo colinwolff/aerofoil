@@ -7,10 +7,10 @@
     <link rel="stylesheet" href="./src/style.css" />
   </head>
   <body class="dark-theme">
-    <header id="header" class="flex items-center justify-between px-4 py-2 border-b border-slate-800 bg-slate-900/90 backdrop-blur z-50">
+    <header id="header" class="flex items-center justify-between px-3 py-1.5 border-b border-slate-800 bg-slate-900/90 backdrop-blur z-50">
       <div class="flex items-center gap-3">
         <div class="logo flex items-center gap-2">
-          <span class="badge bg-sky-700 text-white font-bold text-xs px-2 py-0.5 rounded">AEROFOIL</span>
+          <span class="badge bg-sky-700 text-white font-bold text-xs px-2 py-0.5 rounded tracking-wide">AEROFOIL</span>
           <h1 class="text-sm font-semibold text-slate-100 hidden sm:inline">Airspace Radar</h1>
         </div>
         <nav class="toolbar flex items-center gap-1.5 ml-2">
@@ -34,12 +34,13 @@
           <button type="button" id="btn-open-settings" class="toolbar-btn" title="Configure Maps & API Keys">
             <span>⚙</span> Settings
           </button>
-          <button type="button" id="btn-open-legal" class="toolbar-btn" title="Data Sources & Legal Notices">
-            <span>ℹ</span> Legal
+          <button type="button" id="btn-toggle-sidebar" class="toolbar-btn" title="Toggle Telemetry Sidebar (C)">
+            <span>◨</span> Sidebar
           </button>
         </nav>
       </div>
       <div class="metrics flex items-center gap-3 font-mono text-xs">
+        <span id="utc-clock" class="text-slate-400">00:00:00 UTC</span>
         <span id="target-count" class="text-sky-400 font-bold">Targets: 0</span>
         <span id="connection-status" class="status-badge connecting">Connecting...</span>
       </div>
@@ -48,13 +49,14 @@
     <main id="app-container">
       <div id="map-container">
         <div id="map"></div>
-        <div id="layer-drawer-container"></div>
+        <div id="layer-drawer-container" class="layer-drawer-hud"></div>
         <div id="weather-scrubber-dock"></div>
       </div>
       <div id="sidebar-splitter" class="splitter-gutter" title="Drag to resize, double-click to collapse"></div>
       <aside id="table-container">
-        <div class="flex justify-between items-center mb-2">
+        <div class="sidebar-header flex justify-between items-center mb-2 pb-1 border-b border-slate-800">
           <h2>Live Airspace Telemetry</h2>
+          <button type="button" id="btn-collapse-sidebar" class="collapse-icon-btn" title="Collapse sidebar">»</button>
         </div>
         <div class="table-scroll">
           <table id="telemetry-table">

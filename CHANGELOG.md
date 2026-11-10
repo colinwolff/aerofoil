@@ -13,6 +13,7 @@ crates, in the imperative, one line each, with the `storypole` task key in paren
 
 ### Added
 
+- Implement 3-tier configuration hierarchy (ENV -> `GET /api/config` -> UI `localStorage`), collapsible telemetry sidebar, restored glassmorphic modals, and competitive benchmark documentation (`AF-55`).
 - Add Tailwind CSS integration, interactive draggable sidebar splitter, MapConfigModal for API keys and receiver coordinates, and prominent top radar navbar in `apps/web` (`AF-54`).
 - Add multi-stage distroless Dockerfile, Docker Compose stack, and Kubernetes deployment manifests / Helm chart (`AF-53`).
 - Implement unified static web UI serving on `GET /` and embedded fallback dashboard in `aerofoil-server` (`AF-52`).

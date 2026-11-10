@@ -1,4 +1,4 @@
-//! SidebarSplitter — Interactive draggable gutter divider for telemetry sidebar resizing.
+//! SidebarSplitter — Interactive draggable gutter divider and collapse controller.
 
 export class SidebarSplitter {
   private isDragging: boolean = false;
@@ -26,10 +26,14 @@ export class SidebarSplitter {
       }
     }
 
-    splitter.addEventListener("mousedown", (e) => this.onMouseDown(e, sidebar, splitter));
-    splitter.addEventListener("dblclick", () => this.toggleCollapse(sidebar));
+    const wasCollapsed = localStorage.getItem("aerofoil_sidebar_collapsed") === "true";
+    if (wasCollapsed) {
+      this.collapse(sidebar);
+    }
 
-    // Touch support for tablets / touch screens
+    splitter.addEventListener("mousedown", (e) => this.onMouseDown(e, sidebar, splitter));
+    splitter.addEventListener("dblclick", () => this.toggleCollapse());
+
     splitter.addEventListener("touchstart", (e) => {
       if (e.touches.length === 1) {
         this.isDragging = true;
@@ -41,8 +45,7 @@ export class SidebarSplitter {
 
     window.addEventListener("touchmove", (e) => {
       if (!this.isDragging || e.touches.length !== 1) return;
-      const dx = this.startX - e.touches[0].clientX;
-      this.applyWidth(sidebar, this.startWidth + dx);
+      this.applyWidth(sidebar, this.startWidth + (this.startX - e.touches[0].clientX));
     });
 
     window.addEventListener("touchend", () => {
@@ -52,6 +55,32 @@ export class SidebarSplitter {
         localStorage.setItem("aerofoil_sidebar_width", this.currentWidth.toString());
       }
     });
+  }
+
+  public toggleCollapse(): boolean {
+    const sidebar = document.getElementById(this.sidebarId);
+    if (!sidebar) return false;
+    if (this.isCollapsed) {
+      this.expand(sidebar);
+    } else {
+      this.collapse(sidebar);
+    }
+    return !this.isCollapsed;
+  }
+
+  private collapse(sidebar: HTMLElement): void {
+    sidebar.classList.add("hidden");
+    document.getElementById(this.splitterId)?.classList.add("collapsed");
+    this.isCollapsed = true;
+    localStorage.setItem("aerofoil_sidebar_collapsed", "true");
+  }
+
+  private expand(sidebar: HTMLElement): void {
+    sidebar.style.width = `${this.currentWidth}px`;
+    sidebar.classList.remove("hidden");
+    document.getElementById(this.splitterId)?.classList.remove("collapsed");
+    this.isCollapsed = false;
+    localStorage.setItem("aerofoil_sidebar_collapsed", "false");
   }
 
   private onMouseDown(e: MouseEvent, sidebar: HTMLElement, splitter: HTMLElement): void {
@@ -65,8 +94,7 @@ export class SidebarSplitter {
 
     const onMouseMove = (moveEvent: MouseEvent) => {
       if (!this.isDragging) return;
-      const dx = this.startX - moveEvent.clientX;
-      this.applyWidth(sidebar, this.startWidth + dx);
+      this.applyWidth(sidebar, this.startWidth + (this.startX - moveEvent.clientX));
     };
 
     const onMouseUp = () => {
@@ -86,22 +114,9 @@ export class SidebarSplitter {
   }
 
   private applyWidth(sidebar: HTMLElement, newWidth: number): void {
-    const minWidth = 280;
-    const maxWidth = Math.floor(window.innerWidth * 0.7);
-    const clamped = Math.max(minWidth, Math.min(maxWidth, newWidth));
+    const clamped = Math.max(280, Math.min(Math.floor(window.innerWidth * 0.7), newWidth));
     this.currentWidth = clamped;
     sidebar.style.width = `${clamped}px`;
     this.isCollapsed = false;
-  }
-
-  private toggleCollapse(sidebar: HTMLElement): void {
-    if (this.isCollapsed) {
-      sidebar.style.width = `${this.currentWidth}px`;
-      sidebar.classList.remove("hidden");
-      this.isCollapsed = false;
-    } else {
-      sidebar.classList.add("hidden");
-      this.isCollapsed = true;
-    }
   }
 }

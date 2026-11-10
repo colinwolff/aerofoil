@@ -20,10 +20,17 @@ async function initApp(): Promise<void> {
   const mapElement = document.getElementById("map");
   let radarManager: AirspaceRadarManager;
 
-  new SidebarSplitter().init();
+  const splitter = new SidebarSplitter();
+  splitter.init();
+
   const configModal = new MapConfigModal();
   configModal.init();
+
+  const serverUrl = resolveServerUrl();
+  await configModal.loadServerDefaults(serverUrl);
   const config = configModal.getConfig();
+
+  startUtcClock();
 
   if (mapElement) {
     const engine = new LeafletMapEngine();
@@ -42,9 +49,11 @@ async function initApp(): Promise<void> {
     ringsLayer.render();
 
     const vectorMgr = new VectorOverlayManager(engine);
-    vectorMgr.loadLayer("us_classes", "/layers/airspace_us_classes.topojson", "airspaces", VectorOverlayManager.classAirspaceStyle);
-    vectorMgr.loadLayer("special_use", "/layers/special_use_airspace.topojson", "special_use", VectorOverlayManager.specialUseStyle);
-    vectorMgr.loadLayer("fir", "/layers/fir_boundaries.topojson", "fir_boundaries", VectorOverlayManager.firStyle);
+    if (config.airspaceEnabled) {
+      vectorMgr.loadLayer("us_classes", "/layers/airspace_us_classes.topojson", "airspaces", VectorOverlayManager.classAirspaceStyle);
+      vectorMgr.loadLayer("special_use", "/layers/special_use_airspace.topojson", "special_use", VectorOverlayManager.specialUseStyle);
+      vectorMgr.loadLayer("fir", "/layers/fir_boundaries.topojson", "fir_boundaries", VectorOverlayManager.firStyle);
+    }
 
     attributionCtrl.register({ id: "airspace", name: "FAA Airspace Boundaries", html: "FAA AeroNav (17 U.S.C. § 105)", license: "US Public Domain" });
 
@@ -63,13 +72,30 @@ async function initApp(): Promise<void> {
       applyBasemap(engine, basemapMgr, attributionCtrl, newCfg);
     });
 
-    bindToolbar(drawer, configModal, legalModal, engine, configModal);
+    bindToolbar(drawer, configModal, splitter, engine, configModal);
     radarManager = new AirspaceRadarManager(engine);
   } else {
     radarManager = new AirspaceRadarManager(null);
   }
 
-  initStreaming(radarManager);
+  initStreaming(radarManager, serverUrl);
+}
+
+function resolveServerUrl(): string {
+  const params = new URLSearchParams(window.location.search);
+  return params.get("server") || (window.location.origin.includes("localhost") || window.location.origin.includes("127.0.0.1") ? "ws://127.0.0.1:3000" : window.location.origin);
+}
+
+function startUtcClock(): void {
+  const clockEl = document.getElementById("utc-clock");
+  const update = () => {
+    if (clockEl) {
+      const now = new Date();
+      clockEl.textContent = `${now.toISOString().substring(11, 19)} UTC`;
+    }
+  };
+  update();
+  setInterval(update, 1000);
 }
 
 function applyBasemap(engine: LeafletMapEngine, mgr: BaseMapManager, attr: AttributionControl, cfg: any): void {
@@ -85,15 +111,20 @@ function applyBasemap(engine: LeafletMapEngine, mgr: BaseMapManager, attr: Attri
     attr.register({ id: "basemap", name: def.name, html: def.attribution, license: def.license });
     mapEl?.classList.remove("dark-tiles");
   } else {
-    const def = mgr.getActiveBasemap();
+    const def = mgr.setBasemap(cfg.defaultBasemap || "osm_dark");
     mapEl?.classList.toggle("dark-tiles", !!def.isDarkFilterRecommended);
     engine.setBaseTileLayer(def.id, def.url, def.attribution, { maxZoom: def.maxZoom });
     attr.register({ id: "basemap", name: def.name, html: def.attribution, license: def.license });
   }
 }
 
-function bindToolbar(drawer: LayerDrawer, cfgModal: MapConfigModal, legalModal: LegalModal, engine: LeafletMapEngine, cfg: MapConfigModal): void {
-  document.getElementById("btn-toggle-layers")?.addEventListener("click", () => drawer.toggle());
+function bindToolbar(drawer: LayerDrawer, cfgModal: MapConfigModal, splitter: SidebarSplitter, engine: LeafletMapEngine, cfg: MapConfigModal): void {
+  const btnLayers = document.getElementById("btn-toggle-layers");
+  btnLayers?.addEventListener("click", () => {
+    const open = drawer.toggle();
+    btnLayers.classList.toggle("active", open);
+  });
+
   const btnWeather = document.getElementById("btn-toggle-weather");
   btnWeather?.addEventListener("click", () => {
     const active = drawer.toggleWeather();
@@ -120,12 +151,13 @@ function bindToolbar(drawer: LayerDrawer, cfgModal: MapConfigModal, legalModal: 
   });
 
   document.getElementById("btn-open-settings")?.addEventListener("click", () => cfgModal.show());
-  document.getElementById("btn-open-legal")?.addEventListener("click", () => legalModal.show());
+
+  const toggleSidebar = () => splitter.toggleCollapse();
+  document.getElementById("btn-toggle-sidebar")?.addEventListener("click", toggleSidebar);
+  document.getElementById("btn-collapse-sidebar")?.addEventListener("click", toggleSidebar);
 }
 
-function initStreaming(radarManager: AirspaceRadarManager): void {
-  const params = new URLSearchParams(window.location.search);
-  const serverUrl = params.get("server") || (window.location.origin.includes("localhost") || window.location.origin.includes("127.0.0.1") ? "ws://127.0.0.1:3000" : window.location.origin);
+function initStreaming(radarManager: AirspaceRadarManager, serverUrl: string): void {
   const client = new AerofoilClient({ url: serverUrl });
   const statusEl = document.getElementById("connection-status");
 
