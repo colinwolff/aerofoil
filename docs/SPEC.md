@@ -152,6 +152,8 @@ and transponder capability by `TransponderCapability`. Airborne position reports
 | Beast | `0x1A` escape, type byte, 6-byte MLAT timestamp, payload | Never re-escaped after framing; timestamp is receiver-local and opaque to consumers |
 | AVR | `*<hex>;` ASCII, 14 or 28 hex chars | Malformed hex is skipped, never repaired |
 | JSON-lines | one object per line, `schema` + `version` + typed payload | Additive fields only within a major version; consumers ignore unknown keys |
+| SSE | `text/event-stream` over HTTP/1.1, JSON payload | Reconnect with `Last-Event-ID`; heartbeats sent every 15s |
+| WebSocket | `ws://` RFC 6455 framing, JSON payload | Ping/pong keepalive; subscription filter messages supported |
 | gRPC | protobuf `AerofoilService` streams | Enum values are append-only; field numbers are never reused |
 | MCP | JSON-RPC 2.0 over stdio, tools `get_airspace_summary`, `get_track`, `find_closest` | stdout carries protocol frames only; all logging goes to stderr |
 

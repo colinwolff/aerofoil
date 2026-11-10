@@ -13,6 +13,7 @@ crates, in the imperative, one line each, with the `storypole` task key in paren
 
 ### Changed
 
+- Accept ADR-0006 choosing SSE plus WebSocket for server egress transport (`AF-18`).
 - Accept ADR-0005 choosing striped parking_lot::RwLock shards for aerofoil-tracker (`AF-17`).
 
 ### Added
