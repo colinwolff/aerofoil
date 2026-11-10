@@ -17,6 +17,7 @@ crates, in the imperative, one line each, with the `storypole` task key in paren
 
 ### Changed
 
+- Upgrade workspace Cargo dependencies, bump frontend packages to Vite v8, TypeScript v7, and Leaflet 2.0 beta (`AF-48`).
 - Align architectural decision records with chalkline MADR schema and monotonic date ordering (`AF-47`).
 
 ## [0.1.0-beta.1] - 2026-11-10
