@@ -50,9 +50,8 @@ enforce_public_type_contracts = true
 enforce_crate_topology = true
 # No document may exceed 500 lines without being split.
 enforce_file_loc_limits = true
-# No CLI crate exists yet (docs/ROADMAP.md §3); flip to true when `aerofoil-cli` lands so
-# every subcommand and long flag must be documented in README.md.
-enforce_readme_cli_flags = false
+# Every subcommand and long flag in aerofoil-cli must be documented in README.md.
+enforce_readme_cli_flags = true
 # CHANGELOG.md must keep a live `## [Unreleased]` heading.
 enforce_changelog_unreleased = true
 # CONTRIBUTING.md must state the toolchain version declared by the workspace.

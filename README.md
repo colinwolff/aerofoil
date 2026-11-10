@@ -46,7 +46,7 @@ cargo bench --bench decode_throughput
 Stream demodulated Beast frames directly through Unix pipes:
 ```bash
 # Pipe from a remote Beast port (e.g. dump1090/readsb) directly into aerofoil-cli
-nc localhost 30005 | aerofoil-cli --format beast --filter-altitude ">10000" --output json | jq .
+nc localhost 30005 | aerofoil-cli --format beast --filter-altitude ">10000" --filter-squawk "7700" --output json | jq .
 ```
 
 ---
