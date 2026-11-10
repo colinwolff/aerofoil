@@ -1,7 +1,10 @@
+---
+status: accepted
+date: 2026-11-09
+---
+
 # 7. Reserve the aerofoil namespaces from the maintainer account
 
-* Status: Accepted
-* Date: 2026-11-04
 * Deciders: Colin Wolff
 * Related: `docs/ROADMAP.md` §0, `Cargo.toml` `repository`, `ADR-0008`, `storypole` `AF-20`, `AF-21`
 

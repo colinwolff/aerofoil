@@ -1,7 +1,10 @@
+---
+status: accepted
+date: 2026-11-04
+---
+
 # 3. Dual-Tier Error Correction Strategy for 1090ES Parity
 
-* Status: Accepted
-* Date: 2026-11-04
 
 ## Context and Problem Statement
 1090ES uses a 24-bit CRC that is XORed with the aircraft's 24-bit ICAO address in DF11 and DF17 messages. In weak signal or multipath environments, single-bit errors cause frames to fail parity check and be dropped, losing critical situational awareness.

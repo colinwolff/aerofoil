@@ -1,7 +1,10 @@
+---
+status: accepted
+date: 2026-11-10
+---
+
 # 13. Production Web Radar Architecture, Multi-Topology API Delivery, and Containerization Strategy
 
-* Status: Accepted
-* Date: 2026-11-10
 * Deciders: Colin Wolff
 * Related: `ADR-0006`, `ADR-0010`, `ADR-0012`, `docs/ARCHITECTURE.md` §4
 

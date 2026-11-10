@@ -1,7 +1,10 @@
+---
+status: accepted
+date: 2026-11-04
+---
+
 # 1. Use Cargo Virtual Workspace and Zero-Allocation Core Decoders
 
-* Status: Accepted
-* Date: 2026-11-04
 
 ## Context and Problem Statement
 Decoding real-time ADS-B and UAT broadcasts requires handling high throughput (thousands of frames/sec in dense airspace) on constrained devices (Raspberry Pi, microcontrollers, embedded SDR nodes) without CPU starvation or unpredictable latency. How should the project structure core parsing logic across protocols while ensuring maximum performance and composability?

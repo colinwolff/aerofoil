@@ -1,7 +1,10 @@
+---
+status: accepted
+date: 2026-11-09
+---
+
 # 6. Choose the server egress transport surface
 
-* Status: Accepted
-* Date: 2026-11-09
 * Deciders: Colin Wolff
 * Related: `docs/SPEC.md` §5, `docs/ARCHITECTURE.md` §3, `docs/ROADMAP.md` §4
 

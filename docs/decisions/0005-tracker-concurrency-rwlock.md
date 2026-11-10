@@ -1,7 +1,10 @@
+---
+status: accepted
+date: 2026-11-09
+---
+
 # 5. Choose the tracker concurrency model
 
-* Status: Accepted
-* Date: 2026-11-09
 * Deciders: Colin Wolff
 * Related: `ADR-0004`, `docs/SPEC.md` Invariant 10, `docs/ARCHITECTURE.md` §2.3
 

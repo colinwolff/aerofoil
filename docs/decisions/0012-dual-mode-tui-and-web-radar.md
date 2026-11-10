@@ -1,7 +1,10 @@
+---
+status: accepted
+date: 2026-11-10
+---
+
 # 12. Dual-mode terminal UI (`aerofoil-tui`) and hybrid Bun/embedded web radar architecture
 
-* Status: Accepted
-* Date: 2026-11-10
 * Deciders: Colin Wolff
 * Related: `ADR-0006`, `ADR-0010`, `ADR-0011`, `docs/ARCHITECTURE.md` §4
 

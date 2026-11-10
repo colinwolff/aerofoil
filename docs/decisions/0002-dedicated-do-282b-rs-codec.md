@@ -1,7 +1,10 @@
+---
+status: accepted
+date: 2026-11-04
+---
+
 # 2. Implement Dedicated DO-282B Reed-Solomon Codec
 
-* Status: Accepted
-* Date: 2026-11-04
 
 ## Context and Problem Statement
 978 MHz UAT DO-282B relies on Reed-Solomon FEC: $RS(48, 34)$ for Downlink and $RS(92, 72)$ for Uplink over $GF(2^8)$. Existing general-purpose RS crates in Rust either:

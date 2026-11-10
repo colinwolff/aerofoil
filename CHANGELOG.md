@@ -11,6 +11,14 @@ crates, in the imperative, one line each, with the `storypole` task key in paren
 
 ## [Unreleased]
 
+### Added
+
+- Add MADR 0014 establishing pluggable `AirspaceMapEngine`, 12-class SVG icon matrix, and map overlay architecture (`AF-54`).
+
+### Changed
+
+- Align architectural decision records with chalkline MADR schema and monotonic date ordering (`AF-47`).
+
 ## [0.1.0-beta.1] - 2026-11-10
 
 ### Added

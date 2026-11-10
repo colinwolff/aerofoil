@@ -17,7 +17,7 @@ Built according to the Unix philosophy: modular components, strictly typed primi
 | **`aerofoil-common`** | `crates/common` | Core aircraft state models, CPR coordinate transforms, units, and shared decoder traits. `no_std` compatible. |
 | **`aerofoil-1090`** | `crates/1090` | Mode S / 1090ES frame parser: table-driven & SIMD CRC-24 parity division, address-filtered burst error correction. Demodulation lives outside the decoders (`ADR-0010`). |
 | **`aerofoil-978`** | `crates/978` | DO-282B UAT frame parser, $RS(48, 34)$ and $RS(92, 72)$ Reed-Solomon FEC, de-interleaver, and FIS-B/TIS-B payload disassembly. |
-| **`aerofoil-tracker`** | `crates/tracker` | Multi-band spatial tracking engine, ADS-R deduplication, and track state lifecycle manager (concurrency model still open: [ADR-0005](./docs/decisions/ADR-0005.md)). |
+| **`aerofoil-tracker`** | `crates/tracker` | Multi-band spatial tracking engine, ADS-R deduplication, and track state lifecycle manager ([0005](./docs/decisions/0005-tracker-concurrency-rwlock.md)). |
 | **`aerofoil-server`** | `crates/server` | High-throughput streaming daemon (Beast binary, raw AVR, JSON-lines, SSE, and gRPC feeds). |
 | **`aerofoil-cli`** | `apps/cli` | Composable Unix CLI for piping raw byte feeds to stdout/JSON (`cat feed.bin | aerofoil-cli | jq`). |
 | **`aerofoil-mcp`** | `apps/mcp` | Model Context Protocol (MCP) server enabling LLM agents to inspect airspace state, query local tracks, and monitor alerts. |

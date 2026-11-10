@@ -1,7 +1,10 @@
+---
+status: accepted
+date: 2026-11-04
+---
+
 # 4. Inject an `AddressFilter` trait instead of reaching up into the tracker
 
-* Status: Accepted
-* Date: 2026-11-04
 * Deciders: Colin Wolff
 * Related: `ADR-0003`, `docs/SPEC.md` Invariant 5, `docs/ARCHITECTURE.md` §2.1–2.3
 

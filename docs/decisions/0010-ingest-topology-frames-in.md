@@ -1,7 +1,10 @@
+---
+status: accepted
+date: 2026-11-09
+---
+
 # 10. Ingest topology: frames in, one fusion process, demodulation outside the decoders
 
-* Status: Accepted
-* Date: 2026-11-04
 * Deciders: Colin Wolff
 * Related: `ADR-0003`, `ADR-0004`, `ADR-0009`, `docs/SPEC.md` Invariant 10, `docs/ARCHITECTURE.md` §3
 

@@ -1,7 +1,10 @@
+---
+status: proposed
+date: 2026-11-09
+---
+
 # 8. Choose the long-term organisation handle
 
-* Status: Proposed
-* Date: 2026-11-04
 * Deciders: Colin Wolff
 * Related: `ADR-0007`, `storypole` `AF-21`
 

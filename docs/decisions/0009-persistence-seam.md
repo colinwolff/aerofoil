@@ -1,7 +1,10 @@
+---
+status: accepted
+date: 2026-11-09
+---
+
 # 9. Choose the persistence seam, not the storage engine
 
-* Status: Accepted
-* Date: 2026-11-04
 * Deciders: Colin Wolff
 * Related: `ADR-0005`, `docs/ROADMAP.md` M3/M4/H3, `docs/SPEC.md` §5, `storypole` `AF-24`
 

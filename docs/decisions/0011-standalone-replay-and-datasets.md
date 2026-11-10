@@ -1,7 +1,10 @@
+---
+status: accepted
+date: 2026-11-10
+---
+
 # 11. Dedicated standalone replay tool (`aerofoil-replay`) and multi-tier datasets
 
-* Status: Accepted
-* Date: 2026-11-10
 * Deciders: Colin Wolff
 * Related: `ADR-0009`, `ADR-0010`, `docs/SPEC.md` §5, `docs/ROADMAP.md` M4
 
