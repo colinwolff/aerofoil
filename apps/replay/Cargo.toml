@@ -13,6 +13,7 @@ description = "Standalone multi-tier surveillance and RF sample replay engine"
 clap = { version = "4.5", features = ["derive"] }
 
 [dev-dependencies]
+aerofoil-common = { path = "../../crates/common", version = "0.1.0-beta.1" }
 aerofoil-1090 = { path = "../../crates/1090", version = "0.1.0-beta.1" }
 aerofoil-978 = { path = "../../crates/978", version = "0.1.0-beta.1" }
 criterion = "0.8"
