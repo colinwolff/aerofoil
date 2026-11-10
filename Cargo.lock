@@ -56,6 +56,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "aerofoil-replay"
+version = "0.1.0-beta.1"
+dependencies = [
+ "aerofoil-1090",
+ "aerofoil-978",
+ "aerofoil-common",
+ "aerofoil-persistence",
+ "clap",
+ "serde",
+ "serde_json",
+]
+
+[[package]]
 name = "aerofoil-sdr"
 version = "0.1.0-beta.1"
 
