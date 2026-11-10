@@ -17,6 +17,7 @@ allowed_crates = [
     "aerofoil-tracker",
     "aerofoil-server",
     "aerofoil-cli",
+    "aerofoil-tui",
     "aerofoil-mcp",
     "aerofoil-sdr",
     "aerofoil-persistence",
@@ -34,4 +35,5 @@ verification_commands = [
     ["aerofoil-978", "cargo nextest run -p aerofoil-978"],
     ["aerofoil-tracker", "cargo nextest run -p aerofoil-tracker"],
     ["aerofoil-cli", "cargo nextest run -p aerofoil-cli"],
+    ["aerofoil-tui", "cargo nextest run -p aerofoil-tui"],
 ]

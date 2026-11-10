@@ -1,0 +1,19 @@
+[package]
+name = "aerofoil-tui"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+description = "Terminal UI dashboard for aerofoil with Ratatui PPI radar and telemetry tables"
+
+[dependencies]
+aerofoil-common = { path = "../../crates/common", version = "0.1.0" }
+aerofoil-tracker = { path = "../../crates/tracker", version = "0.1.0" }
+crossterm = "0.29"
+ratatui = "0.30"
+
+[lints]
+workspace = true

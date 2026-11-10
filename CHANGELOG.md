@@ -17,6 +17,7 @@ crates, in the imperative, one line each, with the `storypole` task key in paren
 
 ### Added
 
+- Implement `aerofoil-tui` Terminal UI dashboard with Ratatui PPI radar and telemetry tables (`AF-37`).
 - Implement `aerofoil-cli` with Beast and AVR stream parsing on stdin and JSON-lines on stdout (`AF-36`).
 - Implement dual-band ADS-R cross-band deduplication in `aerofoil-tracker` (`AF-35`).
 - Implement monotonic per-field target merging and TTL expiry lifecycle in `aerofoil-tracker` (`AF-34`).
