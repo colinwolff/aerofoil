@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>aerofoil — Live Airspace Web Radar</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="./src/style.css" />
+  </head>
+  <body class="dark-theme">
+    <header id="header">
+      <div class="logo">
+        <span class="badge">AEROFOIL</span>
+        <h1>Airspace PPI Radar</h1>
+      </div>
+      <div class="metrics">
+        <span id="target-count">Targets: 0</span>
+        <span id="connection-status" class="status-badge connecting">Connecting...</span>
+      </div>
+    </header>
+
+    <main id="app-container">
+      <div id="map-container">
+        <div id="map"></div>
+      </div>
+      <aside id="table-container">
+        <h2>Live Airspace Telemetry</h2>
+        <div class="table-scroll">
+          <table id="telemetry-table">
+            <thead>
+              <tr>
+                <th>Address</th>
+                <th>Callsign</th>
+                <th>Altitude</th>
+                <th>Speed</th>
+                <th>Heading</th>
+                <th>Squawk</th>
+                <th>Source</th>
+              </tr>
+            </thead>
+            <tbody id="telemetry-body">
+              <tr class="empty-row"><td colspan="7">Awaiting surveillance broadcasts...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </aside>
+    </main>
+
+    <script type="module" src="./src/main.ts"></script>
+  </body>
+</html>

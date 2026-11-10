@@ -18,6 +18,7 @@ crates, in the imperative, one line each, with the `storypole` task key in paren
 
 ### Added
 
+- Implement single-page web radar demo in `examples/web-radar` using Bun, Vite, and Leaflet (`AF-45`).
 - Implement TypeScript SDK in `sdk/` using Bun and `ts-rs` type definitions (`AF-44`).
 - Implement dual-mode Beast TCP and WebSocket streaming in `aerofoil-tui` (`AF-43`).
 - Scaffold and implement standalone `aerofoil-replay` application in `apps/replay` (`AF-42`).
