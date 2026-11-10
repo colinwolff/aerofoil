@@ -18,6 +18,7 @@ crates, in the imperative, one line each, with the `storypole` task key in paren
 
 ### Added
 
+- Add `docs/CONTRACTS.md` and wire-contract verification gate for egress surfaces (`AF-23`).
 - Implement `aerofoil-mcp` Model Context Protocol server over stdio (`AF-40`).
 - Implement SSE and WebSocket egress streaming in `aerofoil-server` (`AF-39`).
 - Scaffold `aerofoil-server` with dual-source TCP Beast ingest on 30005 and 30978 (`AF-38`).

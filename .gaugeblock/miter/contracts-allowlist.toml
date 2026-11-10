@@ -1,0 +1,5 @@
+# Declared non-mirror allowlist for miter contracts verification.
+# Format: tables defining deliberate exceptions where types are not mirrored across languages.
+
+[contracts]
+version = 1
