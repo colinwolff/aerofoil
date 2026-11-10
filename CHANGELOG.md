@@ -17,6 +17,7 @@ crates, in the imperative, one line each, with the `storypole` task key in paren
 
 ### Added
 
+- Add `aerofoil-persistence` with bounded drop-oldest `RecordSink` and self-describing JSONL replay format (`AF-24`).
 - Implement `aerofoil-tui` Terminal UI dashboard with Ratatui PPI radar and telemetry tables (`AF-37`).
 - Implement `aerofoil-cli` with Beast and AVR stream parsing on stdin and JSON-lines on stdout (`AF-36`).
 - Implement dual-band ADS-R cross-band deduplication in `aerofoil-tracker` (`AF-35`).

@@ -37,6 +37,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "aerofoil-persistence"
+version = "0.1.0"
+dependencies = [
+ "aerofoil-common",
+ "serde",
+ "serde_json",
+]
+
+[[package]]
 name = "aerofoil-tracker"
 version = "0.1.0"
 dependencies = [

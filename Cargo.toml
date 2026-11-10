@@ -12,6 +12,7 @@ members = [
     "crates/1090",
     "crates/978",
     "crates/tracker",
+    "crates/persistence",
     "apps/cli",
     "apps/tui",
 ]
