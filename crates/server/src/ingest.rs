@@ -15,6 +15,7 @@ use aerofoil_tracker::Tracker;
 
 use crate::{
     beast::BeastReader,
+    cpr::CprResolver,
     dispatch::{dispatch_978, dispatch_1090},
     metrics::IngestMetrics,
     source::BandSource,
@@ -25,6 +26,7 @@ use crate::{
 pub struct DualBandIngest {
     tracker: Arc<Tracker>,
     metrics: Arc<IngestMetrics>,
+    cpr: Arc<CprResolver>,
     shutdown: Arc<AtomicBool>,
     port_1090: u16,
     port_978: u16,
@@ -48,11 +50,13 @@ impl DualBandIngest {
 
         let shutdown = Arc::new(AtomicBool::new(false));
         let metrics = Arc::new(IngestMetrics::new());
+        let cpr = Arc::new(CprResolver::new());
 
         let h_1090 = spawn_listener(
             listener_1090,
             Arc::clone(&tracker),
             Arc::clone(&metrics),
+            Arc::clone(&cpr),
             Arc::clone(&shutdown),
             true,
         );
@@ -61,6 +65,7 @@ impl DualBandIngest {
             listener_978,
             Arc::clone(&tracker),
             Arc::clone(&metrics),
+            Arc::clone(&cpr),
             Arc::clone(&shutdown),
             false,
         );
@@ -68,6 +73,7 @@ impl DualBandIngest {
         Ok(Self {
             tracker,
             metrics,
+            cpr,
             shutdown,
             port_1090: bound_1090,
             port_978: bound_978,
@@ -99,6 +105,12 @@ impl DualBandIngest {
         &self.tracker
     }
 
+    /// Reference to the CPR coordinate resolver.
+    #[must_use]
+    pub fn cpr(&self) -> &Arc<CprResolver> {
+        &self.cpr
+    }
+
     /// Shuts down all listener and client connection threads.
     pub fn shutdown(&self) {
         self.shutdown.store(true, Ordering::SeqCst);
@@ -118,6 +130,7 @@ fn spawn_listener(
     listener: TcpListener,
     tracker: Arc<Tracker>,
     metrics: Arc<IngestMetrics>,
+    cpr: Arc<CprResolver>,
     shutdown: Arc<AtomicBool>,
     is_1090: bool,
 ) -> JoinHandle<()> {
@@ -127,9 +140,10 @@ fn spawn_listener(
                 Ok((stream, _)) => {
                     let t = Arc::clone(&tracker);
                     let m = Arc::clone(&metrics);
+                    let c = Arc::clone(&cpr);
                     let s = Arc::clone(&shutdown);
                     thread::spawn(move || {
-                        handle_client(stream, t, m, s, is_1090);
+                        handle_client(stream, t, m, c, s, is_1090);
                     });
                 }
                 Err(ref e) if e.kind() == io::ErrorKind::WouldBlock => {
@@ -145,6 +159,7 @@ fn handle_client(
     stream: TcpStream,
     tracker: Arc<Tracker>,
     metrics: Arc<IngestMetrics>,
+    cpr: Arc<CprResolver>,
     shutdown: Arc<AtomicBool>,
     is_1090: bool,
 ) {
@@ -156,7 +171,7 @@ fn handle_client(
             Ok(Some(msg)) => {
                 let payload = msg.payload_slice();
                 if is_1090 {
-                    dispatch_1090(payload, &tracker, &metrics);
+                    dispatch_1090(payload, &tracker, &metrics, &cpr);
                 } else {
                     dispatch_978(payload, &tracker, &metrics);
                 }

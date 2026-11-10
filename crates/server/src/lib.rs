@@ -5,6 +5,7 @@
 //! WebSocket (`/ws`), and health endpoints.
 
 pub mod beast;
+pub mod cpr;
 pub mod dispatch;
 pub mod egress;
 pub mod ingest;
@@ -15,6 +16,7 @@ pub mod sse;
 pub mod ws;
 
 pub use beast::{BeastMessage, BeastReader};
+pub use cpr::CprResolver;
 pub use dispatch::{dispatch_978, dispatch_1090};
 pub use egress::{DEFAULT_EGRESS_PORT, EgressServer};
 pub use ingest::DualBandIngest;

@@ -9,10 +9,10 @@ use aerofoil_1090::{
 use aerofoil_common::{AddressType, Heading, ReceptionSource, TransponderSource};
 use aerofoil_tracker::{TargetUpdate, Tracker};
 
-use crate::metrics::IngestMetrics;
+use crate::{cpr::CprResolver, metrics::IngestMetrics};
 
 /// Dispatches a raw Mode S 1090 MHz frame into the shared tracker.
-pub fn dispatch_1090(raw: &[u8], tracker: &Tracker, metrics: &IngestMetrics) {
+pub fn dispatch_1090(raw: &[u8], tracker: &Tracker, metrics: &IngestMetrics, cpr: &CprResolver) {
     metrics.inc_frames(true);
     metrics.add_bytes(true, raw.len() as u64);
 
@@ -34,6 +34,15 @@ pub fn dispatch_1090(raw: &[u8], tracker: &Tracker, metrics: &IngestMetrics) {
                 EsPayload::AirbornePosition(pos) => {
                     if let Some(alt) = pos.altitude {
                         u = u.with_altitude(alt);
+                    }
+                    if let Some(position) = cpr.resolve(
+                        es.icao_address,
+                        pos.cpr_odd,
+                        pos.lat_cpr,
+                        pos.lon_cpr,
+                        1_000_000,
+                    ) {
+                        u = u.with_position(position);
                     }
                 }
                 EsPayload::Identification(id) => {
