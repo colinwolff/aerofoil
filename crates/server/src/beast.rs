@@ -39,13 +39,17 @@ impl<R: Read> BeastReader<R> {
 
     fn read_unescaped_byte(&mut self) -> io::Result<Option<u8>> {
         let mut b = [0u8; 1];
-        if self.reader.read_exact(&mut b).is_err() {
-            return Ok(None);
+        match self.reader.read_exact(&mut b) {
+            Ok(()) => {}
+            Err(e) if e.kind() == io::ErrorKind::UnexpectedEof => return Ok(None),
+            Err(e) => return Err(e),
         }
         if b[0] == 0x1A {
             let mut next = [0u8; 1];
-            if self.reader.read_exact(&mut next).is_err() {
-                return Ok(None);
+            match self.reader.read_exact(&mut next) {
+                Ok(()) => {}
+                Err(e) if e.kind() == io::ErrorKind::UnexpectedEof => return Ok(None),
+                Err(e) => return Err(e),
             }
             if next[0] == 0x1A {
                 return Ok(Some(0x1A));
@@ -59,8 +63,10 @@ impl<R: Read> BeastReader<R> {
     pub fn next_message(&mut self) -> io::Result<Option<BeastMessage>> {
         let mut b = [0u8; 1];
         loop {
-            if self.reader.read_exact(&mut b).is_err() {
-                return Ok(None);
+            match self.reader.read_exact(&mut b) {
+                Ok(()) => {}
+                Err(e) if e.kind() == io::ErrorKind::UnexpectedEof => return Ok(None),
+                Err(e) => return Err(e),
             }
             if b[0] != 0x1A {
                 continue;

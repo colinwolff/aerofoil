@@ -36,25 +36,54 @@ impl ReplaySink for StdoutSink {
 /// TCP client sink connecting to an active ADS-B server or ingest socket.
 #[derive(Debug)]
 pub struct TcpClientSink {
-    stream: TcpStream,
+    addr: String,
+    stream: Option<TcpStream>,
 }
 
 impl TcpClientSink {
     /// Connects to a remote TCP endpoint (e.g. `127.0.0.1:30005`).
     pub fn connect(addr: &str) -> io::Result<Self> {
         let stream = TcpStream::connect(addr)?;
-        Ok(Self { stream })
+        Ok(Self {
+            addr: addr.to_string(),
+            stream: Some(stream),
+        })
+    }
+
+    fn ensure_connected(&mut self) -> io::Result<&mut TcpStream> {
+        if self.stream.is_none() {
+            let s = TcpStream::connect(&self.addr)?;
+            self.stream = Some(s);
+        }
+        self.stream
+            .as_mut()
+            .ok_or_else(|| io::Error::other("unconnected socket"))
     }
 }
 
 impl ReplaySink for TcpClientSink {
     fn emit(&mut self, bytes: &[u8]) -> io::Result<()> {
-        self.stream.write_all(bytes)?;
-        self.stream.flush()
+        let stream = self.ensure_connected()?;
+        if let Err(e) = stream.write_all(bytes).and_then(|()| stream.flush()) {
+            if e.kind() == io::ErrorKind::BrokenPipe
+                || e.kind() == io::ErrorKind::ConnectionReset
+                || e.kind() == io::ErrorKind::ConnectionAborted
+            {
+                self.stream = None;
+                let stream = self.ensure_connected()?;
+                stream.write_all(bytes)?;
+                return stream.flush();
+            }
+            return Err(e);
+        }
+        Ok(())
     }
 
     fn flush(&mut self) -> io::Result<()> {
-        self.stream.flush()
+        if let Some(stream) = self.stream.as_mut() {
+            stream.flush()?;
+        }
+        Ok(())
     }
 }
 
