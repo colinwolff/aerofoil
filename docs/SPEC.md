@@ -166,6 +166,9 @@ and transponder capability by `TransponderCapability`. Airborne position reports
   to a record bumps `version`; an additive change does not.
 - No wire format carries NaN, infinity or `-0.0`: absent numeric fields are omitted, never encoded
   as sentinel values.
+- The MCP stdio surface formats wire interactions using JSON-RPC 2.0 boundary structures:
+  `JsonRpcRequest` (id, method, params), `JsonRpcResponse` (id, result, error), and
+  `JsonRpcError` (code, message, data).
 
 ---
 
