@@ -85,6 +85,10 @@ That keeps the decoders `no_std`, allocation-free and testable without hardware 
 * **Target Disambiguation:** Tracks are keyed by `(AddressType, u32)` to isolate standard ICAO transponders from anonymous UAT self-assigned addresses.
 * **ADS-R Cross-Band Deduplication:** Prioritizes direct reception over re-broadcast targets within a spatial-temporal window ($\Delta t \le 1.0\text{s}, \Delta d \le 0.001^\circ$).
 
+### 2.4 Recording & Persistence (`aerofoil-persistence`)
+* **Data Capture & Replay:** Self-describing JSONL sink and deterministic replay reader for raw surveillance frames across 1090 MHz and 978 MHz bands.
+* **Decoupled Architecture:** Bounded drop-oldest worker queue isolating the frame decode path from disk I/O, maintaining zero-allocation hot paths.
+
 ---
 
 ## 3. Concurrency & Dataflow Model

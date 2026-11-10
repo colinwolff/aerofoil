@@ -41,6 +41,11 @@ A change that violates a clause here is a defect regardless of which crate it la
 | `DecodeError::UnsupportedFormat` | Well-formed frame carrying a DF/type the build does not implement | Discard silently; never guess semantics |
 | `DecodeError::InvalidField` | Field value outside the specified domain (e.g. altitude code `0`, CPR `NL` = 0) | Discard; do not clamp into a plausible value |
 
+Persistence and capture boundary operations report failure via typed errors:
+- `HexError`: Raised when decoding raw hex byte representations from recorded payloads (odd length, invalid hex characters).
+- `ReplayError`: Raised during frame capture stream replay on I/O failure, corrupt JSON-lines framing, or malformed recorded frame structures.
+- `SinkError`: Raised on bounded worker channel exhaustion or I/O write failures in capture sinks.
+
 ---
 
 ## 2. 1090ES Frame Contracts
