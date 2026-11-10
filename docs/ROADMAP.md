@@ -71,7 +71,22 @@ when its crates compile, its tests pass and the tiered gates in `AGENTS.md` §3.
 
 ---
 
-## 5. Horizons (post-`0.1.0`)
+## 5. Milestone 5 — Production Web Radar, Multi-Topology Containerization & Cloud Deployment (in progress)
+
+> **Target:** `0.2.0-beta.2` (lockstep SemVer) · **Scope:** `ADR-0013`
+
+- [ ] Dependency modernization & Leaflet 2.0 sync: audit and upgrade all workspace Cargo crates and npm packages to latest releases; rebase `feat/leaflet-2.0` with OpenStreetMap basemap (`AF-48`).
+- [ ] Kinematic trajectory simulation & real-world capture: add multi-waypoint flight loops to `dual_band_hub.beast` and live hub capture to `scripts/download-datasets.sh` (`AF-49`).
+- [ ] Application promotion: migrate `examples/web-radar` to first-class workspace application `apps/web` (`@aerofoil/web-radar`) consuming `@aerofoil/sdk` (`AF-51`).
+- [ ] Multi-topology API & egress integration: implement unified embedded web UI serving on `aerofoil-server` (`GET /`), alongside decoupled ingress and edge CDN topologies (`AF-52`).
+- [ ] Containerization & Kubernetes orchestration: multi-stage distroless Dockerfile, Docker Compose stack, and Kubernetes deployment manifests / Helm chart (`AF-53`).
+- [ ] Best-in-class Web Radar UI/UX: full interactive radar interface with altitude filtering, historical breadcrumb trails, track details drawer, and audio alert system (scoped under handoff prompt).
+
+**Exit criteria:** `0.2.0-beta.2` tagged with lockstep SemVer; `apps/web` operating cleanly under unified Docker container and decoupled Kubernetes Ingress; dynamic multi-waypoint replay verified across TUI and browser.
+
+---
+
+## 6. Horizons (post-`0.2.0`)
 
 - **H1 — Hardening:** fuzzing (`cargo-fuzz`) over every decoder entry point, property tests relating the table-driven and CLMUL CRC paths, and a published throughput regression budget.
 - **H2 — Breadth:** uplink `RS(92, 72)` and FIS-B APDU disassembly, UAT uplink scheduling, multi-band time-synchronised fusion.

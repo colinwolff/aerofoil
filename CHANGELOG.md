@@ -11,22 +11,13 @@ crates, in the imperative, one line each, with the `storypole` task key in paren
 
 ## [Unreleased]
 
+## [0.1.0-beta.1] - 2026-11-10
+
 ### Added
 
 - Add `CprResolver` to `aerofoil-server` and `aerofoil-tui` to resolve 1090ES CPR airborne positions into geographic coordinates.
 - Add multi-aircraft scenario fixture with 7 Mode S targets and UAT downlink to `datasets/fixtures/dual_band_hub.beast`.
 - Add `examples/web-radar/README.md` documenting startup, telemetry streaming, and tile configuration.
-
-### Changed
-
-- Support `--sink` as alias for `--tcp`, and `--file` as alias for `--input` in `aerofoil-replay`.
-- Switch web radar default basemap from CartoDB to OpenStreetMap with CSS dark filter for zero-API-key operation.
-- Ignore `node_modules/` and `dist/` across frontend directories in `.gitignore`.
-
-## [0.1.0-beta.1] - 2026-11-10
-
-### Added
-
 - Add end-to-end dataset throughput macrobenchmarks and Criterion microbenchmarks across 1090 and 978 (`AF-46`).
 - Implement single-page web radar demo in `examples/web-radar` using Bun, Vite, and Leaflet (`AF-45`).
 - Implement TypeScript SDK in `sdk/` using Bun and `ts-rs` type definitions (`AF-44`).
@@ -112,6 +103,9 @@ crates, in the imperative, one line each, with the `storypole` task key in paren
 
 ### Changed
 
+- Support `--sink` as alias for `--tcp`, and `--file` as alias for `--input` in `aerofoil-replay`.
+- Switch web radar default basemap from CartoDB to OpenStreetMap with CSS dark filter for zero-API-key operation.
+- Ignore `node_modules/` and `dist/` across frontend directories in `.gitignore`.
 - Accept ADR-0006 choosing SSE plus WebSocket for server egress transport (`AF-18`).
 - Accept ADR-0005 choosing striped parking_lot::RwLock shards for aerofoil-tracker (`AF-17`).
 - `ADR-0004`: single-bit correction now consults an `aerofoil_common::AddressFilter` injected by the

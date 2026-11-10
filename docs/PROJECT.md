@@ -34,7 +34,7 @@ topology lives in [`ARCHITECTURE.md`](./ARCHITECTURE.md).
   * Streaming daemon (`aerofoil-server`) for Beast, AVR, SSE, and gRPC egress.
   * AI agent integration (`aerofoil-mcp`) via stdio JSON-RPC 2.0 tools.
   * TypeScript client SDK (`sdk/`) providing `AerofoilClient` over generated `ts-rs` definitions.
-  * Web radar reference application (`examples/web-radar`) using Vite and Leaflet.
+  * Production web radar application (`apps/web` / `examples/web-radar`) using Vite and Leaflet.
 
 ### Out of Scope (Initial Milestones)
 * **Direct SDR RF Frontends:** USB/PCIe sample streaming from RTL-SDR, HackRF or BladeRF will not be embedded in the decoder crates. Demodulation belongs to `aerofoil-sdr` — a sibling crate that hands framed bytes to this workspace and can stand in for dump1090 — or to an external demodulator such as dump1090 or dump978 (`ADR-0010`).
@@ -50,7 +50,7 @@ topology lives in [`ARCHITECTURE.md`](./ARCHITECTURE.md).
 | **Systems / embedded engineer** | Bit-exact, allocation-free primitives that compile `no_std` and drop into firmware or a gateway without a runtime. | `aerofoil-common`, `aerofoil-1090`, `aerofoil-978` |
 | **Data consumer / integrator** | A stable, versioned stream (JSON-lines, gRPC) with deduplicated tracks and explicit provenance per update. | `aerofoil-server` |
 | **Operator / Dispatcher** | Real-time terminal radar display with range rings and flight tables without browser overhead. | `aerofoil-tui` |
-| **Frontend / Web Developer** | Typed TypeScript client package to build custom radar displays and web map integrations. | `sdk/`, `examples/web-radar` |
+| **Frontend / Web Developer** | Typed TypeScript client package to build custom radar displays and web map integrations. | `sdk/`, `apps/web` |
 | **Autonomous agent operator** | Programmatic airspace queries — summary, single track, nearest aircraft — without scraping a UI or holding table locks. | `aerofoil-mcp` |
 
 | When I... | I want to... | So that I can... |

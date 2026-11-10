@@ -124,6 +124,6 @@ That keeps the decoders `no_std`, allocation-free and testable without hardware 
 * Model Context Protocol (MCP) server communicating over stdio JSON-RPC 2.0.
 * Exposes tools (`get_airspace_summary`, `get_track`, `find_closest`) for autonomous LLM agents to query live airspace state.
 
-### 4.5 TypeScript Client SDK (`sdk/`) & Web Demo (`examples/web-radar`)
+### 4.5 TypeScript Client SDK (`sdk/`) & Web Radar (`apps/web`)
 * `sdk/`: Lightweight TypeScript package (`AerofoilClient`) built with Bun, consuming generated `ts-rs` type definitions from `aerofoil-common`, offering auto-reconnecting WebSocket/SSE subscriptions and event-emitter dispatching.
-* `examples/web-radar`: Single-page application built with Bun, Vite, and Leaflet, displaying live airspace targets on a dark-mode interactive map with rotated SVG aircraft markers and sortable telemetry tables. Runs via `bun dev` or builds into `dist/` for embedded server hosting (`ADR-0012`).
+* `apps/web` (migrated from `examples/web-radar`): Production web application built with Bun, Vite, and Leaflet, displaying live airspace targets on a dark-mode interactive map with rotated SVG aircraft markers and sortable telemetry tables. Supports embedded single-binary hosting, decoupled Kubernetes Ingress microservices, or CDN edge distribution (`ADR-0012`, `ADR-0013`).
