@@ -50,6 +50,16 @@ name = "aerofoil-sdr"
 version = "0.1.0"
 
 [[package]]
+name = "aerofoil-server"
+version = "0.1.0"
+dependencies = [
+ "aerofoil-1090",
+ "aerofoil-978",
+ "aerofoil-common",
+ "aerofoil-tracker",
+]
+
+[[package]]
 name = "aerofoil-tracker"
 version = "0.1.0"
 dependencies = [

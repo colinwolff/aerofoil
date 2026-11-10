@@ -38,4 +38,6 @@ verification_commands = [
     ["aerofoil-tui", "cargo nextest run -p aerofoil-tui"],
     ["aerofoil-persistence", "cargo nextest run -p aerofoil-persistence"],
     ["aerofoil-sdr", "cargo nextest run -p aerofoil-sdr"],
+    ["aerofoil-server", "cargo nextest run -p aerofoil-server"],
+    ["aerofoil-mcp", "cargo nextest run -p aerofoil-mcp"],
 ]

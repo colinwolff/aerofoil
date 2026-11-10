@@ -1,0 +1,19 @@
+[package]
+name = "aerofoil-server"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+description = "Multi-source streaming daemon for aerofoil fusing dual-band surveillance feeds"
+
+[dependencies]
+aerofoil-common = { path = "../common", version = "0.1.0" }
+aerofoil-1090 = { path = "../1090", version = "0.1.0" }
+aerofoil-978 = { path = "../978", version = "0.1.0" }
+aerofoil-tracker = { path = "../tracker", version = "0.1.0" }
+
+[lints]
+workspace = true
