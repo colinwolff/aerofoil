@@ -19,6 +19,7 @@ crates, in the imperative, one line each, with the `storypole` task key in paren
 
 ### Changed
 
+- Support `--sink` as alias for `--tcp`, and `--file` as alias for `--input` in `aerofoil-replay`.
 - Switch web radar default basemap from CartoDB to OpenStreetMap with CSS dark filter for zero-API-key operation.
 - Ignore `node_modules/` and `dist/` across frontend directories in `.gitignore`.
 

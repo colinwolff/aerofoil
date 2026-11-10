@@ -60,7 +60,7 @@ pub enum InputFormat {
 #[command(name = "aerofoil-replay", version, about)]
 pub struct ReplayArgs {
     /// Input capture file path (defaults to reading from standard input if omitted).
-    #[arg(short, long)]
+    #[arg(short, long, visible_alias = "file")]
     pub input: Option<PathBuf>,
 
     /// Input stream framing format.
@@ -76,7 +76,7 @@ pub struct ReplayArgs {
     pub r#loop: bool,
 
     /// Stream output to a remote TCP server address (e.g. 127.0.0.1:30005).
-    #[arg(long)]
+    #[arg(long, visible_alias = "sink")]
     pub tcp: Option<String>,
 
     /// Bind a local TCP listener to stream to connected clients (e.g. 0.0.0.0:30005).
