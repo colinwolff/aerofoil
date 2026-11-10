@@ -1,5 +1,6 @@
 import { describe, expect, test } from "bun:test";
 import { AirspaceRadarManager, createPlaneSvg, isEmergencySquawk } from "../src/radar";
+import { ThemeManager } from "../src/components/ThemeManager";
 import type { TargetWire } from "@aerofoil-rs/sdk";
 
 describe("AirspaceRadarManager", () => {
@@ -61,5 +62,16 @@ describe("AirspaceRadarManager", () => {
     const baw = targets.find((t) => t.callsign === "BAW142");
     expect(baw).toBeDefined();
     expect(baw?.squawk).toBe("7700");
+  });
+});
+
+describe("ThemeManager", () => {
+  test("manages theme state transitions", () => {
+    const tm = new ThemeManager("nonexistent-btn");
+    expect(tm.getTheme()).toBe("dark");
+    expect(tm.toggleTheme()).toBe("light");
+    expect(tm.getTheme()).toBe("light");
+    expect(tm.toggleTheme()).toBe("dark");
+    expect(tm.getTheme()).toBe("dark");
   });
 });

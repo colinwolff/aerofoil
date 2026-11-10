@@ -14,12 +14,14 @@ import { WeatherScrubber } from "./components/WeatherScrubber";
 import { LayerDrawer } from "./components/LayerDrawer";
 import { MapConfigModal } from "./components/MapConfigModal";
 import { SidebarSplitter } from "./components/SidebarSplitter";
+import { ThemeManager } from "./components/ThemeManager";
 import { AirspaceRadarManager } from "./radar";
 
 async function initApp(): Promise<void> {
   const mapElement = document.getElementById("map");
   let radarManager: AirspaceRadarManager;
 
+  new ThemeManager().init();
   const splitter = new SidebarSplitter();
   splitter.init();
 
@@ -112,7 +114,11 @@ function applyBasemap(engine: LeafletMapEngine, mgr: BaseMapManager, attr: Attri
     mapEl?.classList.remove("dark-tiles");
   } else {
     const def = mgr.setBasemap(cfg.defaultBasemap || "osm_dark");
-    mapEl?.classList.toggle("dark-tiles", !!def.isDarkFilterRecommended);
+    if (mapEl) {
+      mapEl.dataset.darkFilter = def.isDarkFilterRecommended ? "true" : "false";
+      const isDark = document.body.classList.contains("dark-theme");
+      mapEl.classList.toggle("dark-tiles", isDark && !!def.isDarkFilterRecommended);
+    }
     engine.setBaseTileLayer(def.id, def.url, def.attribution, { maxZoom: def.maxZoom });
     attr.register({ id: "basemap", name: def.name, html: def.attribution, license: def.license });
   }

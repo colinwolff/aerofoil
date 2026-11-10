@@ -28,6 +28,11 @@ The web radar UI follows real-world primary flight displays (PFDs) and air traff
 | **Radar Amber** | `var(--radar-amber)` | `#f59e0b` | Transponder mode changes, caution states |
 | **Emergency Red**| `var(--radar-emergency)`| `#ef4444` | Squawk 7500/7600/7700 alerts, pulsing glows |
 
+### Light / Dark Theme Tokens
+- **Dark Theme (`body.dark-theme` - default):** `#06090e` canvas, `#0e1520` panels, translucent dark glass overlays, inverted high-contrast OSM tile filter (`.dark-tiles`).
+- **Light Theme (`body.light-theme`):** `#f1f5f9` canvas, `#ffffff` panels, `#cbd5e1` borders, `#0f172a` primary text, `#0284c7` cyan accents, natural unfiltered daylight map tiles.
+- **Persistence:** Stored in `localStorage.aerofoil_theme`, respecting OS `prefers-color-scheme`. Toggled via top navbar `☼`/`☾` control.
+
 ### Altitude Gradient Scale
 Aircraft altitude determines the icon and trail color:
 - **Ground / Low (< 3,000 ft):** Amber / Rust (`#f97316`)
