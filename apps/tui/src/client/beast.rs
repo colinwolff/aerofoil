@@ -14,7 +14,10 @@ use aerofoil_1090::{
     df::es::{EsPayload, velocity::VelocityPayload},
     parse_frame_filtered,
 };
-use aerofoil_common::{AddressType, ReceptionSource, TransponderSource};
+use aerofoil_common::{
+    AddressType, Position, ReceptionSource, TransponderSource,
+    cpr::{RawCpr, decode_cpr_local},
+};
 use aerofoil_tracker::{TargetUpdate, Tracker};
 
 pub fn run_beast_loop(
@@ -108,6 +111,12 @@ fn dispatch_es(es: aerofoil_1090::df::ExtendedSquitter, tracker: &Tracker) {
         EsPayload::AirbornePosition(pos) => {
             if let Some(alt) = pos.altitude {
                 u = u.with_altitude(alt);
+            }
+            if let Some(raw) = RawCpr::new(pos.cpr_odd, pos.lat_cpr, pos.lon_cpr, 1_000_000)
+                && let Some(ref_pos) = Position::from_microdegrees(52_367_600, 4_904_100)
+                && let Ok(position) = decode_cpr_local(&raw, ref_pos)
+            {
+                u = u.with_position(position);
             }
         }
         EsPayload::Identification(id) => {
