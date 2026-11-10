@@ -127,6 +127,11 @@ An unlisted DF is `DecodeError::UnsupportedFormat`, not an inference.
 
 - A track key is `(AddressType, u32)`. Standard ICAO, anonymous UAT self-assigned, TIS-B and ADS-R
   addresses never share a key space, so a re-broadcast cannot hijack a direct track.
+- Disambiguated targets are represented by `AircraftTarget`, tracking transponder link provenance
+  via `TransponderSource` (`ModeS1090`, `Uat978`) and transmission path via `ReceptionSource` (`Direct`,
+  `Rebroadcast`).
+- Airspace events and target lifecycle transitions are represented by `AirspaceEvent` (`TargetAcquired`,
+  `TargetUpdated`, `TargetLost`).
 - A re-broadcast update is applied only when no direct-reception update arrived within
   `Δt ≤ 1.0 s` **and** within `Δd ≤ 0.001°` of the track's current position (ADR-0001 layering,
   `ARCHITECTURE.md` §2.3).

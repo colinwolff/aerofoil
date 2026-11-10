@@ -13,6 +13,7 @@ crates, in the imperative, one line each, with the `storypole` task key in paren
 
 ### Added
 
+- Implement domain telemetry and aircraft target models in `aerofoil-common` (`AF-26`).
 - Add the zero-allocation proof harness asserting zero heap traffic on decode paths (`AF-15`).
 - Implement local CPR airborne decoding from a reference position in `aerofoil-common` (`AF-10`).
 - Implement UAT downlink State Vector and Mode Status bitfield parsing in `aerofoil-978` (`AF-14`).

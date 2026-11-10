@@ -165,3 +165,27 @@ fn cpr_rejections_and_errors_allocate_zero() {
         }
     });
 }
+
+#[test]
+fn target_model_manipulation_allocates_zero() {
+    use aerofoil_common::{
+        AddressType, AircraftTarget, AirspaceEvent, ReceptionSource, TransponderSource, Velocity,
+    };
+
+    assert_zero_alloc(|| {
+        let mut target = AircraftTarget::new(
+            AddressType::Icao,
+            0xA12345,
+            TransponderSource::ModeS1090,
+            ReceptionSource::Direct,
+            1_000,
+        );
+        target.callsign = Some(*b"TEST1234");
+        target.position = Position::from_microdegrees(49_000_000, 8_000_000);
+        target.altitude = Altitude::new(10_000, AltitudeKind::Barometric);
+        target.velocity = Velocity::new(Some(400), Heading::from_raw_128ths(180 * 128), Some(500));
+        target.squawk = Squawk::new(0o7700);
+        let event = AirspaceEvent::TargetUpdated(target);
+        core::hint::black_box(event);
+    });
+}
