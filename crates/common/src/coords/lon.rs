@@ -7,6 +7,9 @@ use core::fmt;
 pub struct Longitude(i32);
 
 impl Longitude {
+    /// Longitude at the prime meridian ($0.0^\circ$).
+    pub const ZERO: Self = Self(0);
+
     /// Minimum valid longitude in micro-degrees ($-180.0^\circ$).
     pub const MIN_MICRODEGREES: i32 = -180_000_000;
     /// Maximum valid longitude in micro-degrees ($+180.0^\circ$).
@@ -52,6 +55,12 @@ impl Longitude {
     #[must_use]
     pub fn to_f64(self) -> f64 {
         f64::from(self.0) / 1_000_000.0
+    }
+}
+
+impl Default for Longitude {
+    fn default() -> Self {
+        Self::ZERO
     }
 }
 

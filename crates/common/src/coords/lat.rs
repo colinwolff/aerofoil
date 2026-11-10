@@ -7,6 +7,9 @@ use core::fmt;
 pub struct Latitude(i32);
 
 impl Latitude {
+    /// Latitude at the equator ($0.0^\circ$).
+    pub const ZERO: Self = Self(0);
+
     /// Minimum valid latitude in micro-degrees ($-90.0^\circ$).
     pub const MIN_MICRODEGREES: i32 = -90_000_000;
     /// Maximum valid latitude in micro-degrees ($+90.0^\circ$).
@@ -52,6 +55,12 @@ impl Latitude {
     #[must_use]
     pub fn to_f64(self) -> f64 {
         f64::from(self.0) / 1_000_000.0
+    }
+}
+
+impl Default for Latitude {
+    fn default() -> Self {
+        Self::ZERO
     }
 }
 

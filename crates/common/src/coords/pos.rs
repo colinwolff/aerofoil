@@ -12,6 +12,9 @@ pub struct Position {
 }
 
 impl Position {
+    /// Origin position at the equator and prime meridian ($0.0^\circ, 0.0^\circ$).
+    pub const ZERO: Self = Self::new(Latitude::ZERO, Longitude::ZERO);
+
     /// Creates a new [`Position`] from validated [`Latitude`] and [`Longitude`].
     #[must_use]
     pub const fn new(lat: Latitude, lon: Longitude) -> Self {
@@ -46,6 +49,12 @@ impl Position {
     #[must_use]
     pub fn to_f64(self) -> (f64, f64) {
         (self.lat.to_f64(), self.lon.to_f64())
+    }
+}
+
+impl Default for Position {
+    fn default() -> Self {
+        Self::ZERO
     }
 }
 
