@@ -97,10 +97,16 @@ dependencies = [
 name = "aerofoil-tui"
 version = "0.1.0-beta.1"
 dependencies = [
+ "aerofoil-1090",
+ "aerofoil-978",
  "aerofoil-common",
  "aerofoil-tracker",
+ "clap",
  "crossterm",
  "ratatui",
+ "serde",
+ "serde_json",
+ "tungstenite",
 ]
 
 [[package]]

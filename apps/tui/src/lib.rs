@@ -4,6 +4,8 @@
 //! directional aircraft heading vectors, sortable telemetry tables, and emergency squawk alerts.
 
 pub mod app;
+pub mod args;
+pub mod client;
 pub mod radar;
 pub mod table;
 pub mod types;
@@ -12,6 +14,8 @@ pub mod ui;
 use crossterm::event::{KeyCode, KeyEvent, KeyModifiers};
 
 pub use app::App;
+pub use args::TuiArgs;
+pub use client::{StreamClient, apply_ws_update, process_raw_beast};
 pub use radar::draw_radar;
 pub use table::draw_table;
 pub use ui::draw_ui;

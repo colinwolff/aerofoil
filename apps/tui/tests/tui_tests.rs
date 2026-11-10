@@ -1,5 +1,7 @@
 //! Unit and integration tests for `aerofoil-tui`.
 
+#![allow(clippy::unwrap_used, clippy::expect_used)]
+
 use std::sync::Arc;
 
 use aerofoil_common::{
@@ -131,4 +133,41 @@ fn test_headless_rendering() {
     let buffer = terminal.backend().buffer();
     assert_eq!(buffer.area.width, 120);
     assert_eq!(buffer.area.height, 35);
+}
+
+#[test]
+fn test_ws_update_application() {
+    use aerofoil_tui::client::ws::WsTargetUpdate;
+
+    let tracker = Arc::new(Tracker::new());
+    let ws_msg = WsTargetUpdate {
+        address: "4840D6".to_string(),
+        callsign: Some("KLM1023".to_string()),
+        altitude: Some(38000),
+        ground_speed: Some(450),
+        heading: Some(270.0),
+        squawk: Some("7700".to_string()),
+        lat: Some(52.3676),
+        lon: Some(4.9041),
+    };
+
+    aerofoil_tui::apply_ws_update(ws_msg, &tracker);
+    assert!(tracker.contains_address(0x4840D6));
+    let t = tracker.get(AddressType::Icao, 0x4840D6).unwrap();
+    assert_eq!(&t.callsign.unwrap()[..7], b"KLM1023");
+    assert_eq!(t.altitude.unwrap().feet(), 38000);
+}
+
+#[test]
+fn test_beast_raw_processing() {
+    let tracker = Arc::new(Tracker::new());
+    let mut raw = vec![0x1A, 0x33, 0, 0, 0, 0, 0, 0, 200];
+    raw.extend_from_slice(&[
+        0x8D, 0x48, 0x40, 0xD6, 0x20, 0x2C, 0xC3, 0x71, 0xC3, 0x2C, 0xE0, 0x57, 0x60, 0x98,
+    ]);
+
+    aerofoil_tui::process_raw_beast(&raw, &tracker, true);
+    assert!(tracker.contains_address(0x4840D6));
+    let t = tracker.get(AddressType::Icao, 0x4840D6).unwrap();
+    assert_eq!(&t.callsign.unwrap()[..7], b"KLM1023");
 }

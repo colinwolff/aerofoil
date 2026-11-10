@@ -7,7 +7,8 @@ use std::{
 };
 
 use aerofoil_tracker::Tracker;
-use aerofoil_tui::{App, draw_ui, handle_key_event};
+use aerofoil_tui::{App, StreamClient, TuiArgs, draw_ui, handle_key_event};
+use clap::Parser;
 use crossterm::{
     event::{self, Event},
     execute,
@@ -16,6 +17,8 @@ use crossterm::{
 use ratatui::{Terminal, backend::CrosstermBackend};
 
 fn main() -> Result<()> {
+    let args = TuiArgs::parse();
+
     enable_raw_mode()?;
     let mut out = stdout();
     execute!(out, EnterAlternateScreen)?;
@@ -23,10 +26,12 @@ fn main() -> Result<()> {
     let mut terminal = Terminal::new(backend)?;
 
     let tracker = Arc::new(Tracker::new());
+    let mut client = StreamClient::start(Arc::clone(&tracker), &args);
     let mut app = App::new(tracker);
 
     let res = run_loop(&mut terminal, &mut app);
 
+    client.stop();
     disable_raw_mode()?;
     execute!(terminal.backend_mut(), LeaveAlternateScreen)?;
     terminal.show_cursor()?;
