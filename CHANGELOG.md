@@ -11,6 +11,17 @@ crates, in the imperative, one line each, with the `storypole` task key in paren
 
 ## [Unreleased]
 
+### Added
+
+- Add `CprResolver` to `aerofoil-server` and `aerofoil-tui` to resolve 1090ES CPR airborne positions into geographic coordinates.
+- Add multi-aircraft scenario fixture with 7 Mode S targets and UAT downlink to `datasets/fixtures/dual_band_hub.beast`.
+- Add `examples/web-radar/README.md` documenting startup, telemetry streaming, and tile configuration.
+
+### Changed
+
+- Switch web radar default basemap from CartoDB to OpenStreetMap with CSS dark filter for zero-API-key operation.
+- Ignore `node_modules/` and `dist/` across frontend directories in `.gitignore`.
+
 ## [0.1.0-beta.1] - 2026-11-10
 
 ### Added
