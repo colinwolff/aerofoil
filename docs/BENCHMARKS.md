@@ -45,7 +45,7 @@ cargo bench -p aerofoil-replay --bench macrobench
 ```
 
 ### Target-Native Optimizations
-To compile with architecture-specific vector intrinsics (e.g., AVX-512, ARMv8 PMULL/NEON):
+To compile with architecture-specific vector intrinsics (e.g., AVX2, PCLMULQDQ):
 ```bash
 RUSTFLAGS="-C target-cpu=native" cargo bench
 ```
@@ -60,9 +60,11 @@ cargo bench --workspace -- --test
 
 ## 3. Recorded Benchmark Baselines
 
-### Environment Specification
-* **Hardware:** Apple M-Series Silicon (ARM64 with PMULL/NEON SIMD)
-* **OS:** Darwin / macOS
+### Reference Hardware Specification
+* **Processor:** Intel(R) Core(TM) i7-5557U CPU @ 3.10GHz (Broadwell, Dual-Core / 4 Threads)
+* **Architecture:** `x86_64`
+* **Vector Extensions:** `PCLMULQDQ`, `AVX2`, `FMA`, `SSE4.2`
+* **OS:** Darwin / macOS (`x86_64-apple-darwin`)
 * **Compiler:** `rustc 1.99.0` (Edition 2024)
 * **Optimization Profile:** `bench` (`opt-level = 3`, LTO enabled)
 
@@ -70,19 +72,22 @@ cargo bench --workspace -- --test
 
 | Benchmark Kernel | Operation | Mean Latency | Throughput | Notes |
 | :--- | :--- | :--- | :--- | :--- |
-| `crc24_clmul/df17` | 112-bit frame CRC-24 syndrome | **~12.4 ns** | ~90.3 M frames/sec | Hardware polynomial multiplication (`PMULL`) |
-| `crc24_table/df17` | 112-bit frame CRC-24 syndrome | **~24.8 ns** | ~45.1 M frames/sec | Precomputed 256-entry lookup table |
-| `df17/airborne_position` | Zero-copy DF17 position unpack | **~8.1 ns** | ~138 M frames/sec | Pure bitwise shift and mask |
-| `rs48_34/decode_clean` | Clean UAT $RS(48,34)$ codeword | **~48.5 ns** | ~20.6 M frames/sec | Zero syndromes early exit |
-| `rs48_34/decode_3_errors` | Full Berlekamp-Massey + Forney | **~840.2 ns** | ~1.19 M frames/sec | Corrects 3 byte errors in-place |
-| `rs48_34/deinterleave` | Matrix de-interleaving | **~38.7 ns** | ~25.8 M frames/sec | Bijective transposition |
-| `uat/state_vector` | 34-byte SV bitfield parsing | **~14.2 ns** | ~70.4 M frames/sec | Zero-copy state unpack |
+| `crc24/table/11` | 112-bit frame CRC-24 syndrome | **~36.2 ns** | ~27.6 M frames/sec | Precomputed 256-entry lookup table |
+| `crc24/clmul/11` | 112-bit frame CRC-24 syndrome | **~451.0 ns** | ~2.2 M frames/sec | Hardware carryless multiplication (`PCLMULQDQ`) |
+| `df_parsing/df17_position` | Zero-copy DF17 position unpack | **~107.8 ns** | ~9.3 M frames/sec | Pure bitwise shift and mask |
+| `df_parsing/df17_filtered_clean` | Filtered DF17 frame verification | **~135.5 ns** | ~7.4 M frames/sec | AddressFilter lookup + clean syndrome |
+| `df_parsing/df17_filtered_corrected` | Address-filtered 1-bit bitflip repair | **~44.1 ns** | ~22.7 M frames/sec | Single-bit error correction |
+| `rs48_34/decode_clean` | Clean UAT $RS(48,34)$ codeword | **~6.44 µs** | ~155k frames/sec | Syndromes evaluation & early exit |
+| `rs48_34/decode_3_errors` | Full Berlekamp-Massey + Forney | **~4.21 µs** | ~237k frames/sec | Corrects 3 byte errors in-place |
+| `rs48_34/deinterleave_downlink` | Matrix de-interleaving | **~10.0 ns** | ~99.8 M frames/sec | Bijective transposition |
+| `uat_parsing/parse_state_vector` | 34-byte SV bitfield parsing | **~30.7 ns** | ~32.5 M frames/sec | Zero-copy state vector unpack |
+| `uat_parsing/uat_downlink_decode_long` | Full UAT long frame decode | **~65.4 ns** | ~15.3 M frames/sec | Deinterleave + header + payload unpack |
 
 ### Macrobenchmark Throughput & Pipeline Replay
 
 | Scenario / Fixture | Frames | Engine Pacing | Total Duration | Effective Processing Rate |
 | :--- | :--- | :--- | :--- | :--- |
-| `1090_dense.beast` | 104 frames | `burst` (unthrottled) | **~1.12 ms** | **~92,800 frames/sec** |
+| `1090_dense.beast` | 104 frames | `burst` (unthrottled) | **~42.6 µs** | **~2,440,000 frames/sec** |
 | `dual_band_hub.beast` | 6 frames | `burst` (unthrottled) | **~50.3 µs** | **~119,000 frames/sec** |
 
 ---
