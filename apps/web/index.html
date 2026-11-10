@@ -4,7 +4,6 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>aerofoil — Live Airspace Web Radar</title>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" href="./src/style.css" />
   </head>
   <body class="dark-theme">
@@ -22,6 +21,8 @@
     <main id="app-container">
       <div id="map-container">
         <div id="map"></div>
+        <div id="layer-drawer-container"></div>
+        <div id="weather-scrubber-dock"></div>
       </div>
       <aside id="table-container">
         <h2>Live Airspace Telemetry</h2>
@@ -45,6 +46,10 @@
         </div>
       </aside>
     </main>
+
+    <footer id="footer">
+      <div id="attribution-container"></div>
+    </footer>
 
     <script type="module" src="./src/main.ts"></script>
   </body>

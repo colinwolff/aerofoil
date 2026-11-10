@@ -1,5 +1,8 @@
+//! Real-time target tracking and radar manager for aerofoil web frontend.
+
 import type { TargetWire } from "@aerofoil/sdk";
-import { DivIcon, LeafletMap, Marker, type LatLngExpression } from "leaflet";
+import type { AirspaceMapEngine } from "./layers/AirspaceMapEngine";
+import { classifyAirframe, renderAircraftSvg } from "./icons/AircraftIconMatrix";
 
 export function isEmergencySquawk(squawk?: string): boolean {
   if (!squawk) return false;
@@ -19,9 +22,8 @@ export function createPlaneSvg(heading: number, emergency: boolean): string {
 
 export class AirspaceRadarManager {
   private targets: Map<string, TargetWire> = new Map();
-  private markers: Map<string, Marker> = new Map();
 
-  constructor(private map: LeafletMap | null = null) {}
+  constructor(private engine: AirspaceMapEngine | any = null) {}
 
   public updateTarget(target: TargetWire): void {
     const key = target.address.toUpperCase();
@@ -30,26 +32,17 @@ export class AirspaceRadarManager {
     const lat = target.latitude ?? target.lat;
     const lon = target.longitude ?? target.lon;
 
-    if (lat != null && lon != null && this.map) {
+    if (lat != null && lon != null && this.engine) {
       const heading = target.heading_degrees ?? target.heading ?? 0;
       const isEmergency = isEmergencySquawk(target.squawk);
+      const speed = target.ground_speed_knots ?? target.ground_speed;
+      const category = classifyAirframe(target.callsign, target.altitude, speed);
 
-      const iconHtml = createPlaneSvg(heading, isEmergency);
-      const icon = new DivIcon({
-        html: iconHtml,
-        className: "custom-plane-icon",
-        iconSize: [28, 28],
-        iconAnchor: [14, 14],
-      });
+      const iconHtml = renderAircraftSvg(category, heading, target.altitude, isEmergency);
+      const popupHtml = `<b>${target.callsign ?? target.address}</b><br/>Type: ${category}<br/>Alt: ${target.altitude ?? "--"} ft<br/>Spd: ${speed ?? "--"} kt<br/>Hdg: ${Math.round(heading)}°<br/>Squawk: ${target.squawk ?? "--"}`;
 
-      let marker = this.markers.get(key);
-      if (!marker) {
-        marker = new Marker([lat, lon] as LatLngExpression, { icon }).addTo(this.map);
-        marker.bindPopup(`<b>${target.callsign ?? target.address}</b><br/>Alt: ${target.altitude ?? "--"} ft<br/>Squawk: ${target.squawk ?? "--"}`);
-        this.markers.set(key, marker);
-      } else {
-        marker.setLatLng([lat, lon] as LatLngExpression);
-        marker.setIcon(icon);
+      if (typeof this.engine.updateTargetMarker === "function") {
+        this.engine.updateTargetMarker(key, lat, lon, iconHtml, popupHtml);
       }
     }
 

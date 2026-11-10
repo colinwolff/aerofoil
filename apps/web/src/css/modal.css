@@ -1,0 +1,120 @@
+/* Footer & Dynamic Attribution */
+#footer {
+  padding: 0.35rem 1rem;
+  background-color: var(--bg-panel);
+  border-top: 1px solid var(--border-color);
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  display: flex;
+  justify-content: flex-end;
+  z-index: 100;
+}
+
+#attribution-container a {
+  color: #38bdf8;
+  text-decoration: none;
+}
+
+#attribution-container a:hover {
+  text-decoration: underline;
+}
+
+/* Legal Modal */
+.legal-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(6px);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.legal-modal-card {
+  background: var(--bg-panel);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  width: 580px;
+  max-width: 90vw;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.8);
+}
+
+.legal-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.modal-close-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-dim);
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+.legal-modal-body {
+  padding: 1.25rem;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+
+.legal-modal-body h4 {
+  color: #38bdf8;
+  margin-bottom: 0.25rem;
+}
+
+.warning-text {
+  color: #fca5a5;
+  background: rgba(239, 68, 68, 0.1);
+  padding: 0.5rem;
+  border-radius: 6px;
+  border-left: 3px solid #ef4444;
+}
+
+.legal-modal-footer {
+  padding: 0.75rem 1.25rem;
+  border-top: 1px solid var(--border-color);
+  display: flex;
+  justify-content: flex-end;
+}
+
+.btn-primary {
+  background: #0284c7;
+  color: #fff;
+  border: none;
+  padding: 0.4rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* Pulsing emergency animation for squawk 7500/7600/7700 */
+@keyframes emergencyGlow {
+  0% {
+    filter: drop-shadow(0 0 4px rgba(239, 68, 68, 0.9));
+  }
+  50% {
+    filter: drop-shadow(0 0 16px rgba(239, 68, 68, 1)) scale(1.15);
+  }
+  100% {
+    filter: drop-shadow(0 0 4px rgba(239, 68, 68, 0.9));
+  }
+}
+
+.emergency-pulse {
+  animation: emergencyGlow 1.2s infinite ease-in-out;
+}

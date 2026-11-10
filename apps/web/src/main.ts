@@ -1,9 +1,20 @@
+//! Main application entrypoint for aerofoil web radar.
+
 import { AerofoilClient, type TargetWire } from "@aerofoil/sdk";
-import { LeafletMap, TileLayer } from "leaflet";
 import "leaflet/dist/leaflet.css";
+
+import { LeafletMapEngine } from "./layers/LeafletMapEngine";
+import { BaseMapManager } from "./layers/BaseMapRegistry";
+import { DynamicRingsLayer } from "./layers/DynamicRingsLayer";
+import { VectorOverlayManager } from "./layers/VectorOverlayManager";
+import { WeatherRadarLayer } from "./layers/WeatherRadarLayer";
+import { AttributionControl } from "./layers/AttributionControl";
+import { LegalModal } from "./components/LegalModal";
+import { WeatherScrubber } from "./components/WeatherScrubber";
+import { LayerDrawer } from "./components/LayerDrawer";
 import { AirspaceRadarManager } from "./radar";
 
-function initApp(): void {
+async function initApp(): Promise<void> {
   const mapElement = document.getElementById("map");
   let radarManager: AirspaceRadarManager;
 
@@ -12,36 +23,100 @@ function initApp(): void {
     const cartoKey = params.get("carto_key");
     const customTiles = params.get("tiles");
 
-    const map = new LeafletMap("map", {
-      center: [52.3676, 4.9041], // Default: Amsterdam FIR
-      zoom: 8,
-      zoomControl: true,
-    });
+    // Default receiver coordinates: Amsterdam Schiphol hub (52.3676°N, 4.9041°E)
+    const centerLat = 52.3676;
+    const centerLon = 4.9041;
 
-    let tileUrl = "https://tile.openstreetmap.org/{z}/{x}/{y}.png";
-    let attribution = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
+    // 1. Initialize Pluggable Map Engine (Leaflet 2.0)
+    const engine = new LeafletMapEngine();
+    engine.init("map", centerLat, centerLon, 8);
+
+    // 2. Attribution & Legal Notices
+    const legalModal = new LegalModal();
+    legalModal.init();
+
+    const attributionCtrl = new AttributionControl("attribution-container");
+    attributionCtrl.setOpenModalHandler(() => legalModal.show());
+
+    // 3. Basemap Management
+    const basemapMgr = new BaseMapManager();
+    let initialBasemap = basemapMgr.getActiveBasemap();
 
     if (customTiles) {
-      tileUrl = customTiles;
-      attribution = "Custom Tiles";
+      engine.setBaseTileLayer("custom", customTiles, "Custom Tiles", { maxZoom: 19 });
+      attributionCtrl.register({
+        id: "basemap",
+        name: "Custom Tiles",
+        html: "Custom Tiles",
+        license: "Custom Operator License",
+      });
     } else if (cartoKey) {
-      tileUrl = `https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png?api_key=${encodeURIComponent(cartoKey)}`;
-      attribution = '&copy; <a href="https://carto.com/">CARTO</a>';
+      const def = basemapMgr.setBasemap("carto_dark");
+      const url = `https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png?api_key=${encodeURIComponent(cartoKey)}`;
+      engine.setBaseTileLayer("carto_dark", url, def.attribution, { maxZoom: 19, subdomains: "abcd" });
+      attributionCtrl.register({
+        id: "basemap",
+        name: def.name,
+        html: def.attribution,
+        license: def.license,
+      });
     } else {
-      // Default: OpenStreetMap with dark radar CSS filter applied (zero API key required)
       mapElement.classList.add("dark-tiles");
+      engine.setBaseTileLayer(initialBasemap.id, initialBasemap.url, initialBasemap.attribution, {
+        maxZoom: initialBasemap.maxZoom,
+      });
+      attributionCtrl.register({
+        id: "basemap",
+        name: initialBasemap.name,
+        html: initialBasemap.attribution,
+        license: initialBasemap.license,
+      });
     }
 
-    new TileLayer(tileUrl, {
-      attribution,
-      maxZoom: 19,
-    }).addTo(map);
+    // 4. Geodesic Polar Range Rings & Radial Azimuths
+    const ringsLayer = new DynamicRingsLayer(engine, centerLat, centerLon);
+    ringsLayer.render();
 
-    radarManager = new AirspaceRadarManager(map);
+    // 5. Vector Overlays (TopoJSON Airspace & FIR Boundaries)
+    const vectorMgr = new VectorOverlayManager(engine);
+    // Asynchronously load initial airspace layers
+    vectorMgr.loadLayer("us_classes", "/layers/airspace_us_classes.topojson", "airspaces", VectorOverlayManager.classAirspaceStyle);
+    vectorMgr.loadLayer("special_use", "/layers/special_use_airspace.topojson", "special_use", VectorOverlayManager.specialUseStyle);
+    vectorMgr.loadLayer("fir", "/layers/fir_boundaries.topojson", "fir_boundaries", VectorOverlayManager.firStyle);
+
+    attributionCtrl.register({
+      id: "airspace",
+      name: "FAA Airspace Boundaries",
+      html: 'Airspace: FAA AeroNav (17 U.S.C. § 105)',
+      license: "US Public Domain",
+    });
+
+    // 6. Live NEXRAD Weather Radar (RainViewer)
+    const weatherLayer = new WeatherRadarLayer(engine);
+    weatherLayer.init();
+
+    const scrubber = new WeatherScrubber(weatherLayer);
+    scrubber.init("weather-scrubber-dock");
+
+    // 7. Floating Glassmorphism Layer Drawer HUD
+    const drawer = new LayerDrawer(
+      engine,
+      basemapMgr,
+      ringsLayer,
+      vectorMgr,
+      weatherLayer,
+      scrubber,
+      legalModal,
+      attributionCtrl,
+    );
+    drawer.init("layer-drawer-container");
+
+    radarManager = new AirspaceRadarManager(engine);
   } else {
     radarManager = new AirspaceRadarManager(null);
   }
 
+  // 8. Stream Ingestion via @aerofoil/sdk
   const params = new URLSearchParams(window.location.search);
   const customServer = params.get("server");
   const serverUrl = customServer
@@ -62,7 +137,6 @@ function initApp(): void {
 
   setStatus("connecting");
 
-  // Subscribe to live WebSocket streaming
   client.subscribeWebSocket((target: TargetWire) => {
     setStatus("connected");
     radarManager.updateTarget(target);

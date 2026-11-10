@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AerofoilMapConfiguration",
+  "description": "User and operator configurable layer registry, API keys, and custom tile endpoints",
+  "engine": "leaflet",
+  "defaultBasemap": "osm_dark",
+  "receiverCoordinates": {
+    "latitude": 52.3676,
+    "longitude": 4.9041
+  },
+  "customTileServers": [
+    {
+      "id": "local_geoserver",
+      "name": "Local GeoServer Airspace",
+      "url": "http://127.0.0.1:8080/geoserver/gwc/service/tms/1.0.0/airspace@EPSG%3A900913@png/{z}/{x}/{y}.png",
+      "attribution": "Local Receiver GeoServer",
+      "maxZoom": 18,
+      "enabled": false
+    }
+  ],
+  "apiKeys": {
+    "carto": "",
+    "mapbox": "",
+    "stadia": ""
+  },
+  "layers": {
+    "rangeRings": {
+      "enabled": true,
+      "radiiNm": [10, 25, 50, 100],
+      "azimuthStepDeg": 30
+    },
+    "airspaceClasses": {
+      "enabled": true,
+      "url": "/layers/airspace_us_classes.topojson"
+    },
+    "specialUseAirspace": {
+      "enabled": true,
+      "url": "/layers/special_use_airspace.topojson"
+    },
+    "firBoundaries": {
+      "enabled": true,
+      "url": "/layers/fir_boundaries.topojson"
+    },
+    "weatherRadar": {
+      "enabled": false,
+      "source": "rainviewer",
+      "opacity": 0.65
+    }
+  }
+}
