@@ -7,13 +7,40 @@
     <link rel="stylesheet" href="./src/style.css" />
   </head>
   <body class="dark-theme">
-    <header id="header">
-      <div class="logo">
-        <span class="badge">AEROFOIL</span>
-        <h1>Airspace PPI Radar</h1>
+    <header id="header" class="flex items-center justify-between px-4 py-2 border-b border-slate-800 bg-slate-900/90 backdrop-blur z-50">
+      <div class="flex items-center gap-3">
+        <div class="logo flex items-center gap-2">
+          <span class="badge bg-sky-700 text-white font-bold text-xs px-2 py-0.5 rounded">AEROFOIL</span>
+          <h1 class="text-sm font-semibold text-slate-100 hidden sm:inline">Airspace Radar</h1>
+        </div>
+        <nav class="toolbar flex items-center gap-1.5 ml-2">
+          <button type="button" id="btn-toggle-layers" class="toolbar-btn" title="Toggle Layers & Overlays (L)">
+            <span>⛯</span> Layers
+          </button>
+          <button type="button" id="btn-toggle-weather" class="toolbar-btn" title="Toggle Live NEXRAD Weather (W)">
+            <span>⛅</span> Weather
+          </button>
+          <div class="relative">
+            <button type="button" id="btn-center-menu" class="toolbar-btn" title="Center View">
+              <span>⌖</span> Center ▾
+            </button>
+            <div id="center-menu-dropdown" class="dropdown-menu hidden">
+              <button type="button" id="btn-center-receiver" class="dropdown-item">Receiver Home</button>
+              <button type="button" id="btn-center-conus" class="dropdown-item">US CONUS (FAA Charts)</button>
+              <button type="button" id="btn-center-europe" class="dropdown-item">Europe Hub (AMS)</button>
+              <button type="button" id="btn-center-gps" class="dropdown-item">My GPS Location</button>
+            </div>
+          </div>
+          <button type="button" id="btn-open-settings" class="toolbar-btn" title="Configure Maps & API Keys">
+            <span>⚙</span> Settings
+          </button>
+          <button type="button" id="btn-open-legal" class="toolbar-btn" title="Data Sources & Legal Notices">
+            <span>ℹ</span> Legal
+          </button>
+        </nav>
       </div>
-      <div class="metrics">
-        <span id="target-count">Targets: 0</span>
+      <div class="metrics flex items-center gap-3 font-mono text-xs">
+        <span id="target-count" class="text-sky-400 font-bold">Targets: 0</span>
         <span id="connection-status" class="status-badge connecting">Connecting...</span>
       </div>
     </header>
@@ -24,8 +51,11 @@
         <div id="layer-drawer-container"></div>
         <div id="weather-scrubber-dock"></div>
       </div>
+      <div id="sidebar-splitter" class="splitter-gutter" title="Drag to resize, double-click to collapse"></div>
       <aside id="table-container">
-        <h2>Live Airspace Telemetry</h2>
+        <div class="flex justify-between items-center mb-2">
+          <h2>Live Airspace Telemetry</h2>
+        </div>
         <div class="table-scroll">
           <table id="telemetry-table">
             <thead>
@@ -51,6 +81,7 @@
       <div id="attribution-container"></div>
     </footer>
 
+    <div id="config-modal-container"></div>
     <script type="module" src="./src/main.ts"></script>
   </body>
 </html>

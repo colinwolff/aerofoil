@@ -12,6 +12,7 @@ export interface AirspaceLayerOptions {
 
 export interface AirspaceMapEngine {
   init(containerId: string, centerLat: number, centerLon: number, zoom: number): void;
+  setView(lat: number, lon: number, zoom?: number): void;
   getCenter(): [number, number];
   getZoom(): number;
   onViewChange(callback: () => void): void;

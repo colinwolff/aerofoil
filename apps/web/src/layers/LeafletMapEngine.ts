@@ -35,6 +35,12 @@ export class LeafletMapEngine implements AirspaceMapEngine {
     });
   }
 
+  public setView(lat: number, lon: number, zoom?: number): void {
+    if (this.map) {
+      this.map.setView([lat, lon], zoom ?? this.map.getZoom());
+    }
+  }
+
   public getCenter(): [number, number] {
     if (!this.map) return [52.3676, 4.9041];
     const c = this.map.getCenter();

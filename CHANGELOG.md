@@ -13,6 +13,7 @@ crates, in the imperative, one line each, with the `storypole` task key in paren
 
 ### Added
 
+- Add Tailwind CSS integration, interactive draggable sidebar splitter, MapConfigModal for API keys and receiver coordinates, and prominent top radar navbar in `apps/web` (`AF-54`).
 - Add multi-stage distroless Dockerfile, Docker Compose stack, and Kubernetes deployment manifests / Helm chart (`AF-53`).
 - Implement unified static web UI serving on `GET /` and embedded fallback dashboard in `aerofoil-server` (`AF-52`).
 - Implement 12-class permissive SVG aircraft icon matrix, pluggable `AirspaceMapEngine`, and geodesic range rings in `apps/web` (`AF-54`).

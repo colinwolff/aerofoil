@@ -12,119 +12,120 @@ import { AttributionControl } from "./layers/AttributionControl";
 import { LegalModal } from "./components/LegalModal";
 import { WeatherScrubber } from "./components/WeatherScrubber";
 import { LayerDrawer } from "./components/LayerDrawer";
+import { MapConfigModal } from "./components/MapConfigModal";
+import { SidebarSplitter } from "./components/SidebarSplitter";
 import { AirspaceRadarManager } from "./radar";
 
 async function initApp(): Promise<void> {
   const mapElement = document.getElementById("map");
   let radarManager: AirspaceRadarManager;
 
+  new SidebarSplitter().init();
+  const configModal = new MapConfigModal();
+  configModal.init();
+  const config = configModal.getConfig();
+
   if (mapElement) {
-    const params = new URLSearchParams(window.location.search);
-    const cartoKey = params.get("carto_key");
-    const customTiles = params.get("tiles");
-
-    // Default receiver coordinates: Amsterdam Schiphol hub (52.3676°N, 4.9041°E)
-    const centerLat = 52.3676;
-    const centerLon = 4.9041;
-
-    // 1. Initialize Pluggable Map Engine (Leaflet 2.0)
     const engine = new LeafletMapEngine();
-    engine.init("map", centerLat, centerLon, 8);
+    engine.init("map", config.receiverLat, config.receiverLon, 8);
 
-    // 2. Attribution & Legal Notices
     const legalModal = new LegalModal();
     legalModal.init();
 
     const attributionCtrl = new AttributionControl("attribution-container");
     attributionCtrl.setOpenModalHandler(() => legalModal.show());
 
-    // 3. Basemap Management
     const basemapMgr = new BaseMapManager();
-    let initialBasemap = basemapMgr.getActiveBasemap();
+    applyBasemap(engine, basemapMgr, attributionCtrl, config);
 
-    if (customTiles) {
-      engine.setBaseTileLayer("custom", customTiles, "Custom Tiles", { maxZoom: 19 });
-      attributionCtrl.register({
-        id: "basemap",
-        name: "Custom Tiles",
-        html: "Custom Tiles",
-        license: "Custom Operator License",
-      });
-    } else if (cartoKey) {
-      const def = basemapMgr.setBasemap("carto_dark");
-      const url = `https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png?api_key=${encodeURIComponent(cartoKey)}`;
-      engine.setBaseTileLayer("carto_dark", url, def.attribution, { maxZoom: 19, subdomains: "abcd" });
-      attributionCtrl.register({
-        id: "basemap",
-        name: def.name,
-        html: def.attribution,
-        license: def.license,
-      });
-    } else {
-      mapElement.classList.add("dark-tiles");
-      engine.setBaseTileLayer(initialBasemap.id, initialBasemap.url, initialBasemap.attribution, {
-        maxZoom: initialBasemap.maxZoom,
-      });
-      attributionCtrl.register({
-        id: "basemap",
-        name: initialBasemap.name,
-        html: initialBasemap.attribution,
-        license: initialBasemap.license,
-      });
-    }
-
-    // 4. Geodesic Polar Range Rings & Radial Azimuths
-    const ringsLayer = new DynamicRingsLayer(engine, centerLat, centerLon);
+    const ringsLayer = new DynamicRingsLayer(engine, config.receiverLat, config.receiverLon);
     ringsLayer.render();
 
-    // 5. Vector Overlays (TopoJSON Airspace & FIR Boundaries)
     const vectorMgr = new VectorOverlayManager(engine);
-    // Asynchronously load initial airspace layers
     vectorMgr.loadLayer("us_classes", "/layers/airspace_us_classes.topojson", "airspaces", VectorOverlayManager.classAirspaceStyle);
     vectorMgr.loadLayer("special_use", "/layers/special_use_airspace.topojson", "special_use", VectorOverlayManager.specialUseStyle);
     vectorMgr.loadLayer("fir", "/layers/fir_boundaries.topojson", "fir_boundaries", VectorOverlayManager.firStyle);
 
-    attributionCtrl.register({
-      id: "airspace",
-      name: "FAA Airspace Boundaries",
-      html: 'Airspace: FAA AeroNav (17 U.S.C. § 105)',
-      license: "US Public Domain",
-    });
+    attributionCtrl.register({ id: "airspace", name: "FAA Airspace Boundaries", html: "FAA AeroNav (17 U.S.C. § 105)", license: "US Public Domain" });
 
-    // 6. Live NEXRAD Weather Radar (RainViewer)
     const weatherLayer = new WeatherRadarLayer(engine);
     weatherLayer.init();
 
     const scrubber = new WeatherScrubber(weatherLayer);
     scrubber.init("weather-scrubber-dock");
 
-    // 7. Floating Glassmorphism Layer Drawer HUD
-    const drawer = new LayerDrawer(
-      engine,
-      basemapMgr,
-      ringsLayer,
-      vectorMgr,
-      weatherLayer,
-      scrubber,
-      legalModal,
-      attributionCtrl,
-    );
+    const drawer = new LayerDrawer(engine, basemapMgr, ringsLayer, vectorMgr, weatherLayer, scrubber, legalModal, attributionCtrl);
     drawer.init("layer-drawer-container");
 
+    configModal.setOnSave((newCfg) => {
+      ringsLayer.setCenter(newCfg.receiverLat, newCfg.receiverLon);
+      engine.setView(newCfg.receiverLat, newCfg.receiverLon);
+      applyBasemap(engine, basemapMgr, attributionCtrl, newCfg);
+    });
+
+    bindToolbar(drawer, configModal, legalModal, engine, configModal);
     radarManager = new AirspaceRadarManager(engine);
   } else {
     radarManager = new AirspaceRadarManager(null);
   }
 
-  // 8. Stream Ingestion via @aerofoil-rs/sdk
-  const params = new URLSearchParams(window.location.search);
-  const customServer = params.get("server");
-  const serverUrl = customServer
-    ? customServer
-    : window.location.origin.includes("localhost") || window.location.origin.includes("127.0.0.1")
-      ? "ws://127.0.0.1:3000"
-      : window.location.origin;
+  initStreaming(radarManager);
+}
 
+function applyBasemap(engine: LeafletMapEngine, mgr: BaseMapManager, attr: AttributionControl, cfg: any): void {
+  const mapEl = document.getElementById("map");
+  if (cfg.customTileUrl) {
+    engine.setBaseTileLayer("custom", cfg.customTileUrl, "Custom Tiles", { maxZoom: 19 });
+    attr.register({ id: "basemap", name: "Custom Tiles", html: "Custom Operator Tiles", license: "Custom License" });
+    mapEl?.classList.remove("dark-tiles");
+  } else if (cfg.cartoKey) {
+    const def = mgr.setBasemap("carto_dark");
+    const url = `https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png?api_key=${encodeURIComponent(cfg.cartoKey)}`;
+    engine.setBaseTileLayer("carto_dark", url, def.attribution, { maxZoom: 19, subdomains: "abcd" });
+    attr.register({ id: "basemap", name: def.name, html: def.attribution, license: def.license });
+    mapEl?.classList.remove("dark-tiles");
+  } else {
+    const def = mgr.getActiveBasemap();
+    mapEl?.classList.toggle("dark-tiles", !!def.isDarkFilterRecommended);
+    engine.setBaseTileLayer(def.id, def.url, def.attribution, { maxZoom: def.maxZoom });
+    attr.register({ id: "basemap", name: def.name, html: def.attribution, license: def.license });
+  }
+}
+
+function bindToolbar(drawer: LayerDrawer, cfgModal: MapConfigModal, legalModal: LegalModal, engine: LeafletMapEngine, cfg: MapConfigModal): void {
+  document.getElementById("btn-toggle-layers")?.addEventListener("click", () => drawer.toggle());
+  const btnWeather = document.getElementById("btn-toggle-weather");
+  btnWeather?.addEventListener("click", () => {
+    const active = drawer.toggleWeather();
+    btnWeather.classList.toggle("active", active);
+  });
+
+  const centerDropdown = document.getElementById("center-menu-dropdown");
+  document.getElementById("btn-center-menu")?.addEventListener("click", (e) => {
+    e.stopPropagation();
+    centerDropdown?.classList.toggle("hidden");
+  });
+  window.addEventListener("click", () => centerDropdown?.classList.add("hidden"));
+
+  document.getElementById("btn-center-receiver")?.addEventListener("click", () => {
+    const c = cfg.getConfig();
+    engine.setView(c.receiverLat, c.receiverLon, 8);
+  });
+  document.getElementById("btn-center-conus")?.addEventListener("click", () => engine.setView(39.2976, -94.7139, 6));
+  document.getElementById("btn-center-europe")?.addEventListener("click", () => engine.setView(52.3676, 4.9041, 8));
+  document.getElementById("btn-center-gps")?.addEventListener("click", () => {
+    if ("geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition((pos) => engine.setView(pos.coords.latitude, pos.coords.longitude, 9));
+    }
+  });
+
+  document.getElementById("btn-open-settings")?.addEventListener("click", () => cfgModal.show());
+  document.getElementById("btn-open-legal")?.addEventListener("click", () => legalModal.show());
+}
+
+function initStreaming(radarManager: AirspaceRadarManager): void {
+  const params = new URLSearchParams(window.location.search);
+  const serverUrl = params.get("server") || (window.location.origin.includes("localhost") || window.location.origin.includes("127.0.0.1") ? "ws://127.0.0.1:3000" : window.location.origin);
   const client = new AerofoilClient({ url: serverUrl });
   const statusEl = document.getElementById("connection-status");
 
@@ -136,7 +137,6 @@ async function initApp(): Promise<void> {
   };
 
   setStatus("connecting");
-
   client.subscribeWebSocket((target: TargetWire) => {
     setStatus("connected");
     radarManager.updateTarget(target);
@@ -144,9 +144,6 @@ async function initApp(): Promise<void> {
 }
 
 if (typeof document !== "undefined") {
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", initApp);
-  } else {
-    initApp();
-  }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", initApp);
+  else initApp();
 }

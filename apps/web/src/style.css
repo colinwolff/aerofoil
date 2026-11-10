@@ -1,5 +1,6 @@
 /* Master stylesheet for aerofoil web radar */
 
+@import "tailwindcss";
 @import "./css/base.css";
 @import "./css/hud.css";
 @import "./css/modal.css";

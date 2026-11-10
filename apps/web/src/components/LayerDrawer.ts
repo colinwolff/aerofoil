@@ -8,7 +8,6 @@ import type { WeatherScrubber } from "./WeatherScrubber";
 import type { LegalModal } from "./LegalModal";
 import type { AirspaceMapEngine } from "../layers/AirspaceMapEngine";
 import type { AttributionControl } from "../layers/AttributionControl";
-import { BASEMAPS } from "../layers/BaseMapRegistry";
 
 export class LayerDrawer {
   private isCollapsed: boolean = true;
@@ -36,14 +35,11 @@ export class LayerDrawer {
     this.drawerEl = container;
 
     const basemaps = this.basemapMgr.getAvailableBasemaps();
-    const basemapOptions = basemaps
-      .map((b) => `<option value="${b.id}">${b.name}</option>`)
-      .join("");
+    const basemapOptions = basemaps.map((b) => `<option value="${b.id}">${b.name}</option>`).join("");
 
     container.innerHTML = `
       <div class="hud-pill" id="hud-toggle-btn" title="Toggle Airspace Overlays">
-        <span class="hud-icon">⛯</span>
-        <span class="hud-label">Layers</span>
+        <span class="hud-icon">⛯</span><span class="hud-label">Layers</span>
       </div>
       <div class="hud-panel hidden" id="hud-panel">
         <div class="hud-header">
@@ -52,54 +48,53 @@ export class LayerDrawer {
         </div>
         <div class="hud-section">
           <label class="hud-section-label">Basemap / Chart</label>
-          <select id="hud-basemap-select" class="hud-select">
-            ${basemapOptions}
-          </select>
+          <select id="hud-basemap-select" class="hud-select">${basemapOptions}</select>
         </div>
         <div class="hud-section">
           <label class="hud-section-label">Vector Airspace</label>
-          <label class="hud-checkbox-label">
-            <input type="checkbox" id="hud-toggle-classes" checked />
-            Class B / C / D Airspace
-          </label>
-          <label class="hud-checkbox-label">
-            <input type="checkbox" id="hud-toggle-sua" checked />
-            Special Use (Prohibited/Restricted)
-          </label>
-          <label class="hud-checkbox-label">
-            <input type="checkbox" id="hud-toggle-fir" checked />
-            FIR Boundaries
-          </label>
+          <label class="hud-checkbox-label"><input type="checkbox" id="hud-toggle-classes" checked /> Class B/C/D Airspace</label>
+          <label class="hud-checkbox-label"><input type="checkbox" id="hud-toggle-sua" checked /> Special Use Airspace</label>
+          <label class="hud-checkbox-label"><input type="checkbox" id="hud-toggle-fir" checked /> FIR Boundaries</label>
         </div>
         <div class="hud-section">
           <label class="hud-section-label">Surveillance Tools</label>
-          <label class="hud-checkbox-label">
-            <input type="checkbox" id="hud-toggle-rings" checked />
-            Range Rings & Azimuths (100nm)
-          </label>
-          <label class="hud-checkbox-label">
-            <input type="checkbox" id="hud-toggle-weather" />
-            Live Precipitation (NEXRAD)
-          </label>
+          <label class="hud-checkbox-label"><input type="checkbox" id="hud-toggle-rings" checked /> Polar Range Rings (100nm)</label>
+          <label class="hud-checkbox-label"><input type="checkbox" id="hud-toggle-weather" /> Live Weather (NEXRAD)</label>
         </div>
       </div>
     `;
 
-    const toggleBtn = document.getElementById("hud-toggle-btn");
-    const panel = document.getElementById("hud-panel");
-    const infoBtn = document.getElementById("hud-info-btn");
-    const basemapSelect = document.getElementById("hud-basemap-select") as HTMLSelectElement;
+    document.getElementById("hud-toggle-btn")?.addEventListener("click", () => this.toggle());
+    document.getElementById("hud-info-btn")?.addEventListener("click", () => this.legalModal.show());
+    this.bindControls();
+  }
 
-    toggleBtn?.addEventListener("click", () => {
-      this.isCollapsed = !this.isCollapsed;
-      panel?.classList.toggle("hidden", this.isCollapsed);
-    });
+  public toggle(): void {
+    this.isCollapsed = !this.isCollapsed;
+    document.getElementById("hud-panel")?.classList.toggle("hidden", this.isCollapsed);
+  }
 
-    infoBtn?.addEventListener("click", () => {
-      this.legalModal.show();
-    });
+  public toggleWeather(): boolean {
+    const chk = document.getElementById("hud-toggle-weather") as HTMLInputElement;
+    if (chk) {
+      chk.checked = !chk.checked;
+      chk.dispatchEvent(new Event("change"));
+      return chk.checked;
+    }
+    return false;
+  }
 
-    basemapSelect?.addEventListener("change", async (e) => {
+  public selectBasemap(id: string): void {
+    const sel = document.getElementById("hud-basemap-select") as HTMLSelectElement;
+    if (sel) {
+      sel.value = id;
+      sel.dispatchEvent(new Event("change"));
+    }
+  }
+
+  private bindControls(): void {
+    const sel = document.getElementById("hud-basemap-select") as HTMLSelectElement;
+    sel?.addEventListener("change", async (e) => {
       const selectedId = (e.target as HTMLSelectElement).value;
       const verifiedId = await this.basemapMgr.verifyEndpointOrFallback(selectedId);
       const def = this.basemapMgr.setBasemap(verifiedId);
@@ -109,70 +104,32 @@ export class LayerDrawer {
         subdomains: def.subdomains,
       });
 
-      this.attributionCtrl.register({
-        id: "basemap",
-        name: def.name,
-        html: def.attribution,
-        license: def.license,
-      });
+      this.attributionCtrl.register({ id: "basemap", name: def.name, html: def.attribution, license: def.license });
+      const mapEl = document.getElementById("map");
+      if (def.isDarkFilterRecommended) mapEl?.classList.add("dark-tiles");
+      else mapEl?.classList.remove("dark-tiles");
 
-      const mapElement = document.getElementById("map");
-      if (def.isDarkFilterRecommended) {
-        mapElement?.classList.add("dark-tiles");
-      } else {
-        mapElement?.classList.remove("dark-tiles");
+      if (def.isOfficialFAA) {
+        const [lat, lon] = this.engine.getCenter();
+        if (lat > 55 || lat < 18 || lon < -135 || lon > -60) {
+          this.engine.setView(39.2976, -94.7139, 6);
+        }
       }
     });
 
-    // Checkbox toggles
-    const chkClasses = document.getElementById("hud-toggle-classes") as HTMLInputElement;
-    chkClasses?.addEventListener("change", (e) => {
-      const checked = (e.target as HTMLInputElement).checked;
-      if (checked) {
-        this.vectorMgr.loadLayer("us_classes", "/layers/airspace_us_classes.topojson", "airspaces", VectorOverlayManager.classAirspaceStyle);
-      } else {
-        this.vectorMgr.removeLayer("us_classes");
-      }
-    });
+    const bindChk = (id: string, cb: (chk: boolean) => void) => {
+      document.getElementById(id)?.addEventListener("change", (e) => cb((e.target as HTMLInputElement).checked));
+    };
 
-    const chkSua = document.getElementById("hud-toggle-sua") as HTMLInputElement;
-    chkSua?.addEventListener("change", (e) => {
-      const checked = (e.target as HTMLInputElement).checked;
-      if (checked) {
-        this.vectorMgr.loadLayer("special_use", "/layers/special_use_airspace.topojson", "special_use", VectorOverlayManager.specialUseStyle);
-      } else {
-        this.vectorMgr.removeLayer("special_use");
-      }
-    });
-
-    const chkFir = document.getElementById("hud-toggle-fir") as HTMLInputElement;
-    chkFir?.addEventListener("change", (e) => {
-      const checked = (e.target as HTMLInputElement).checked;
-      if (checked) {
-        this.vectorMgr.loadLayer("fir", "/layers/fir_boundaries.topojson", "fir_boundaries", VectorOverlayManager.firStyle);
-      } else {
-        this.vectorMgr.removeLayer("fir");
-      }
-    });
-
-    const chkRings = document.getElementById("hud-toggle-rings") as HTMLInputElement;
-    chkRings?.addEventListener("change", (e) => {
-      const checked = (e.target as HTMLInputElement).checked;
-      this.ringsLayer.setVisible(checked);
-    });
-
-    const chkWeather = document.getElementById("hud-toggle-weather") as HTMLInputElement;
-    chkWeather?.addEventListener("change", (e) => {
-      const checked = (e.target as HTMLInputElement).checked;
-      this.weatherLayer.setVisible(checked);
-      this.scrubber.setVisible(checked);
-      if (checked) {
-        this.attributionCtrl.register({
-          id: "rainviewer",
-          name: "RainViewer Precipitation",
-          html: '&copy; <a href="https://www.rainviewer.com/" target="_blank">RainViewer</a>',
-          license: "Free Weather API",
-        });
+    bindChk("hud-toggle-classes", (c) => c ? this.vectorMgr.loadLayer("us_classes", "/layers/airspace_us_classes.topojson", "airspaces", VectorOverlayManager.classAirspaceStyle) : this.vectorMgr.removeLayer("us_classes"));
+    bindChk("hud-toggle-sua", (c) => c ? this.vectorMgr.loadLayer("special_use", "/layers/special_use_airspace.topojson", "special_use", VectorOverlayManager.specialUseStyle) : this.vectorMgr.removeLayer("special_use"));
+    bindChk("hud-toggle-fir", (c) => c ? this.vectorMgr.loadLayer("fir", "/layers/fir_boundaries.topojson", "fir_boundaries", VectorOverlayManager.firStyle) : this.vectorMgr.removeLayer("fir"));
+    bindChk("hud-toggle-rings", (c) => this.ringsLayer.setVisible(c));
+    bindChk("hud-toggle-weather", (c) => {
+      this.weatherLayer.setVisible(c);
+      this.scrubber.setVisible(c);
+      if (c) {
+        this.attributionCtrl.register({ id: "rainviewer", name: "RainViewer", html: '&copy; <a href="https://www.rainviewer.com/" target="_blank">RainViewer</a>', license: "Free Weather API" });
       } else {
         this.attributionCtrl.unregister("rainviewer");
       }
