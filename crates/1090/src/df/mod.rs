@@ -18,7 +18,9 @@ pub use long::{Df20CommBAlt, Df21CommBId};
 pub use short::{Df0ShortAirAir, Df4AltReply, Df5IdentityReply, Df11AllCallReply};
 pub use types::{FlightStatus, SurveillanceStatus, TransponderCapability};
 
-use aerofoil_common::DecodeError;
+use aerofoil_common::{AddressFilter, DecodeError};
+
+use crate::fec::{FecResult, correct_frame_long, correct_frame_short};
 
 /// A decoded Mode S surveillance frame.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -76,6 +78,60 @@ pub fn parse_frame(bytes: &[u8]) -> Result<ModeSFrame, DecodeError> {
             let mut arr = [0u8; 14];
             arr.copy_from_slice(bytes);
             parse_frame_long(&arr)
+        }
+        len => {
+            let expected = if bytes.first().is_some_and(|b| (b >> 3) >= 16) {
+                14
+            } else {
+                7
+            };
+            Err(DecodeError::Truncated {
+                expected,
+                actual: len,
+            })
+        }
+    }
+}
+
+/// Parses a Mode S frame, applying address-filtered error correction if single-bit corruption occurred.
+///
+/// Returns `Ok((frame, None))` if the frame was clean.
+/// Returns `Ok((frame, Some(bit_index)))` if a single-bit error was corrected and validated against `filter`.
+/// Returns `Err(DecodeError::ChecksumMismatch)` if corrupted and not validated by `filter`.
+pub fn parse_frame_filtered<F: AddressFilter + ?Sized>(
+    bytes: &[u8],
+    filter: &F,
+) -> Result<(ModeSFrame, Option<usize>), DecodeError> {
+    match bytes.len() {
+        7 => {
+            let mut arr = [0u8; 7];
+            arr.copy_from_slice(bytes);
+            let df = arr[0] >> 3;
+            let bit_flipped = if df == 11 {
+                match correct_frame_short(&mut arr, filter)? {
+                    FecResult::Clean => None,
+                    FecResult::Corrected { bit_index, .. } => Some(bit_index),
+                }
+            } else {
+                None
+            };
+            let frame = parse_frame_short(&arr)?;
+            Ok((frame, bit_flipped))
+        }
+        14 => {
+            let mut arr = [0u8; 14];
+            arr.copy_from_slice(bytes);
+            let df = arr[0] >> 3;
+            let bit_flipped = if df == 17 || df == 18 {
+                match correct_frame_long(&mut arr, filter)? {
+                    FecResult::Clean => None,
+                    FecResult::Corrected { bit_index, .. } => Some(bit_index),
+                }
+            } else {
+                None
+            };
+            let frame = parse_frame_long(&arr)?;
+            Ok((frame, bit_flipped))
         }
         len => {
             let expected = if bytes.first().is_some_and(|b| (b >> 3) >= 16) {

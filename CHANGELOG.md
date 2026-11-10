@@ -13,6 +13,7 @@ crates, in the imperative, one line each, with the `storypole` task key in paren
 
 ### Added
 
+- Implement address-filtered single-bit error correction for Mode S DF11/DF17/DF18 frames in `aerofoil-1090` (`AF-30`).
 - Implement zero-copy Mode S Downlink Format bitfield parsers for DF0, DF4, DF5, DF11, DF17, DF18, DF20, and DF21 in `aerofoil-1090` (`AF-29`).
 
 - Scaffold `aerofoil-1090` with Mode S CRC-24 polynomial division and precomputed lookup table (`AF-28`).

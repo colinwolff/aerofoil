@@ -34,6 +34,37 @@ fn lookup_table_matches_polynomial_division() {
 }
 
 #[test]
+fn test_syndromes_112_and_56_unique() {
+    let mut syndromes_112 = [0u32; 112];
+    for (i, slot) in syndromes_112.iter_mut().enumerate() {
+        let mut frame = [0u8; 14];
+        frame[i / 8] |= 1 << (7 - (i % 8));
+        let s = syndrome_long(&frame);
+        assert_ne!(s, 0);
+        *slot = s;
+    }
+    for i in 0..112 {
+        for j in (i + 1)..112 {
+            assert_ne!(syndromes_112[i], syndromes_112[j]);
+        }
+    }
+
+    let mut syndromes_56 = [0u32; 56];
+    for (i, slot) in syndromes_56.iter_mut().enumerate() {
+        let mut frame = [0u8; 7];
+        frame[i / 8] |= 1 << (7 - (i % 8));
+        let s = syndrome_short(&frame);
+        assert_ne!(s, 0);
+        *slot = s;
+    }
+    for i in 0..56 {
+        for j in (i + 1)..56 {
+            assert_ne!(syndromes_56[i], syndromes_56[j]);
+        }
+    }
+}
+
+#[test]
 fn arbitrary_data_table_matches_bit_by_bit() {
     let test_patterns: [&[u8]; 4] = [
         b"123456789",

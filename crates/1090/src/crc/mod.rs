@@ -21,11 +21,14 @@ pub const CRC24_POLYNOMIAL: u32 = 0x1FFF409;
 /// Uses the precomputed 256-word table processing 8 bits per step:
 /// $\text{crc} = (\text{crc} \ll 8) \oplus \text{TABLE}[(\text{crc} \gg 16) \oplus \text{byte}]$
 #[must_use]
-pub fn crc24(data: &[u8]) -> u32 {
+pub const fn crc24(data: &[u8]) -> u32 {
     let mut rem = 0u32;
-    for &b in data {
+    let mut i = 0;
+    while i < data.len() {
+        let b = data[i];
         let idx = (((rem >> 16) as u8) ^ b) as usize;
         rem = ((rem << 8) ^ CRC24_TABLE[idx]) & 0x00FF_FFFF;
+        i += 1;
     }
     rem
 }
@@ -50,8 +53,14 @@ pub const fn extract_parity_long(frame: &[u8; 14]) -> u32 {
 /// A return value of `0` indicates no bit errors for unencoded parity (DF4, DF5, DF11 broadcast).
 /// For Address/Parity frames (DF0), the return value directly recovers the 24-bit ICAO address.
 #[must_use]
-pub fn syndrome_short(frame: &[u8; 7]) -> u32 {
-    let computed = crc24(&frame[..4]);
+pub const fn syndrome_short(frame: &[u8; 7]) -> u32 {
+    let mut payload = [0u8; 4];
+    let mut i = 0;
+    while i < 4 {
+        payload[i] = frame[i];
+        i += 1;
+    }
+    let computed = crc24(&payload);
     let transmitted = extract_parity_short(frame);
     computed ^ transmitted
 }
@@ -62,8 +71,14 @@ pub fn syndrome_short(frame: &[u8; 7]) -> u32 {
 /// A return value of `0` indicates no bit errors for pure CRC frames (DF17, DF18).
 /// For Address/Parity frames (DF20, DF21), the return value recovers the overlaid identifier.
 #[must_use]
-pub fn syndrome_long(frame: &[u8; 14]) -> u32 {
-    let computed = crc24(&frame[..11]);
+pub const fn syndrome_long(frame: &[u8; 14]) -> u32 {
+    let mut payload = [0u8; 11];
+    let mut i = 0;
+    while i < 11 {
+        payload[i] = frame[i];
+        i += 1;
+    }
+    let computed = crc24(&payload);
     let transmitted = extract_parity_long(frame);
     computed ^ transmitted
 }

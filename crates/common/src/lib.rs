@@ -13,11 +13,13 @@
 mod coords;
 pub mod cpr;
 mod error;
+mod filter;
 pub mod model;
 mod units;
 
 pub use coords::{Latitude, Longitude, Position};
 pub use error::DecodeError;
+pub use filter::{AddressFilter, DenyAll};
 pub use model::{
     AddressType, AircraftTarget, AirspaceEvent, ReceptionSource, TransponderSource, Velocity,
 };
