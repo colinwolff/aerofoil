@@ -13,6 +13,7 @@ crates, in the imperative, one line each, with the `storypole` task key in paren
 
 ### Added
 
+- Synthesize multi-waypoint kinematic flight loops with velocity squitters in dual_band_hub.beast and add live TCP capture utility (`AF-49`).
 - Add MADR 0014 establishing pluggable `AirspaceMapEngine`, 12-class SVG icon matrix, and map overlay architecture (`AF-54`).
 
 ### Changed

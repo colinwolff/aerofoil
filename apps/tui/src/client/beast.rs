@@ -15,7 +15,7 @@ use aerofoil_1090::{
     parse_frame_filtered,
 };
 use aerofoil_common::{
-    AddressType, Position, ReceptionSource, TransponderSource,
+    AddressType, Heading, Position, ReceptionSource, TransponderSource,
     cpr::{RawCpr, decode_cpr_local},
 };
 use aerofoil_tracker::{TargetUpdate, Tracker};
@@ -126,7 +126,16 @@ fn dispatch_es(es: aerofoil_1090::df::ExtendedSquitter, tracker: &Tracker) {
             let spd = vel.payload.ground_speed_knots();
             let hdg = match vel.payload {
                 VelocityPayload::Airspeed { heading, .. } => heading,
-                VelocityPayload::GroundSpeed { .. } => None,
+                VelocityPayload::GroundSpeed {
+                    ew_velocity_knots: Some(ew),
+                    ns_velocity_knots: Some(ns),
+                    ..
+                } => {
+                    let deg = (ew as f64).atan2(ns as f64).to_degrees().rem_euclid(360.0);
+                    let raw = ((deg * 128.0).round() as u16) % Heading::UNITS_PER_TURN;
+                    Heading::from_raw_128ths(raw)
+                }
+                _ => None,
             };
             u = u.with_velocity(spd, hdg, vel.vertical_rate_fpm);
         }
