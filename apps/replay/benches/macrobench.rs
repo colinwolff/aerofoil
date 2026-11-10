@@ -10,9 +10,11 @@ use std::{
     io::BufReader,
 };
 
-use aerofoil_1090::parse_frame_long;
 use aerofoil_978::frame::UatDownlinkFrame;
-use aerofoil_replay::{InputFormat, PacingSpeed, ReplayEngine, ReplaySink, StreamPacer, load_frames};
+use aerofoil_1090::parse_frame_long;
+use aerofoil_replay::{
+    InputFormat, PacingSpeed, ReplayEngine, ReplaySink, StreamPacer, load_frames,
+};
 use criterion::{BenchmarkId, Criterion, criterion_group, criterion_main};
 
 struct CountingAllocator;
@@ -102,14 +104,17 @@ fn bench_e2e_macrobenchmarks(c: &mut Criterion) {
     });
 
     // 2. Burst mode throughput benchmark
-    group.bench_function(BenchmarkId::new("burst_dense_replay", dense_frames.len()), |b| {
-        b.iter(|| {
-            let sink = Box::new(NullSink::default());
-            let pacer = StreamPacer::new(PacingSpeed::Burst);
-            let mut engine = ReplayEngine::new(dense_frames.clone(), pacer, sink, false);
-            engine.run().unwrap()
-        });
-    });
+    group.bench_function(
+        BenchmarkId::new("burst_dense_replay", dense_frames.len()),
+        |b| {
+            b.iter(|| {
+                let sink = Box::new(NullSink::default());
+                let pacer = StreamPacer::new(PacingSpeed::Burst);
+                let mut engine = ReplayEngine::new(dense_frames.clone(), pacer, sink, false);
+                engine.run().unwrap()
+            });
+        },
+    );
 
     // 3. Multi-band UAT zero allocation
     let f_dual = File::open("datasets/fixtures/dual_band_hub.beast")

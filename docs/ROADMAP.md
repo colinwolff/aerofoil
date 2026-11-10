@@ -54,18 +54,18 @@ when its crates compile, its tests pass and the tiered gates in `AGENTS.md` §3.
 
 ---
 
-## 4. Milestone 4 — Networking, MCP Agent Integration & Client Ecosystem (current)
+## 4. Milestone 4 — Networking, MCP Agent Integration & Client Ecosystem (completed)
 
 - [x] `aerofoil-server`: Dual-source TCP Beast ingest on 30005 (1090) and 30978 (978) (`AF-38`).
 - [x] `aerofoil-server`: SSE (`GET /events`) and WebSocket (`GET /ws`) egress streaming with Last-Event-ID resume and subscription filters (`AF-39`).
 - [x] `aerofoil-mcp`: Stdio JSON-RPC 2.0 MCP server with tools `get_airspace_summary`, `get_track`, and `find_closest` (`AF-40`).
 - [x] Wire contracts: `docs/CONTRACTS.md` single source of truth and `miter contracts --check` gate (`AF-23`).
-- [ ] `datasets/`: High-density public scenario captures (1090 commercial hub, mixed dual-band, edge-case bitflips) and download script (`AF-41`).
-- [ ] `aerofoil-replay` (`apps/replay`): Standalone multi-tier surveillance replay engine for Beast, AVR, JSONL, and raw I/Q datasets with variable pacing (`1x`, `2x`, `5x`, `10x`, `burst`, `--loop`) (`AF-42`).
-- [ ] `aerofoil-tui`: Dual-mode client streaming from Beast TCP sockets (default 30005/30978) or server WebSocket (`--ws`) (`AF-43`).
-- [ ] `sdk/`: TypeScript client SDK package (`AerofoilClient`) built with Bun, consuming `ts-rs` definitions with auto-reconnecting WebSocket/SSE streaming (`AF-44`).
-- [ ] `examples/web-radar/`: Single-page Bun + Vite + Leaflet web demo with dark mode, rotated aircraft markers, and telemetry table (`AF-45`).
-- [ ] End-to-end dataset throughput macrobenchmarks and Criterion microbenchmarks across 1090 & 978 (`AF-46`).
+- [x] `datasets/`: High-density public scenario captures (1090 commercial hub, mixed dual-band, edge-case bitflips) and download script (`AF-41`).
+- [x] `aerofoil-replay` (`apps/replay`): Standalone multi-tier surveillance replay engine for Beast, AVR, JSONL, and raw I/Q datasets with variable pacing (`1x`, `2x`, `5x`, `10x`, `burst`, `--loop`) (`AF-42`).
+- [x] `aerofoil-tui`: Dual-mode client streaming from Beast TCP sockets (default 30005/30978) or server WebSocket (`--ws`) (`AF-43`).
+- [x] `sdk/`: TypeScript client SDK package (`AerofoilClient`) built with Bun, consuming `ts-rs` definitions with auto-reconnecting WebSocket/SSE streaming (`AF-44`).
+- [x] `examples/web-radar/`: Single-page Bun + Vite + Leaflet web demo with dark mode, rotated aircraft markers, and telemetry table (`AF-45`).
+- [x] End-to-end dataset throughput macrobenchmarks and Criterion microbenchmarks across 1090 & 978 (`AF-46`).
 
 **Exit criteria:** `0.1.0-beta.1` release tagged with lockstep SemVer, verified multi-band ingestion, dual-mode TUI and web radar verified against recorded high-density traffic.
 
