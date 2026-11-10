@@ -2,8 +2,9 @@
 //!
 //! Defined in `ADR-0005`: 64 independent striped `parking_lot::RwLock` segments.
 
+use crate::dedup::should_deduplicate;
 use crate::update::TargetUpdate;
-use aerofoil_common::{AddressType, AircraftTarget, AirspaceEvent};
+use aerofoil_common::{AddressType, AircraftTarget, AirspaceEvent, Position, ReceptionSource};
 use parking_lot::RwLock;
 use std::collections::HashMap;
 
@@ -17,10 +18,38 @@ pub const fn shard_index(address: u32) -> usize {
     (address as usize) & (NUM_SHARDS - 1)
 }
 
+/// An internal track entry holding target telemetry and direct reception provenance (`docs/SPEC.md` §4).
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct TrackEntry {
+    /// Active target telemetry state.
+    pub target: AircraftTarget,
+    /// Timestamp of most recent direct-reception update, if any.
+    pub last_direct_seen_ms: Option<u64>,
+    /// Position of most recent direct-reception update, if any.
+    pub last_direct_pos: Option<Position>,
+}
+
+impl TrackEntry {
+    /// Initializes a new [`TrackEntry`] from an [`AircraftTarget`].
+    #[must_use]
+    pub fn new(target: AircraftTarget) -> Self {
+        let is_direct = target.reception == ReceptionSource::Direct;
+        Self {
+            last_direct_seen_ms: if is_direct {
+                Some(target.last_seen_ms)
+            } else {
+                None
+            },
+            last_direct_pos: if is_direct { target.position } else { None },
+            target,
+        }
+    }
+}
+
 /// Inner state held within a single lockable shard.
 #[derive(Debug, Default)]
 pub struct ShardData {
-    tracks: HashMap<(AddressType, u32), AircraftTarget>,
+    tracks: HashMap<(AddressType, u32), TrackEntry>,
 }
 
 impl ShardData {
@@ -43,19 +72,21 @@ impl ShardData {
     #[inline]
     #[must_use]
     pub fn get(&self, key: &(AddressType, u32)) -> Option<&AircraftTarget> {
-        self.tracks.get(key)
+        self.tracks.get(key).map(|e| &e.target)
     }
 
     /// Inserts or replaces a target in the shard.
     #[inline]
     pub fn insert(&mut self, target: AircraftTarget) -> Option<AircraftTarget> {
-        self.tracks.insert(target.track_key(), target)
+        let key = target.track_key();
+        let entry = TrackEntry::new(target);
+        self.tracks.insert(key, entry).map(|e| e.target)
     }
 
     /// Removes a target by its track key.
     #[inline]
     pub fn remove(&mut self, key: &(AddressType, u32)) -> Option<AircraftTarget> {
-        self.tracks.remove(key)
+        self.tracks.remove(key).map(|e| e.target)
     }
 
     /// Returns the number of active tracks in this shard.
@@ -74,19 +105,43 @@ impl ShardData {
 
     /// Returns an iterator over all targets in this shard.
     pub fn values(&self) -> impl Iterator<Item = &AircraftTarget> {
-        self.tracks.values()
+        self.tracks.values().map(|e| &e.target)
     }
 
-    /// Merges an incremental update into this shard, returning the resulting airspace event.
-    pub fn apply_update(&mut self, update: &TargetUpdate) -> AirspaceEvent {
+    /// Merges an incremental update into this shard, evaluating ADS-R cross-band deduplication.
+    ///
+    /// Direct reception always wins. Re-broadcast updates within `Δt ≤ 1.0 s` and `Δd ≤ 0.001°`
+    /// of direct reception are deduplicated and return `None` (`SPEC.md` Invariant 10).
+    pub fn apply_update(&mut self, update: &TargetUpdate) -> Option<AirspaceEvent> {
         let key = update.track_key();
-        if let Some(existing) = self.tracks.get_mut(&key) {
-            update.apply_to(existing);
-            AirspaceEvent::TargetUpdated(*existing)
+        if let Some(entry) = self.tracks.get_mut(&key) {
+            // ADS-R cross-band deduplication check
+            if update.reception == ReceptionSource::Rebroadcast
+                && should_deduplicate(
+                    entry.last_direct_seen_ms,
+                    entry.last_direct_pos,
+                    update.timestamp_ms,
+                    update.position,
+                    entry.target.position,
+                )
+            {
+                return None;
+            }
+
+            if update.reception == ReceptionSource::Direct {
+                entry.last_direct_seen_ms = Some(update.timestamp_ms);
+                if let Some(pos) = update.position {
+                    entry.last_direct_pos = Some(pos);
+                }
+            }
+
+            update.apply_to(&mut entry.target);
+            Some(AirspaceEvent::TargetUpdated(entry.target))
         } else {
             let target = update.to_target();
-            self.tracks.insert(key, target);
-            AirspaceEvent::TargetAcquired(target)
+            let entry = TrackEntry::new(target);
+            self.tracks.insert(key, entry);
+            Some(AirspaceEvent::TargetAcquired(target))
         }
     }
 
@@ -98,8 +153,8 @@ impl ShardData {
         events: &mut Vec<AirspaceEvent>,
     ) {
         let mut expired_keys = Vec::new();
-        for (key, target) in &self.tracks {
-            if current_time_ms.saturating_sub(target.last_seen_ms) >= ttl_ms {
+        for (key, entry) in &self.tracks {
+            if current_time_ms.saturating_sub(entry.target.last_seen_ms) >= ttl_ms {
                 expired_keys.push(*key);
             }
         }

@@ -23,7 +23,7 @@ fn test_target_acquired_and_updated_events() {
     )
     .with_callsign(*b"AAL123  ");
 
-    let event = tracker.update(&u1);
+    let event = tracker.update(&u1).unwrap();
     match event {
         AirspaceEvent::TargetAcquired(target) => {
             assert_eq!(target.address, addr);
@@ -45,7 +45,7 @@ fn test_target_acquired_and_updated_events() {
     )
     .with_altitude(Altitude::new(35000, AltitudeKind::Barometric).unwrap());
 
-    let event2 = tracker.update(&u2);
+    let event2 = tracker.update(&u2).unwrap();
     match event2 {
         AirspaceEvent::TargetUpdated(target) => {
             assert_eq!(target.address, addr);

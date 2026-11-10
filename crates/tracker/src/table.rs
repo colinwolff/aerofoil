@@ -130,10 +130,13 @@ impl Tracker {
 
     /// Ingests an incremental telemetry update, applying monotonic per-field updates (`SPEC.md` Invariant 10).
     ///
+    /// Evaluates ADS-R cross-band deduplication: direct reception always wins, and rebroadcasts
+    /// within `Δt ≤ 1.0 s` and `Δd ≤ 0.001°` are deduplicated, returning `None`.
+    ///
     /// Emits [`AirspaceEvent::TargetAcquired`] when an address is first observed,
     /// or [`AirspaceEvent::TargetUpdated`] when existing track telemetry is updated.
     #[inline]
-    pub fn update(&self, update: &TargetUpdate) -> AirspaceEvent {
+    pub fn update(&self, update: &TargetUpdate) -> Option<AirspaceEvent> {
         let idx = shard_index(update.address);
         self.shards[idx].write().apply_update(update)
     }
