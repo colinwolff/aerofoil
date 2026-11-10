@@ -5,8 +5,8 @@
 //! `#![no_std]` by construction: no heap, no clock, no I/O on the decode path (`docs/SPEC.md` §1).
 //!
 //! Landed so far: the decoder error model ([`DecodeError`]), unit types ([`Altitude`], [`Squawk`],
-//! [`Heading`]), fixed-point coordinates ([`Latitude`], [`Longitude`], [`Position`]), and global
-//! CPR decoding ([`cpr`]). Local CPR decoding arrives with `AF-10`.
+//! [`Heading`]), fixed-point coordinates ([`Latitude`], [`Longitude`], [`Position`]), and global / local
+//! CPR decoding ([`cpr`]).
 #![no_std]
 
 mod coords;

@@ -13,6 +13,7 @@ crates, in the imperative, one line each, with the `storypole` task key in paren
 
 ### Added
 
+- Implement local CPR airborne decoding from a reference position in `aerofoil-common` (`AF-10`).
 - Implement UAT downlink State Vector and Mode Status bitfield parsing in `aerofoil-978` (`AF-14`).
 - Implement UAT framing, de-interleaving and Reed-Solomon geometry validation in `aerofoil-978` (`AF-13`).
 - Implement the DO-282B $RS(48,34)$ Reed-Solomon decoder in `aerofoil-978` (`AF-12`).
