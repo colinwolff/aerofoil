@@ -7,8 +7,10 @@
 //!
 //! All routines are pure, zero-allocation functions conforming to `docs/SPEC.md` Invariant 1.
 
+pub mod simd;
 mod table;
 
+pub use simd::{crc24_clmul, has_clmul_support};
 pub use table::CRC24_TABLE;
 
 use aerofoil_common::DecodeError;
@@ -109,4 +111,45 @@ pub fn syndrome(frame: &[u8]) -> Result<u32, DecodeError> {
             value: len as u32,
         }),
     }
+}
+
+/// Computes CRC-24 using runtime-detected SIMD CLMUL acceleration when available,
+/// falling back to the 256-word precomputed table.
+#[must_use]
+pub fn crc24_fast(data: &[u8]) -> u32 {
+    if simd::has_clmul_support() {
+        simd::crc24_clmul(data)
+    } else {
+        crc24(data)
+    }
+}
+
+/// Computes the 24-bit CRC syndrome for a 112-bit long frame using CLMUL acceleration when available.
+#[must_use]
+pub fn syndrome_long_fast(frame: &[u8; 14]) -> u32 {
+    let computed = if simd::has_clmul_support() {
+        let mut payload = [0u8; 11];
+        payload.copy_from_slice(&frame[..11]);
+        simd::crc24_clmul_11bytes(&payload)
+    } else {
+        let mut payload = [0u8; 11];
+        payload.copy_from_slice(&frame[..11]);
+        crc24(&payload)
+    };
+    computed ^ extract_parity_long(frame)
+}
+
+/// Computes the 24-bit CRC syndrome for a 56-bit short frame using CLMUL acceleration when available.
+#[must_use]
+pub fn syndrome_short_fast(frame: &[u8; 7]) -> u32 {
+    let computed = if simd::has_clmul_support() {
+        let mut payload = [0u8; 4];
+        payload.copy_from_slice(&frame[..4]);
+        simd::crc24_clmul_4bytes(&payload)
+    } else {
+        let mut payload = [0u8; 4];
+        payload.copy_from_slice(&frame[..4]);
+        crc24(&payload)
+    };
+    computed ^ extract_parity_short(frame)
 }

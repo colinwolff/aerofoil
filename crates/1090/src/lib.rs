@@ -12,8 +12,9 @@ pub mod df;
 pub mod fec;
 
 pub use crc::{
-    CRC24_POLYNOMIAL, CRC24_TABLE, crc24, extract_parity_long, extract_parity_short, syndrome,
-    syndrome_long, syndrome_short,
+    CRC24_POLYNOMIAL, CRC24_TABLE, crc24, crc24_clmul, crc24_fast, extract_parity_long,
+    extract_parity_short, has_clmul_support, syndrome, syndrome_long, syndrome_long_fast,
+    syndrome_short, syndrome_short_fast,
 };
 pub use df::{
     AirbornePosition, AirborneVelocity, AircraftIdentification, Df0ShortAirAir, Df4AltReply,
