@@ -10,7 +10,10 @@ use std::{
     time::Duration,
 };
 
-use aerofoil_server::{BandSource, DEFAULT_PORT_978, DEFAULT_PORT_1090, DualBandIngest};
+use aerofoil_server::{
+    BandSource, DEFAULT_EGRESS_PORT, DEFAULT_PORT_978, DEFAULT_PORT_1090, DualBandIngest,
+    EgressServer,
+};
 use aerofoil_tracker::Tracker;
 
 fn main() -> io::Result<()> {
@@ -24,6 +27,12 @@ fn main() -> io::Result<()> {
     );
 
     let ingest = DualBandIngest::start(Arc::clone(&tracker), src_1090, src_978)?;
+    let egress = EgressServer::start(Arc::clone(&tracker), DEFAULT_EGRESS_PORT)?;
+
+    println!(
+        "aerofoil-server: egress streaming active on http://0.0.0.0:{}/ (SSE on /events, WebSocket on /ws)",
+        DEFAULT_EGRESS_PORT
+    );
 
     let running = Arc::new(AtomicBool::new(true));
     let r = Arc::clone(&running);
@@ -33,6 +42,7 @@ fn main() -> io::Result<()> {
         thread::sleep(Duration::from_millis(500));
     }
 
+    egress.shutdown();
     ingest.shutdown();
     Ok(())
 }

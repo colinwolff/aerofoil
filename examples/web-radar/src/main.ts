@@ -29,7 +29,7 @@ function initApp(): void {
   }
 
   const serverUrl = window.location.origin.includes("localhost") || window.location.origin.includes("127.0.0.1")
-    ? "ws://127.0.0.1:8080"
+    ? "ws://127.0.0.1:3000"
     : window.location.origin;
 
   const client = new AerofoilClient({ url: serverUrl });
