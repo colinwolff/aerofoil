@@ -1,0 +1,98 @@
+{
+  "type": "Topology",
+  "transform": {
+    "scale": [
+      0.001,
+      0.001
+    ],
+    "translate": [
+      2.0,
+      50.0
+    ]
+  },
+  "objects": {
+    "fir_boundaries": {
+      "type": "GeometryCollection",
+      "geometries": [
+        {
+          "type": "LineString",
+          "arcs": [
+            0
+          ],
+          "properties": {
+            "name": "Amsterdam FIR (EHAA)",
+            "icao": "EHAA"
+          }
+        },
+        {
+          "type": "LineString",
+          "arcs": [
+            1
+          ],
+          "properties": {
+            "name": "London FIR (EGTT)",
+            "icao": "EGTT"
+          }
+        }
+      ]
+    }
+  },
+  "arcs": [
+    [
+      [
+        1200,
+        1200
+      ],
+      [
+        1500,
+        200
+      ],
+      [
+        1600,
+        1800
+      ],
+      [
+        800,
+        2600
+      ],
+      [
+        -500,
+        1800
+      ],
+      [
+        -800,
+        600
+      ],
+      [
+        400,
+        -800
+      ],
+      [
+        1000,
+        -800
+      ]
+    ],
+    [
+      [
+        50,
+        1500
+      ],
+      [
+        900,
+        1200
+      ],
+      [
+        1100,
+        2000
+      ],
+      [
+        -300,
+        1500
+      ],
+      [
+        -1700,
+        500
+      ]
+    ]
+  ]
+}

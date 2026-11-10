@@ -1,0 +1,94 @@
+{
+  "type": "Topology",
+  "transform": {
+    "scale": [
+      0.001,
+      0.001
+    ],
+    "translate": [
+      4.0,
+      51.5
+    ]
+  },
+  "objects": {
+    "special_use": {
+      "type": "GeometryCollection",
+      "geometries": [
+        {
+          "type": "Polygon",
+          "arcs": [
+            [
+              0
+            ]
+          ],
+          "properties": {
+            "name": "EHD-01 De Peel Restricted",
+            "type": "Restricted",
+            "lower_alt": 0,
+            "upper_alt": 5500
+          }
+        },
+        {
+          "type": "Polygon",
+          "arcs": [
+            [
+              1
+            ]
+          ],
+          "properties": {
+            "name": "P-40 Camp David Prohibited",
+            "type": "Prohibited",
+            "lower_alt": 0,
+            "upper_alt": 5000
+          }
+        }
+      ]
+    }
+  },
+  "arcs": [
+    [
+      [
+        1700,
+        150
+      ],
+      [
+        100,
+        0
+      ],
+      [
+        50,
+        80
+      ],
+      [
+        -80,
+        50
+      ],
+      [
+        -70,
+        -130
+      ]
+    ],
+    [
+      [
+        -77450,
+        39650
+      ],
+      [
+        80,
+        0
+      ],
+      [
+        30,
+        60
+      ],
+      [
+        -60,
+        40
+      ],
+      [
+        -50,
+        -100
+      ]
+    ]
+  ]
+}

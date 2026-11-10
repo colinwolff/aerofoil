@@ -1,0 +1,190 @@
+{
+  "type": "Topology",
+  "transform": {
+    "scale": [
+      0.001,
+      0.001
+    ],
+    "translate": [
+      4.0,
+      51.5
+    ]
+  },
+  "objects": {
+    "airspaces": {
+      "type": "GeometryCollection",
+      "geometries": [
+        {
+          "type": "Polygon",
+          "arcs": [
+            [
+              0
+            ]
+          ],
+          "properties": {
+            "name": "Amsterdam Schiphol CTR",
+            "class": "C",
+            "lower_alt": 0,
+            "upper_alt": 3000
+          }
+        },
+        {
+          "type": "Polygon",
+          "arcs": [
+            [
+              1
+            ]
+          ],
+          "properties": {
+            "name": "Schiphol TMA 1",
+            "class": "A",
+            "lower_alt": 1500,
+            "upper_alt": 9500
+          }
+        },
+        {
+          "type": "Polygon",
+          "arcs": [
+            [
+              2
+            ]
+          ],
+          "properties": {
+            "name": "San Francisco Class B Surface",
+            "class": "B",
+            "lower_alt": 0,
+            "upper_alt": 10000
+          }
+        },
+        {
+          "type": "Polygon",
+          "arcs": [
+            [
+              3
+            ]
+          ],
+          "properties": {
+            "name": "San Francisco Class B 2000-10000",
+            "class": "B",
+            "lower_alt": 2000,
+            "upper_alt": 10000
+          }
+        }
+      ]
+    }
+  },
+  "arcs": [
+    [
+      [
+        720,
+        800
+      ],
+      [
+        80,
+        0
+      ],
+      [
+        40,
+        60
+      ],
+      [
+        -40,
+        60
+      ],
+      [
+        -80,
+        0
+      ],
+      [
+        -40,
+        -60
+      ],
+      [
+        40,
+        -60
+      ]
+    ],
+    [
+      [
+        600,
+        650
+      ],
+      [
+        300,
+        0
+      ],
+      [
+        100,
+        300
+      ],
+      [
+        -300,
+        100
+      ],
+      [
+        -200,
+        -200
+      ],
+      [
+        100,
+        -200
+      ]
+    ],
+    [
+      [
+        -122375,
+        37618
+      ],
+      [
+        50,
+        0
+      ],
+      [
+        25,
+        40
+      ],
+      [
+        -25,
+        40
+      ],
+      [
+        -50,
+        0
+      ],
+      [
+        -25,
+        -40
+      ],
+      [
+        25,
+        -40
+      ]
+    ],
+    [
+      [
+        -122450,
+        37550
+      ],
+      [
+        150,
+        0
+      ],
+      [
+        50,
+        150
+      ],
+      [
+        -150,
+        50
+      ],
+      [
+        -100,
+        -100
+      ],
+      [
+        50,
+        -100
+      ]
+    ]
+  ]
+}
