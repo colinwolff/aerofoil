@@ -17,6 +17,7 @@ crates, in the imperative, one line each, with the `storypole` task key in paren
 
 ### Added
 
+- Implement monotonic per-field target merging and TTL expiry lifecycle in `aerofoil-tracker` (`AF-34`).
 - Scaffold `aerofoil-tracker` with 64-shard striped `parking_lot::RwLock` table and `AddressFilter` (`AF-33`).
 - Add Criterion throughput benchmarks and counting allocator zero-allocation test harness in `aerofoil-1090` (`AF-32`).
 - Implement runtime-detected SIMD CLMUL/PMULL CRC-24 acceleration in `aerofoil-1090` (`AF-31`).

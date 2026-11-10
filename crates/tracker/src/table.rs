@@ -1,7 +1,8 @@
 //! 64-shard striped track table implementing [`AddressFilter`] (`ADR-0005`).
 
 use crate::shard::{NUM_SHARDS, Shard, shard_index};
-use aerofoil_common::{AddressFilter, AddressType, AircraftTarget};
+use crate::update::TargetUpdate;
+use aerofoil_common::{AddressFilter, AddressType, AircraftTarget, AirspaceEvent};
 use core::array;
 
 /// Thread-safe sharded aircraft state table.
@@ -21,6 +22,12 @@ impl Default for Tracker {
 }
 
 impl Tracker {
+    /// Default time-to-live before an unrefreshed track is dropped (60 seconds).
+    pub const DEFAULT_TRACK_TTL_MS: u64 = 60_000;
+
+    /// Default duration after which a track is marked stale (15 seconds).
+    pub const DEFAULT_STALE_TTL_MS: u64 = 15_000;
+
     /// Constructs a new empty [`Tracker`] with 64 empty shards.
     #[must_use]
     pub fn new() -> Self {
@@ -119,6 +126,36 @@ impl Tracker {
             removed += before - guard.len();
         }
         removed
+    }
+
+    /// Ingests an incremental telemetry update, applying monotonic per-field updates (`SPEC.md` Invariant 10).
+    ///
+    /// Emits [`AirspaceEvent::TargetAcquired`] when an address is first observed,
+    /// or [`AirspaceEvent::TargetUpdated`] when existing track telemetry is updated.
+    #[inline]
+    pub fn update(&self, update: &TargetUpdate) -> AirspaceEvent {
+        let idx = shard_index(update.address);
+        self.shards[idx].write().apply_update(update)
+    }
+
+    /// Prunes expired tracks whose last observed timestamp is older than `ttl_ms` from `current_time_ms`.
+    ///
+    /// Emits [`AirspaceEvent::TargetLost`] for every dropped target.
+    pub fn prune_expired(&self, current_time_ms: u64, ttl_ms: u64) -> Vec<AirspaceEvent> {
+        let mut events = Vec::new();
+        for shard in &self.shards {
+            shard
+                .write()
+                .prune_expired(current_time_ms, ttl_ms, &mut events);
+        }
+        events
+    }
+
+    /// Returns `true` if a target's telemetry has not been updated within `DEFAULT_STALE_TTL_MS`.
+    #[inline]
+    #[must_use]
+    pub fn is_stale(target: &AircraftTarget, current_time_ms: u64) -> bool {
+        current_time_ms.saturating_sub(target.last_seen_ms) >= Self::DEFAULT_STALE_TTL_MS
     }
 }
 

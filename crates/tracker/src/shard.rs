@@ -2,7 +2,8 @@
 //!
 //! Defined in `ADR-0005`: 64 independent striped `parking_lot::RwLock` segments.
 
-use aerofoil_common::{AddressType, AircraftTarget};
+use crate::update::TargetUpdate;
+use aerofoil_common::{AddressType, AircraftTarget, AirspaceEvent};
 use parking_lot::RwLock;
 use std::collections::HashMap;
 
@@ -74,6 +75,41 @@ impl ShardData {
     /// Returns an iterator over all targets in this shard.
     pub fn values(&self) -> impl Iterator<Item = &AircraftTarget> {
         self.tracks.values()
+    }
+
+    /// Merges an incremental update into this shard, returning the resulting airspace event.
+    pub fn apply_update(&mut self, update: &TargetUpdate) -> AirspaceEvent {
+        let key = update.track_key();
+        if let Some(existing) = self.tracks.get_mut(&key) {
+            update.apply_to(existing);
+            AirspaceEvent::TargetUpdated(*existing)
+        } else {
+            let target = update.to_target();
+            self.tracks.insert(key, target);
+            AirspaceEvent::TargetAcquired(target)
+        }
+    }
+
+    /// Prunes targets whose age exceeds `ttl_ms`, collecting `TargetLost` events.
+    pub fn prune_expired(
+        &mut self,
+        current_time_ms: u64,
+        ttl_ms: u64,
+        events: &mut Vec<AirspaceEvent>,
+    ) {
+        let mut expired_keys = Vec::new();
+        for (key, target) in &self.tracks {
+            if current_time_ms.saturating_sub(target.last_seen_ms) >= ttl_ms {
+                expired_keys.push(*key);
+            }
+        }
+        for key in expired_keys {
+            self.tracks.remove(&key);
+            events.push(AirspaceEvent::TargetLost {
+                track_key: key,
+                timestamp_ms: current_time_ms,
+            });
+        }
     }
 }
 

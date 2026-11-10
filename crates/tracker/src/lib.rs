@@ -5,6 +5,8 @@
 
 pub mod shard;
 pub mod table;
+pub mod update;
 
 pub use shard::{NUM_SHARDS, Shard, ShardData, shard_index};
 pub use table::Tracker;
+pub use update::TargetUpdate;
