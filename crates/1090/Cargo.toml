@@ -1,0 +1,16 @@
+[package]
+name = "aerofoil-1090"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+description = "Mode S and 1090ES demodulation, CRC-24 parity division, burst error correction and DF parsing for aerofoil"
+
+[dependencies]
+aerofoil-common = { path = "../common", version = "0.1.0" }
+
+[lints]
+workspace = true

@@ -30,5 +30,6 @@ claim_ttl_minutes = 60
 verification_commands = [
     ["aerofoil", "cargo nextest run --workspace"],
     ["aerofoil-common", "cargo nextest run -p aerofoil-common"],
+    ["aerofoil-1090", "cargo nextest run -p aerofoil-1090"],
     ["aerofoil-978", "cargo nextest run -p aerofoil-978"],
 ]

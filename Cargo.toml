@@ -9,6 +9,7 @@
 resolver = "3"
 members = [
     "crates/common",
+    "crates/1090",
     "crates/978",
 ]
 # `scripts/reserve-namespaces.sh` writes throwaway placeholder crates here to claim the names on
