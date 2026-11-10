@@ -10,7 +10,7 @@ homepage.workspace = true
 description = "DO-282B UAT demodulation, RS(48,34) Reed-Solomon FEC, de-interleaving and payload parsing for aerofoil"
 
 [dependencies]
-aerofoil-common = { path = "../common", version = "0.1.0" }
+aerofoil-common = { path = "../common", version = "0.1.0-beta.1" }
 
 [lints]
 workspace = true

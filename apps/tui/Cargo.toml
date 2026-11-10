@@ -10,8 +10,8 @@ homepage.workspace = true
 description = "Terminal UI dashboard for aerofoil with Ratatui PPI radar and telemetry tables"
 
 [dependencies]
-aerofoil-common = { path = "../../crates/common", version = "0.1.0" }
-aerofoil-tracker = { path = "../../crates/tracker", version = "0.1.0" }
+aerofoil-common = { path = "../../crates/common", version = "0.1.0-beta.1" }
+aerofoil-tracker = { path = "../../crates/tracker", version = "0.1.0-beta.1" }
 crossterm = "0.29"
 ratatui = "0.30"
 

@@ -10,7 +10,7 @@ homepage.workspace = true
 description = "Mode S and 1090ES demodulation, CRC-24 parity division, burst error correction and DF parsing for aerofoil"
 
 [dependencies]
-aerofoil-common = { path = "../common", version = "0.1.0" }
+aerofoil-common = { path = "../common", version = "0.1.0-beta.1" }
 
 [dev-dependencies]
 criterion = "0.8"

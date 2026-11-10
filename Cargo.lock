@@ -4,7 +4,7 @@ version = 4
 
 [[package]]
 name = "aerofoil-1090"
-version = "0.1.0"
+version = "0.1.0-beta.1"
 dependencies = [
  "aerofoil-common",
  "criterion",
@@ -12,14 +12,14 @@ dependencies = [
 
 [[package]]
 name = "aerofoil-978"
-version = "0.1.0"
+version = "0.1.0-beta.1"
 dependencies = [
  "aerofoil-common",
 ]
 
 [[package]]
 name = "aerofoil-cli"
-version = "0.1.0"
+version = "0.1.0-beta.1"
 dependencies = [
  "aerofoil-1090",
  "aerofoil-common",
@@ -31,14 +31,14 @@ dependencies = [
 
 [[package]]
 name = "aerofoil-common"
-version = "0.1.0"
+version = "0.1.0-beta.1"
 dependencies = [
  "ts-rs",
 ]
 
 [[package]]
 name = "aerofoil-mcp"
-version = "0.1.0"
+version = "0.1.0-beta.1"
 dependencies = [
  "aerofoil-common",
  "aerofoil-tracker",
@@ -48,7 +48,7 @@ dependencies = [
 
 [[package]]
 name = "aerofoil-persistence"
-version = "0.1.0"
+version = "0.1.0-beta.1"
 dependencies = [
  "aerofoil-common",
  "serde",
@@ -57,11 +57,11 @@ dependencies = [
 
 [[package]]
 name = "aerofoil-sdr"
-version = "0.1.0"
+version = "0.1.0-beta.1"
 
 [[package]]
 name = "aerofoil-server"
-version = "0.1.0"
+version = "0.1.0-beta.1"
 dependencies = [
  "aerofoil-1090",
  "aerofoil-978",
@@ -74,7 +74,7 @@ dependencies = [
 
 [[package]]
 name = "aerofoil-tracker"
-version = "0.1.0"
+version = "0.1.0-beta.1"
 dependencies = [
  "aerofoil-common",
  "parking_lot",
@@ -82,7 +82,7 @@ dependencies = [
 
 [[package]]
 name = "aerofoil-tui"
-version = "0.1.0"
+version = "0.1.0-beta.1"
 dependencies = [
  "aerofoil-common",
  "aerofoil-tracker",
