@@ -9,6 +9,8 @@ use crate::{Altitude, Heading, Position, Squawk};
 
 /// Surveillance transponder address qualifier or type (`docs/SPEC.md` Invariant 10).
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[cfg_attr(feature = "export-ts", derive(ts_rs::TS))]
+#[cfg_attr(feature = "export-ts", ts(export))]
 pub enum AddressType {
     /// Standard 24-bit ICAO aircraft address.
     Icao,
@@ -26,6 +28,8 @@ pub enum AddressType {
 
 /// The RF protocol band / link transmitting the surveillance broadcast.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[cfg_attr(feature = "export-ts", derive(ts_rs::TS))]
+#[cfg_attr(feature = "export-ts", ts(export))]
 pub enum TransponderSource {
     /// 1090 MHz Mode S / Extended Squitter (DO-260B).
     ModeS1090,
@@ -35,6 +39,8 @@ pub enum TransponderSource {
 
 /// Surveillance broadcast reception provenance (`docs/SPEC.md` Invariant 10).
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[cfg_attr(feature = "export-ts", derive(ts_rs::TS))]
+#[cfg_attr(feature = "export-ts", ts(export))]
 pub enum ReceptionSource {
     /// Directly received RF broadcast from target transponder.
     Direct,
@@ -44,6 +50,8 @@ pub enum ReceptionSource {
 
 /// Kinematic 3D velocity and ground track.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Default)]
+#[cfg_attr(feature = "export-ts", derive(ts_rs::TS))]
+#[cfg_attr(feature = "export-ts", ts(export))]
 pub struct Velocity {
     /// Horizontal ground speed in whole knots, or `None` if unavailable.
     pub ground_speed_knots: Option<u16>,
@@ -71,6 +79,8 @@ impl Velocity {
 
 /// A tracked aircraft or surface target.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[cfg_attr(feature = "export-ts", derive(ts_rs::TS))]
+#[cfg_attr(feature = "export-ts", ts(export))]
 pub struct AircraftTarget {
     /// Transponder address type.
     pub address_type: AddressType,
@@ -134,6 +144,8 @@ impl AircraftTarget {
 
 /// Airspace and tracking events emitted when target state changes.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[cfg_attr(feature = "export-ts", derive(ts_rs::TS))]
+#[cfg_attr(feature = "export-ts", ts(export))]
 pub enum AirspaceEvent {
     /// Target first observed and admitted to state table.
     TargetAcquired(AircraftTarget),

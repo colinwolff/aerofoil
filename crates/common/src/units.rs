@@ -11,6 +11,8 @@ use core::fmt;
 
 /// What an altitude is measured against.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[cfg_attr(feature = "export-ts", derive(ts_rs::TS))]
+#[cfg_attr(feature = "export-ts", ts(export))]
 pub enum AltitudeKind {
     /// Pressure altitude referenced to 1013.25 hPa, as Mode S transmits it.
     Barometric,
@@ -24,6 +26,8 @@ pub enum AltitudeKind {
 /// 25 ft steps (ICAO Annex 10), and UAT geometric altitude reaches 100_000 ft (DO-282B). Each
 /// decoder enforces its own narrower encoding; this type only refuses values no protocol can carry.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[cfg_attr(feature = "export-ts", derive(ts_rs::TS))]
+#[cfg_attr(feature = "export-ts", ts(export))]
 pub struct Altitude {
     feet: i32,
     kind: AltitudeKind,
@@ -69,6 +73,8 @@ impl fmt::Display for Altitude {
 /// that packs digits into hex nibbles (where 8–F can appear) lands above [`Self::MAX`] and is
 /// refused rather than reinterpreted as some other code.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[cfg_attr(feature = "export-ts", derive(ts_rs::TS))]
+#[cfg_attr(feature = "export-ts", ts(export))]
 pub struct Squawk(u16);
 
 impl Squawk {
@@ -99,6 +105,8 @@ impl fmt::Display for Squawk {
 
 /// A heading in units of 1/128 degree, `0.0`–`359.9`, as ADS-B transmits it.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[cfg_attr(feature = "export-ts", derive(ts_rs::TS))]
+#[cfg_attr(feature = "export-ts", ts(export))]
 pub struct Heading(u16);
 
 impl Heading {

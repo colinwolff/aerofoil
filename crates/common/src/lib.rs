@@ -8,7 +8,7 @@
 //! Landed so far: the decoder error model ([`DecodeError`]), unit types ([`Altitude`], [`Squawk`],
 //! [`Heading`]), fixed-point coordinates ([`Latitude`], [`Longitude`], [`Position`]), global / local
 //! CPR decoding ([`cpr`]), and target telemetry models ([`AircraftTarget`]).
-#![no_std]
+#![cfg_attr(not(feature = "export-ts"), no_std)]
 
 mod coords;
 pub mod cpr;

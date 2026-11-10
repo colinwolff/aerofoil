@@ -9,5 +9,12 @@ repository.workspace = true
 homepage.workspace = true
 description = "Core aircraft state models, CPR coordinate transforms, units and shared decoder traits for aerofoil"
 
+[features]
+default = []
+export-ts = ["dep:ts-rs"]
+
+[dependencies]
+ts-rs = { version = "12", optional = true }
+
 [lints]
 workspace = true
