@@ -99,6 +99,11 @@ h1 {
   background: #06090e;
 }
 
+/* High-contrast dark radar filter for OpenStreetMap tiles (zero API key) */
+.dark-tiles .leaflet-tile-pane {
+  filter: brightness(0.6) invert(1) contrast(3) hue-rotate(200deg) saturate(0.3);
+}
+
 #table-container {
   background-color: var(--bg-panel);
   border-left: 1px solid var(--border-color);
