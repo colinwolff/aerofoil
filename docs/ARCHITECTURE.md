@@ -80,7 +80,7 @@ That keeps the decoders `no_std`, allocation-free and testable without hardware 
 * Implementation of global and local Compact Position Reporting (CPR) algorithms per DO-260B §2.2.3.2.5.
 
 ### 2.3 State Fusion Engine (`aerofoil-tracker`)
-* **Data Structure:** Sharded hash table partitioned across CPU cores. The concurrency mechanism is still open and is the subject of `ADR-0005`.
+* **Data Structure:** Sharded hash table partitioned across CPU cores using 64 independent striped `parking_lot::RwLock` segments (`ADR-0005`).
 * **Address Filter Implementation:** the tracker implements `aerofoil_common::AddressFilter` over its verified-address set, so a decoder's single-bit correction can consult tracking state without depending on it (`ADR-0004`).
 * **Target Disambiguation:** Tracks are keyed by `(AddressType, u32)` to isolate standard ICAO transponders from anonymous UAT self-assigned addresses.
 * **ADS-R Cross-Band Deduplication:** Prioritizes direct reception over re-broadcast targets within a spatial-temporal window ($\Delta t \le 1.0\text{s}, \Delta d \le 0.001^\circ$).

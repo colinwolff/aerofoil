@@ -11,6 +11,10 @@ crates, in the imperative, one line each, with the `storypole` task key in paren
 
 ## [Unreleased]
 
+### Changed
+
+- Accept ADR-0005 choosing striped parking_lot::RwLock shards for aerofoil-tracker (`AF-17`).
+
 ### Added
 
 - Add Criterion throughput benchmarks and counting allocator zero-allocation test harness in `aerofoil-1090` (`AF-32`).
