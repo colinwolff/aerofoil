@@ -5,7 +5,7 @@
     "": {
       "name": "aerofoil-web-radar",
       "dependencies": {
-        "@aerofoil/sdk": "file:../../sdk",
+        "@aerofoil-rs/sdk": "file:../../sdk",
         "leaflet": "^2.0.0-beta.3",
         "maplibre-gl": "^6.17.0",
         "topojson-client": "^3.1.0",
@@ -20,7 +20,7 @@
     },
   },
   "packages": {
-    "@aerofoil/sdk": ["@aerofoil/sdk@file:../../sdk", { "devDependencies": { "@types/bun": "latest", "typescript": "^7.0.2" } }],
+    "@aerofoil-rs/sdk": ["@aerofoil-rs/sdk@file:../../sdk", { "devDependencies": { "@types/bun": "latest", "typescript": "^7.0.2" } }],
 
     "@mapbox/jsonlint-lines-primitives": ["@mapbox/jsonlint-lines-primitives@2.0.3", "", {}, "sha512-0SElaV0uMxEnxzBhhX9WTuPyUeMsAN/SS0i16tjuba4/mio63MG9khjC1a0JAiPGXAwvwm4UfHJURCN7nyudQg=="],
 

@@ -1,7 +1,7 @@
 //! Vendor-agnostic AirspaceMapEngine interface.
 //! Provides a uniform abstraction over Leaflet 2.0 (DOM/Canvas) and MapLibre GL (WebGL/GPU).
 
-import type { TargetWire } from "@aerofoil/sdk";
+import type { TargetWire } from "@aerofoil-rs/sdk";
 
 export interface AirspaceLayerOptions {
   opacity?: number;

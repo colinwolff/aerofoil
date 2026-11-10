@@ -2,7 +2,7 @@
 
 Live browser PPI airspace radar and telemetry dashboard for `aerofoil-server`.
 
-Built with TypeScript, Vite, and Leaflet, consuming `@aerofoil/sdk`.
+Built with TypeScript, Vite, and Leaflet, consuming `@aerofoil-rs/sdk`.
 
 ## Quickstart
 

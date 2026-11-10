@@ -1,6 +1,6 @@
 //! Real-time target tracking and radar manager for aerofoil web frontend.
 
-import type { TargetWire } from "@aerofoil/sdk";
+import type { TargetWire } from "@aerofoil-rs/sdk";
 import type { AirspaceMapEngine } from "./layers/AirspaceMapEngine";
 import { classifyAirframe, renderAircraftSvg } from "./icons/AircraftIconMatrix";
 

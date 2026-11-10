@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
 import { AirspaceRadarManager, createPlaneSvg, isEmergencySquawk } from "../src/radar";
-import type { TargetWire } from "@aerofoil/sdk";
+import type { TargetWire } from "@aerofoil-rs/sdk";
 
 describe("AirspaceRadarManager", () => {
   test("identifies emergency squawks correctly", () => {

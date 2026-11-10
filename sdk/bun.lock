@@ -3,7 +3,7 @@
   "configVersion": 1,
   "workspaces": {
     "": {
-      "name": "@aerofoil/sdk",
+      "name": "@aerofoil-rs/sdk",
       "devDependencies": {
         "@types/bun": "latest",
         "typescript": "^7.0.2",

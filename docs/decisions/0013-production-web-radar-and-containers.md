@@ -21,12 +21,12 @@ Key architectural questions include:
 ## Considered Options
 
 ### Repository Boundary:
-1. **Standalone Repository (`aerofoil-web`):** Publish `@aerofoil/sdk` to npm and build the frontend
+1. **Standalone Repository (`aerofoil-web`):** Publish `@aerofoil-rs/sdk` to npm and build the frontend
    in a separate repository.
    - *Rejected:* Increases release coordination friction; prevents atomic end-to-end verification and
      shared TypeScript type synchronization with domain crate models during active pre-1.0 development.
 2. **First-Class Monorepo Application (`apps/web`)** (Chosen):
-   - Promote `examples/web-radar` to `apps/web` (`@aerofoil/web-radar`), directly consuming `@aerofoil/sdk`
+   - Promote `examples/web-radar` to `apps/web` (`@aerofoil-rs/web-radar`), directly consuming `@aerofoil-rs/sdk`
      via workspace protocol (`workspace:*`).
 
 ### Production API & Deployment Topology:
@@ -47,7 +47,7 @@ Chosen option: **First-class Monorepo App (`apps/web`) with Multi-Topology API S
 ### Operational Model:
 1. **Workspace Layout:**
    - Migrate `examples/web-radar` to `apps/web`.
-   - Maintain lockstep alignment with `@aerofoil/sdk`.
+   - Maintain lockstep alignment with `@aerofoil-rs/sdk`.
 2. **Containerization & Deployment:**
    - Multi-stage distroless Dockerfile building both `aerofoil-server` and `apps/web`.
    - Production Docker Compose and Kubernetes Helm chart providing deployment configurations for both

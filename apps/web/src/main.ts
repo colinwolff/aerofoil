@@ -1,6 +1,6 @@
 //! Main application entrypoint for aerofoil web radar.
 
-import { AerofoilClient, type TargetWire } from "@aerofoil/sdk";
+import { AerofoilClient, type TargetWire } from "@aerofoil-rs/sdk";
 import "leaflet/dist/leaflet.css";
 
 import { LeafletMapEngine } from "./layers/LeafletMapEngine";
@@ -116,7 +116,7 @@ async function initApp(): Promise<void> {
     radarManager = new AirspaceRadarManager(null);
   }
 
-  // 8. Stream Ingestion via @aerofoil/sdk
+  // 8. Stream Ingestion via @aerofoil-rs/sdk
   const params = new URLSearchParams(window.location.search);
   const customServer = params.get("server");
   const serverUrl = customServer
