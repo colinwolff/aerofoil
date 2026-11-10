@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "aerofoil.fullname" . }}
+  labels:
+    {{- include "aerofoil.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "aerofoil.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "aerofoil.selectorLabels" . | nindent 8 }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          args:
+            - "--port-1090"
+            - "{{ .Values.service.port1090 }}"
+            - "--port-978"
+            - "{{ .Values.service.port978 }}"
+            - "--port-egress"
+            - "{{ .Values.service.httpPort }}"
+          ports:
+            - name: http-egress
+              containerPort: {{ .Values.service.httpPort }}
+              protocol: TCP
+            - name: beast-1090
+              containerPort: {{ .Values.service.port1090 }}
+              protocol: TCP
+            - name: beast-978
+              containerPort: {{ .Values.service.port978 }}
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: http-egress
+            initialDelaySeconds: {{ .Values.probes.liveness.initialDelaySeconds }}
+            periodSeconds: {{ .Values.probes.liveness.periodSeconds }}
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: http-egress
+            initialDelaySeconds: {{ .Values.probes.readiness.initialDelaySeconds }}
+            periodSeconds: {{ .Values.probes.readiness.periodSeconds }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}

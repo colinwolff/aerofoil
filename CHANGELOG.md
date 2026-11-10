@@ -13,6 +13,7 @@ crates, in the imperative, one line each, with the `storypole` task key in paren
 
 ### Added
 
+- Add multi-stage distroless Dockerfile, Docker Compose stack, and Kubernetes deployment manifests / Helm chart (`AF-53`).
 - Implement unified static web UI serving on `GET /` and embedded fallback dashboard in `aerofoil-server` (`AF-52`).
 - Implement 12-class permissive SVG aircraft icon matrix, pluggable `AirspaceMapEngine`, and geodesic range rings in `apps/web` (`AF-54`).
 - Synthesize multi-waypoint kinematic flight loops with velocity squitters in dual_band_hub.beast and add live TCP capture utility (`AF-49`).

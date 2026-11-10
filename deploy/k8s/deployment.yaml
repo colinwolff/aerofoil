@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: aerofoil-server
+  labels:
+    app.kubernetes.io/name: aerofoil
+    app.kubernetes.io/component: server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: aerofoil
+      app.kubernetes.io/component: server
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: aerofoil
+        app.kubernetes.io/component: server
+    spec:
+      containers:
+        - name: aerofoil-server
+          image: aerofoil/server:0.1.0-beta.1
+          imagePullPolicy: IfNotPresent
+          args:
+            - "--port-1090"
+            - "30005"
+            - "--port-978"
+            - "30978"
+            - "--port-egress"
+            - "3000"
+          ports:
+            - name: http-egress
+              containerPort: 3000
+              protocol: TCP
+            - name: beast-1090
+              containerPort: 30005
+              protocol: TCP
+            - name: beast-978
+              containerPort: 30978
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: http-egress
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: http-egress
+            initialDelaySeconds: 2
+            periodSeconds: 5
+          resources:
+            requests:
+              cpu: 100m
+              memory: 64Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi

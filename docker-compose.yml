@@ -1,0 +1,34 @@
+version: "3.8"
+
+services:
+  aerofoil-server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: aerofoil-server
+    ports:
+      - "3000:3000"
+      - "30005:30005"
+      - "30978:30978"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "/app/aerofoil-cli", "--version"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  # Optional simulation feeder replaying synthetic traffic into aerofoil-server
+  aerofoil-replay:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: aerofoil-replay
+    entrypoint: ["/app/aerofoil-replay"]
+    command: ["--input", "/datasets/dual_band_hub.beast", "--format", "beast", "--tcp", "aerofoil-server:30005", "--rate", "1x", "--loop"]
+    volumes:
+      - ./datasets/fixtures/dual_band_hub.beast:/datasets/dual_band_hub.beast:ro
+    depends_on:
+      - aerofoil-server
+    restart: unless-stopped
+    profiles:
+      - demo

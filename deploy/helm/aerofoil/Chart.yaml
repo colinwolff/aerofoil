@@ -1,0 +1,15 @@
+apiVersion: v2
+name: aerofoil
+description: Production Helm chart for aerofoil dual-band surveillance radar and streaming daemon
+type: application
+version: 0.1.0-beta.1
+appVersion: "0.1.0-beta.1"
+keywords:
+  - ads-b
+  - uat
+  - surveillance
+  - aviation
+  - radar
+maintainers:
+  - name: Colin Wolff
+    url: https://github.com/colinwolff/aerofoil

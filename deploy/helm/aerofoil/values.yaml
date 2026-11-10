@@ -1,0 +1,43 @@
+# Default values for aerofoil Helm chart.
+
+replicaCount: 1
+
+image:
+  repository: aerofoil/server
+  pullPolicy: IfNotPresent
+  tag: "0.1.0-beta.1"
+
+service:
+  type: ClusterIP
+  httpPort: 3000
+  port1090: 30005
+  port978: 30978
+
+ingress:
+  enabled: false
+  className: "nginx"
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
+  hosts:
+    - host: radar.aerofoil.local
+      paths:
+        - path: /
+          pathType: Prefix
+  tls: []
+
+resources:
+  limits:
+    cpu: 500m
+    memory: 256Mi
+  requests:
+    cpu: 100m
+    memory: 64Mi
+
+probes:
+  liveness:
+    initialDelaySeconds: 5
+    periodSeconds: 10
+  readiness:
+    initialDelaySeconds: 2
+    periodSeconds: 5
