@@ -1,0 +1,17 @@
+[package]
+name = "aerofoil-tracker"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+description = "Sharded aircraft state table, ADS-R deduplication, and track lifecycle for aerofoil"
+
+[dependencies]
+aerofoil-common = { path = "../common", version = "0.1.0" }
+parking_lot = "0.12"
+
+[lints]
+workspace = true

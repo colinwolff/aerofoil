@@ -11,6 +11,7 @@ members = [
     "crates/common",
     "crates/1090",
     "crates/978",
+    "crates/tracker",
 ]
 # `scripts/reserve-namespaces.sh` writes throwaway placeholder crates here to claim the names on
 # crates.io. They live inside this directory, so Cargo must be told they are not members.

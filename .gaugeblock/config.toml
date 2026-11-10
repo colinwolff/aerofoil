@@ -32,4 +32,5 @@ verification_commands = [
     ["aerofoil-common", "cargo nextest run -p aerofoil-common"],
     ["aerofoil-1090", "cargo nextest run -p aerofoil-1090"],
     ["aerofoil-978", "cargo nextest run -p aerofoil-978"],
+    ["aerofoil-tracker", "cargo nextest run -p aerofoil-tracker"],
 ]
