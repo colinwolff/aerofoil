@@ -46,6 +46,10 @@ dependencies = [
 ]
 
 [[package]]
+name = "aerofoil-sdr"
+version = "0.1.0"
+
+[[package]]
 name = "aerofoil-tracker"
 version = "0.1.0"
 dependencies = [

@@ -1,0 +1,15 @@
+[package]
+name = "aerofoil-sdr"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+description = "SDR DSP demodulation and hardware streaming engine for 1090 MHz and 978 MHz surveillance"
+
+[dependencies]
+
+[lints]
+workspace = true

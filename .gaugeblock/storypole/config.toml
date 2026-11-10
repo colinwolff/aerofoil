@@ -12,6 +12,7 @@ allowed_crates = [
     "aerofoil-tui",
     "aerofoil-mcp",
     "aerofoil-persistence",
+    "aerofoil-sdr",
 ]
 claim_ttl_minutes = 60
 verification_commands = []

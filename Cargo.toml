@@ -13,6 +13,7 @@ members = [
     "crates/978",
     "crates/tracker",
     "crates/persistence",
+    "crates/sdr",
     "apps/cli",
     "apps/tui",
 ]

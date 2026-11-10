@@ -17,6 +17,7 @@ crates, in the imperative, one line each, with the `storypole` task key in paren
 
 ### Added
 
+- Add `aerofoil-sdr` with integer magnitude calculation, 1090 MHz PPM correlation, and 978 MHz FSK discrimination (`AF-25`).
 - Add `aerofoil-persistence` with bounded drop-oldest `RecordSink` and self-describing JSONL replay format (`AF-24`).
 - Implement `aerofoil-tui` Terminal UI dashboard with Ratatui PPI radar and telemetry tables (`AF-37`).
 - Implement `aerofoil-cli` with Beast and AVR stream parsing on stdin and JSON-lines on stdout (`AF-36`).
