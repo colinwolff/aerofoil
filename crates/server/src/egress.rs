@@ -93,8 +93,29 @@ impl Drop for EgressServer {
 
 fn dispatch_http_client(stream: TcpStream, tracker: Arc<Tracker>, shutdown: Arc<AtomicBool>) {
     let _ = stream.set_read_timeout(Some(Duration::from_millis(500)));
+    let _ = stream.set_nonblocking(false);
+
     let mut peek_buf = [0u8; 512];
-    let n = stream.peek(&mut peek_buf).unwrap_or(0);
+    let mut n = 0;
+    for _ in 0..100 {
+        match stream.peek(&mut peek_buf) {
+            Ok(bytes) if bytes > 0 => {
+                n = bytes;
+                break;
+            }
+            Ok(_) => thread::sleep(Duration::from_millis(5)),
+            Err(ref e)
+                if e.kind() == io::ErrorKind::WouldBlock || e.kind() == io::ErrorKind::TimedOut =>
+            {
+                thread::sleep(Duration::from_millis(5));
+            }
+            Err(_) => return,
+        }
+    }
+    if n == 0 {
+        return;
+    }
+
     let peek_str = std::str::from_utf8(&peek_buf[..n]).unwrap_or("");
     let is_ws = peek_str.starts_with("GET /ws")
         || peek_str.to_ascii_lowercase().contains("upgrade: websocket");
