@@ -1,6 +1,6 @@
 # Roadmap & Delivery Horizons: `aerofoil`
 
-> **Status:** pre-release (`0.1.0-beta.1` in progress, lockstep SemVer)
+> **Status:** pre-release (`0.1.0-beta.1` released, `0.1.0-beta.2` in progress, lockstep SemVer)
 > **Scope of record:** [`PROJECT.md`](./PROJECT.md) · **Invariants:** [`SPEC.md`](./SPEC.md)
 > **Task backlog:** `storypole` (`.gaugeblock/storypole/`), keys `AF-N`
 
