@@ -13,6 +13,7 @@ pub mod json;
 pub mod metrics;
 pub mod source;
 pub mod sse;
+pub mod web;
 pub mod ws;
 
 pub use beast::{BeastMessage, BeastReader};

@@ -78,7 +78,7 @@ when its crates compile, its tests pass and the tiered gates in `AGENTS.md` §3.
 - [x] Dependency modernization & Leaflet 2.0 sync: audit and upgrade all workspace Cargo crates and npm packages to latest releases; rebase `feat/leaflet-2.0` with OpenStreetMap basemap (`AF-48`).
 - [x] Kinematic trajectory simulation & real-world capture: add multi-waypoint flight loops to `dual_band_hub.beast` and live hub capture to `scripts/download-datasets.sh` (`AF-49`).
 - [x] Application promotion: migrate `examples/web-radar` to first-class workspace application `apps/web` (`@aerofoil/web-radar`) consuming `@aerofoil/sdk` (`AF-51`).
-- [ ] Multi-topology API & egress integration: implement unified embedded web UI serving on `aerofoil-server` (`GET /`), alongside decoupled ingress and edge CDN topologies (`AF-52`).
+- [x] Multi-topology API & egress integration: implement unified embedded web UI serving on `aerofoil-server` (`GET /`), alongside decoupled ingress and edge CDN topologies (`AF-52`).
 - [ ] Containerization & Kubernetes orchestration: multi-stage distroless Dockerfile, Docker Compose stack, and Kubernetes deployment manifests / Helm chart (`AF-53`).
 - [x] Best-in-class Web Radar UI/UX & Legal Governance: 12-class SVG aircraft icon matrix, pluggable `AirspaceMapEngine` (Leaflet 2.0 / MapLibre GL), TopoJSON FAA airspace boundaries, FAA VFR/IFR chart tiles with fallback, dynamic range rings and azimuths, RainViewer NEXRAD weather radar with scrubber dock, dynamic attribution control, and legal compliance modal (`AF-54`).
 

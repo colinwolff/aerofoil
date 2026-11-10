@@ -1,7 +1,7 @@
-//! HTTP/1.1 Egress server dispatching SSE and WebSocket connections.
+//! HTTP/1.1 Egress server dispatching SSE, WebSocket, and static web UI requests.
 
 use std::{
-    io::{self, BufRead, BufReader, Write},
+    io::{self, BufRead, BufReader},
     net::{TcpListener, TcpStream},
     sync::{
         Arc,
@@ -13,7 +13,7 @@ use std::{
 
 use aerofoil_tracker::Tracker;
 
-use crate::{sse::handle_sse_stream, ws::handle_ws_client};
+use crate::{sse::handle_sse_stream, web::serve_http_response, ws::handle_ws_client};
 
 /// Default egress port for HTTP/SSE/WebSocket streaming.
 pub const DEFAULT_EGRESS_PORT: u16 = 3000;
@@ -147,21 +147,7 @@ fn dispatch_http_client(stream: TcpStream, tracker: Arc<Tracker>, shutdown: Arc<
 
     if request_line.starts_with("GET /events") {
         let _ = handle_sse_stream(raw_stream, tracker, shutdown, last_event_id);
-    } else if request_line.starts_with("GET /health") || request_line.starts_with("GET / ") {
-        let count = tracker.len();
-        let body = format!("{{\"status\":\"ok\",\"tracks\":{count}}}\n");
-        let resp = format!(
-            "HTTP/1.1 200 OK\r\nContent-Type: application/json\r\nContent-Length: {}\r\nConnection: close\r\n\r\n{}",
-            body.len(),
-            body
-        );
-        let mut s = raw_stream;
-        let _ = s.write_all(resp.as_bytes());
-        let _ = s.flush();
     } else {
-        let resp = b"HTTP/1.1 404 Not Found\r\nContent-Length: 0\r\nConnection: close\r\n\r\n";
-        let mut s = raw_stream;
-        let _ = s.write_all(resp);
-        let _ = s.flush();
+        let _ = serve_http_response(raw_stream, &tracker, &request_line);
     }
 }
