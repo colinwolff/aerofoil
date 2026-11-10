@@ -106,6 +106,7 @@ That keeps the decoders `no_std`, allocation-free and testable without hardware 
 
 ### 4.1 Terminal UI Dashboard (`aerofoil-tui`)
 * Standalone terminal application in `apps/tui` built with Ratatui.
+* Dual-mode streaming (`ADR-0012`): connects as a client directly to Beast TCP streams (ports 30005/30978) from any feeder (`dump1090`, `readsb`, `aerofoil-server`), or to `aerofoil-server` WebSocket egress via `--ws <url>`.
 * Canvas-based Plan Position Indicator (PPI) radar display with customizable range rings and directional heading vectors.
 * Interactive keyboard-driven airspace filtering (by altitude band, link source, emergency squawk, or callsign prefix).
 * Telemetry inspector showing signal recovery metrics, squawk alerts (`7500`, `7600`, `7700`), and real-time message rates.
@@ -113,11 +114,16 @@ That keeps the decoders `no_std`, allocation-free and testable without hardware 
 ### 4.2 Streaming Server & Unix CLI (`aerofoil-server` & `aerofoil-cli`)
 * `aerofoil-cli`: Minimal Unix-filter binary reading Beast or AVR hex from `stdin` and emitting validated JSON-lines to `stdout`.
 * `aerofoil-server`: Multi-source TCP ingest daemon multiplexing 1090 MHz and 978 MHz streams into the tracker, broadcasting updates via SSE, WebSocket, and gRPC.
+* Serves pre-built `web-radar` static assets at `GET /` for zero-dependency single-binary edge/Pi deployments (`ADR-0012`).
 
-### 4.3 AI Agent Integration (`aerofoil-mcp`)
+### 4.3 Standalone Replay Engine (`aerofoil-replay`)
+* Standalone replay binary in `apps/replay` capable of replaying Beast binary, AVR hex, JSONL, and raw I/Q samples (`ADR-0011`).
+* Variable playback speed (`1x`, `2x`, `5x`, `10x`, `burst`, `--loop`) streaming to TCP sockets or stdout for both live UI inspection and high-throughput macrobenchmarks.
+
+### 4.4 AI Agent Integration (`aerofoil-mcp`)
 * Model Context Protocol (MCP) server communicating over stdio JSON-RPC 2.0.
 * Exposes tools (`get_airspace_summary`, `get_track`, `find_closest`) for autonomous LLM agents to query live airspace state.
 
-### 4.4 TypeScript Client SDK (`sdk/`) & Web Demo (`examples/web-radar`)
-* `sdk/`: Lightweight TypeScript package (`AerofoilClient`) consuming generated `ts-rs` type definitions from `aerofoil-common`, offering auto-reconnecting WebSocket/SSE subscriptions and event-emitter dispatching.
-* `examples/web-radar`: Reference single-page application built with Vite and Leaflet, displaying live airspace targets on a dark-mode interactive map with rotated SVG aircraft markers and sortable telemetry tables.
+### 4.5 TypeScript Client SDK (`sdk/`) & Web Demo (`examples/web-radar`)
+* `sdk/`: Lightweight TypeScript package (`AerofoilClient`) built with Bun, consuming generated `ts-rs` type definitions from `aerofoil-common`, offering auto-reconnecting WebSocket/SSE subscriptions and event-emitter dispatching.
+* `examples/web-radar`: Single-page application built with Bun, Vite, and Leaflet, displaying live airspace targets on a dark-mode interactive map with rotated SVG aircraft markers and sortable telemetry tables. Runs via `bun dev` or builds into `dist/` for embedded server hosting (`ADR-0012`).

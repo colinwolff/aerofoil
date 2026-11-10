@@ -1,6 +1,6 @@
 # Roadmap & Delivery Horizons: `aerofoil`
 
-> **Status:** pre-release (`0.0.0`, nothing published)
+> **Status:** pre-release (`0.1.0` in progress, lockstep SemVer)
 > **Scope of record:** [`PROJECT.md`](./PROJECT.md) · **Invariants:** [`SPEC.md`](./SPEC.md)
 > **Task backlog:** `storypole` (`.gaugeblock/storypole/`), keys `AF-N`
 
@@ -9,7 +9,7 @@ when its crates compile, its tests pass and the tiered gates in `AGENTS.md` §3.
 
 ---
 
-## 0. Bootstrap (current)
+## 0. Bootstrap (completed)
 
 - [x] Repository charter, architecture specification, low-level design and MADR records.
 - [x] Operating contract (`AGENTS.md`) with the 250/200 line policy, atomic commits, lockstep SemVer,
@@ -18,12 +18,12 @@ when its crates compile, its tests pass and the tiered gates in `AGENTS.md` §3.
 - [x] gaugeblock suite state and the canonical 9-document map (`.gaugeblock/docs.toml`).
 - [x] Workspace manifest (`Cargo.toml`) with `[workspace.package]`, shared lints and `rust-version`,
       plus `aerofoil-common` as the first member so the workspace is buildable (`AF-2`).
-- [ ] CI workflow running Tier 2/3 on every push.
-- [ ] Per-crate `verification_commands` registered in `.gaugeblock/config.toml`.
+- [x] CI workflow running Tier 2/3 on every push (`AF-3`).
+- [x] Per-crate `verification_commands` registered in `.gaugeblock/config.toml` (`AF-4`).
 
 ---
 
-## 1. Milestone 1 — Core Primitives & 978 UAT Foundation
+## 1. Milestone 1 — Core Primitives & 978 UAT Foundation (completed)
 
 - [x] `aerofoil-common`: `no_std` state models, units, CPR latitude/longitude decoders with the fixed
       60-entry `NL` table (`SPEC.md` Invariant 9), domain telemetry models (`SPEC.md` Invariant 10),
@@ -38,43 +38,45 @@ when its crates compile, its tests pass and the tiered gates in `AGENTS.md` §3.
 
 ---
 
-## 2. Milestone 2 — 1090 Mode S & Error Correction
+## 2. Milestone 2 — 1090 Mode S & Error Correction (completed)
 
-- [ ] `aerofoil-1090`: CRC-24 syndrome with a precomputed 256-word table and a `pclmulqdq`/`pmull`
-      fast path behind a runtime-detected feature.
-- [ ] Downlink formats DF0, DF4, DF5, DF11, DF17, DF18, DF20, DF21 (`SPEC.md` Invariant 6).
-- [ ] Address-filtered single-bit correction against the tracker's verified address set (ADR-0003).
-- [ ] Throughput benchmark targeting `> 2×10^6` frames/sec/core on a single core, tracked in CI.
+- [x] `aerofoil-1090`: CRC-24 syndrome with precomputed table and runtime-detected SIMD CLMUL/PMULL
+      acceleration (`AF-28`, `AF-31`).
+- [x] Downlink formats DF0, DF4, DF5, DF11, DF17, DF18, DF20, DF21 zero-copy bitfield parsing (`AF-29`).
+- [x] Address-filtered single-bit correction against the tracker's verified address set (`AF-30`).
+- [x] Criterion throughput benchmarks and zero-allocation harness on decode hot paths (`AF-32`).
 
-**Exit criteria:** ICAO Annex 10 test vectors pass; correction never fabricates a new address.
-
----
-
-## 3. Milestone 3 — Fusion Tracker, CLI & TUI Dashboard
-
-- [ ] `aerofoil-tracker`: sharded track table keyed by `(AddressType, u32)` with TTL expiry
-      (`SPEC.md` Invariant 10).
-- [ ] ADS-R/TIS-B deduplication within `Δt ≤ 1.0 s`, `Δd ≤ 0.001°`; direct reception always wins.
-- [ ] `aerofoil-cli`: Beast and AVR ingestion on `stdin`, JSON-lines on `stdout`, well-behaved under
-      `SIGPIPE` (`cat feed.bin | aerofoil-cli | jq`).
-- [ ] `aerofoil-tui` (`apps/tui`): Terminal UI dashboard using Ratatui with a canvas-based PPI radar display, range rings, heading vectors, interactive airspace filters, and emergency squawk alerts (7500/7600/7700).
-
-**Exit criteria:** a recorded capture replays to identical JSON on two machines; zero allocations per
-frame on the hot path; interactive TUI displays live radar without frame drop.
+**Exit criteria:** ICAO Annex 10 test vectors pass; correction never fabricates a new address; verified under `AF-16`.
 
 ---
 
-## 4. Milestone 4 — Networking, MCP Agent Integration & Client Ecosystem
+## 3. Milestone 3 — Fusion Tracker, CLI & TUI Dashboard (completed)
 
-- [ ] `aerofoil-server`: TCP Beast ingest as two named, band-tagged sources in one process (30005 for 1090, 30978 for 978), SSE and gRPC streams with backpressure; `aerofoil-cli` stays single-stream (`ADR-0010`).
-- [ ] `aerofoil-mcp`: tools `get_airspace_summary`, `get_track(icao)`, `find_closest(lat, lon)`
-      over JSON-RPC 2.0 stdio; logs to stderr only (`SPEC.md` §5).
-- [ ] `sdk/`: TypeScript client SDK package (`AerofoilClient`) consuming generated `ts-rs` definitions with auto-reconnecting WebSocket/SSE streaming.
-- [ ] `examples/web-radar/`: Single-page Vite + Leaflet web demo with dark mode, rotated aircraft icons, and live telemetry table connected via `sdk/`.
-- [ ] End-to-end test on a recorded high-density airport dataset.
+- [x] `aerofoil-tracker`: 64-shard striped `parking_lot::RwLock` table keyed by `(AddressType, u32)` with
+      monotonic field merging and TTL expiry (`SPEC.md` Invariant 10) (`AF-33`, `AF-34`).
+- [x] ADS-R cross-band deduplication prioritizing direct reception (`Δt ≤ 1.0 s`, `Δd ≤ 0.001°`) (`AF-35`).
+- [x] `aerofoil-cli`: Beast and AVR stream ingestion on `stdin`, JSON-lines on `stdout` (`AF-36`).
+- [x] `aerofoil-tui` (`apps/tui`): Terminal UI dashboard using Ratatui with a canvas-based PPI radar display,
+      range rings, heading vectors, interactive airspace filters, and emergency squawk alerts (`AF-37`).
 
-**Exit criteria:** `0.1.0` cut with a tagged release, fresh `Cargo.lock`, and `chalkline docs check`
-green.
+**Exit criteria:** capture replays to identical JSON; zero allocations per frame on hot path; interactive TUI displays live radar without frame drop; verified under `AF-17`.
+
+---
+
+## 4. Milestone 4 — Networking, MCP Agent Integration & Client Ecosystem (current)
+
+- [x] `aerofoil-server`: Dual-source TCP Beast ingest on 30005 (1090) and 30978 (978) (`AF-38`).
+- [x] `aerofoil-server`: SSE (`GET /events`) and WebSocket (`GET /ws`) egress streaming with Last-Event-ID resume and subscription filters (`AF-39`).
+- [x] `aerofoil-mcp`: Stdio JSON-RPC 2.0 MCP server with tools `get_airspace_summary`, `get_track`, and `find_closest` (`AF-40`).
+- [x] Wire contracts: `docs/CONTRACTS.md` single source of truth and `miter contracts --check` gate (`AF-23`).
+- [ ] `datasets/`: High-density public scenario captures (1090 commercial hub, mixed dual-band, edge-case bitflips) and download script (`AF-41`).
+- [ ] `aerofoil-replay` (`apps/replay`): Standalone multi-tier surveillance replay engine for Beast, AVR, JSONL, and raw I/Q datasets with variable pacing (`1x`, `2x`, `5x`, `10x`, `burst`, `--loop`) (`AF-42`).
+- [ ] `aerofoil-tui`: Dual-mode client streaming from Beast TCP sockets (default 30005/30978) or server WebSocket (`--ws`) (`AF-43`).
+- [ ] `sdk/`: TypeScript client SDK package (`AerofoilClient`) built with Bun, consuming `ts-rs` definitions with auto-reconnecting WebSocket/SSE streaming (`AF-44`).
+- [ ] `examples/web-radar/`: Single-page Bun + Vite + Leaflet web demo with dark mode, rotated aircraft markers, and telemetry table (`AF-45`).
+- [ ] End-to-end dataset throughput macrobenchmarks and Criterion microbenchmarks across 1090 & 978 (`AF-46`).
+
+**Exit criteria:** `0.1.0-beta.1` release tagged with lockstep SemVer, verified multi-band ingestion, dual-mode TUI and web radar verified against recorded high-density traffic.
 
 ---
 
@@ -84,10 +86,7 @@ green.
   the table-driven and CLMUL CRC paths, and a published throughput regression budget.
 - **H2 — Breadth:** uplink `RS(92, 72)` and FIS-B APDU disassembly, UAT uplink scheduling, multi-band
   time-synchronised fusion.
-- **H3 — Operations:** Prometheus metrics, structured `tracing` spans per pipeline stage, replayable
-  recording format, packaging for Raspberry Pi and container images.
+- **H3 — Operations:** Prometheus metrics, structured `tracing` spans per pipeline stage, packaging for
+  Raspberry Pi and container images (Docker, K8s Akri discovery).
 - **H4 — Ecosystem:** stable gRPC/protobuf surface, `no_std` embedded example on Cortex-M, and
   long-term wire compatibility guarantees (append-only enums, never-reused field numbers).
-
-Out of scope remains as stated in [`PROJECT.md`](./PROJECT.md) §2: direct SDR sample streaming and
-full FIS-B raster rendering.

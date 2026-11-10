@@ -39,9 +39,10 @@ Cargo virtual workspace. Do not blur crate responsibilities:
 | `aerofoil-cli` | `apps/cli` | Unix pipeline frontend (`stdin` bytes to `stdout` JSON). |
 | `aerofoil-tui` | `apps/tui` | Terminal UI dashboard with Ratatui PPI radar and telemetry tables. |
 | `aerofoil-mcp` | `apps/mcp` | JSON-RPC MCP server over stdio. Tool surface only. |
+| `aerofoil-replay` | `apps/replay` | Standalone multi-tier surveillance and RF sample replay engine. |
 
 Dependency edges point one way only — foundation (`common`) → domain (`1090`, `978`, `tracker`) →
-integrator (`server`, `cli`, `tui`, `mcp`). No lateral edges between protocol engines, and no frontend
+integrator (`server`, `cli`, `tui`, `mcp`, `replay`). No lateral edges between protocol engines, and no frontend
 logic leaking downward. `miter deps --path . --unused` proves declared dependencies are used.
 
 ---

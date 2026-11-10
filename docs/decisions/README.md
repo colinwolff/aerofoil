@@ -36,6 +36,8 @@ accepted record destroy the audit trail — write `ADR-NNNN` that supersedes it 
 | [0008](./ADR-0008.md) | Proposed | Long-term organisation handle: `aerofoil-labs`, `aerofoil-rs`, `aerofoil-hq`, stay personal, or a coined name |
 | [0009](./ADR-0009.md) | Accepted | Persistence seam now, storage engine later; live track state is never persisted across restarts |
 | [0010](./ADR-0010.md) | Accepted | Frames in, one fusion process over N band-tagged sources; demodulation lives in `aerofoil-sdr` |
+| [0011](./ADR-0011.md) | Accepted | Dedicated standalone replay tool (`aerofoil-replay`) and multi-tier datasets |
+| [0012](./ADR-0012.md) | Accepted | Dual-mode terminal UI (`aerofoil-tui`) and hybrid Bun/embedded web radar architecture |
 
 ## Process
 

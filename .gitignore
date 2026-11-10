@@ -105,3 +105,12 @@ Thumbs.db
 agent_scratchpad.md
 agent_todo.md
 *.log
+
+# =============================================================================
+# Large External Surveillance Datasets (Raw Downloads)
+# =============================================================================
+datasets/raw/
+*.pcap
+*.cf32
+*.cu8
+
