@@ -23,7 +23,7 @@ describe("AirspaceRadarManager", () => {
   });
 
   test("manages and sorts target states", () => {
-    const manager = new AirspaceRadarManager(null, null);
+    const manager = new AirspaceRadarManager(null);
 
     const t1: TargetWire = {
       schema: "aerofoil.target",
@@ -53,7 +53,13 @@ describe("AirspaceRadarManager", () => {
 
     const targets = manager.getTargets();
     expect(targets.length).toBe(2);
-    expect(targets.map((t) => t.address)).toContain("4840D6");
-    expect(targets.map((t) => t.address)).toContain("40621D");
+
+    const klm = targets.find((t) => t.callsign === "KLM1023");
+    expect(klm).toBeDefined();
+    expect(klm?.altitude).toBe(38000);
+
+    const baw = targets.find((t) => t.callsign === "BAW142");
+    expect(baw).toBeDefined();
+    expect(baw?.squawk).toBe("7700");
   });
 });

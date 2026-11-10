@@ -1,17 +1,18 @@
 import { AerofoilClient, type TargetWire } from "@aerofoil/sdk";
-import L from "leaflet";
+import { LeafletMap, TileLayer } from "leaflet";
+import "leaflet/dist/leaflet.css";
 import { AirspaceRadarManager } from "./radar";
 
 function initApp(): void {
   const mapElement = document.getElementById("map");
   let radarManager: AirspaceRadarManager;
 
-  if (mapElement && typeof L !== "undefined") {
+  if (mapElement) {
     const params = new URLSearchParams(window.location.search);
     const cartoKey = params.get("carto_key");
     const customTiles = params.get("tiles");
 
-    const map = L.map("map", {
+    const map = new LeafletMap("map", {
       center: [52.3676, 4.9041], // Default: Amsterdam FIR
       zoom: 8,
       zoomControl: true,
@@ -31,14 +32,14 @@ function initApp(): void {
       mapElement.classList.add("dark-tiles");
     }
 
-    L.tileLayer(tileUrl, {
+    new TileLayer(tileUrl, {
       attribution,
       maxZoom: 19,
     }).addTo(map);
 
-    radarManager = new AirspaceRadarManager(map, L);
+    radarManager = new AirspaceRadarManager(map);
   } else {
-    radarManager = new AirspaceRadarManager(null, null);
+    radarManager = new AirspaceRadarManager(null);
   }
 
   const params = new URLSearchParams(window.location.search);
@@ -68,8 +69,10 @@ function initApp(): void {
   });
 }
 
-if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", initApp);
-} else {
-  initApp();
+if (typeof document !== "undefined") {
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initApp);
+  } else {
+    initApp();
+  }
 }

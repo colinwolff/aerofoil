@@ -1,5 +1,5 @@
 import type { TargetWire } from "@aerofoil/sdk";
-import type L from "leaflet";
+import { DivIcon, LeafletMap, Marker, type LatLngExpression } from "leaflet";
 
 export function isEmergencySquawk(squawk?: string): boolean {
   if (!squawk) return false;
@@ -19,12 +19,9 @@ export function createPlaneSvg(heading: number, emergency: boolean): string {
 
 export class AirspaceRadarManager {
   private targets: Map<string, TargetWire> = new Map();
-  private markers: Map<string, L.Marker> = new Map();
+  private markers: Map<string, Marker> = new Map();
 
-  constructor(
-    private map: L.Map | null,
-    private leafletLib: typeof L | null,
-  ) {}
+  constructor(private map: LeafletMap | null = null) {}
 
   public updateTarget(target: TargetWire): void {
     const key = target.address.toUpperCase();
@@ -33,12 +30,12 @@ export class AirspaceRadarManager {
     const lat = target.latitude ?? target.lat;
     const lon = target.longitude ?? target.lon;
 
-    if (lat != null && lon != null && this.map && this.leafletLib) {
+    if (lat != null && lon != null && this.map) {
       const heading = target.heading_degrees ?? target.heading ?? 0;
       const isEmergency = isEmergencySquawk(target.squawk);
 
       const iconHtml = createPlaneSvg(heading, isEmergency);
-      const icon = this.leafletLib.divIcon({
+      const icon = new DivIcon({
         html: iconHtml,
         className: "custom-plane-icon",
         iconSize: [28, 28],
@@ -47,11 +44,11 @@ export class AirspaceRadarManager {
 
       let marker = this.markers.get(key);
       if (!marker) {
-        marker = this.leafletLib.marker([lat, lon], { icon }).addTo(this.map);
+        marker = new Marker([lat, lon] as LatLngExpression, { icon }).addTo(this.map);
         marker.bindPopup(`<b>${target.callsign ?? target.address}</b><br/>Alt: ${target.altitude ?? "--"} ft<br/>Squawk: ${target.squawk ?? "--"}`);
         this.markers.set(key, marker);
       } else {
-        marker.setLatLng([lat, lon]);
+        marker.setLatLng([lat, lon] as LatLngExpression);
         marker.setIcon(icon);
       }
     }
