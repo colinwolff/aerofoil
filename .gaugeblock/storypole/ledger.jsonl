@@ -181,3 +181,5 @@
 {"event":"status_changed","task_id":"1bd83f27-3b16-40a1-9b0f-54529b685f52","from":"blocked","to":"ready","reason":"Dependency AF-28 verified","timestamp_ms":1794275558486}
 {"event":"status_changed","task_id":"9c10351d-04dc-43a8-9622-0614057490de","from":"blocked","to":"ready","reason":"Dependency AF-28 verified","timestamp_ms":1794275558486}
 {"event":"status_changed","task_id":"a20a7920-895c-4db6-8484-2789c751950a","from":"blocked","to":"ready","reason":"Dependency AF-28 verified","timestamp_ms":1794275558486}
+{"event":"task_claimed","task_id":"a20a7920-895c-4db6-8484-2789c751950a","claim":{"agent_id":"gemini","claimed_at_epoch_ms":1794278325166,"lease_expires_at_epoch_ms":1794281925166,"git_branch":"feat/af-29-df-parsers","base_commit_sha":null}}
+{"event":"status_changed","task_id":"a20a7920-895c-4db6-8484-2789c751950a","from":"ready","to":"in_progress","reason":"Claimed by gemini","timestamp_ms":1794278325166}

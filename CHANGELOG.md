@@ -13,6 +13,8 @@ crates, in the imperative, one line each, with the `storypole` task key in paren
 
 ### Added
 
+- Implement zero-copy Mode S Downlink Format bitfield parsers for DF0, DF4, DF5, DF11, DF17, DF18, DF20, and DF21 in `aerofoil-1090` (`AF-29`).
+
 - Scaffold `aerofoil-1090` with Mode S CRC-24 polynomial division and precomputed lookup table (`AF-28`).
 - Add Terminal UI dashboard (`aerofoil-tui`), TypeScript SDK (`sdk/`), and web radar demo (`examples/web-radar`) to architecture specifications and delivery roadmap.
 - Add optional `export-ts` feature to `aerofoil-common` using `ts-rs` for TypeScript definitions (`AF-27`).

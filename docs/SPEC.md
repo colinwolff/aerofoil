@@ -79,6 +79,9 @@ A change that violates a clause here is a defect regardless of which crate it la
 | 21 | 112 | Data parity (Comm-B identity) | yes | long-frame parser |
 
 An unlisted DF is `DecodeError::UnsupportedFormat`, not an inference.
+Surveillance reply operational states and alerting conditions are formally captured by `FlightStatus`
+and transponder capability by `TransponderCapability`. Airborne position reports convey status via
+`SurveillanceStatus`.
 
 ---
 
