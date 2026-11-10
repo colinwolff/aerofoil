@@ -37,10 +37,11 @@ Cargo virtual workspace. Do not blur crate responsibilities:
 | `aerofoil-tracker` | `crates/tracker` | Sharded aircraft state table, ADS-R deduplication, track lifecycle. |
 | `aerofoil-server` | `crates/server` | Streaming daemon: Beast, AVR, JSON-lines, SSE, gRPC. Transport only. |
 | `aerofoil-cli` | `apps/cli` | Unix pipeline frontend (`stdin` bytes to `stdout` JSON). |
+| `aerofoil-tui` | `apps/tui` | Terminal UI dashboard with Ratatui PPI radar and telemetry tables. |
 | `aerofoil-mcp` | `apps/mcp` | JSON-RPC MCP server over stdio. Tool surface only. |
 
 Dependency edges point one way only — foundation (`common`) → domain (`1090`, `978`, `tracker`) →
-integrator (`server`, `cli`, `mcp`). No lateral edges between protocol engines, and no frontend
+integrator (`server`, `cli`, `tui`, `mcp`). No lateral edges between protocol engines, and no frontend
 logic leaking downward. `miter deps --path . --unused` proves declared dependencies are used.
 
 ---

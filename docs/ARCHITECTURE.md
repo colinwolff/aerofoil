@@ -38,13 +38,26 @@ The system is organized into decoupled layers, separating bit-level math and par
                            | - Track State / History  |
                            +------------+-------------+
                                         |
-         +------------------------------+------------------------------+
-         |                              |                              |
-         v                              v                              v
-+------------------+          +-------------------+          +------------------+
-|   aerofoil-cli   |          |  aerofoil-server  |          |   aerofoil-mcp   |
-| (Unix Pipes/TTY) |          | (TCP/gRPC/Beast)  |          |  (JSON-RPC / AI) |
-+------------------+          +-------------------+          +------------------+
+         +--------------------+--------------------+--------------------+
+         |                    |                    |                    |
+         v                    v                    v                    v
++------------------+  +------------------+  +-------------------+  +------------------+
+|   aerofoil-cli   |  |   aerofoil-tui   |  |  aerofoil-server  |  |   aerofoil-mcp   |
+| (Unix Pipes/TTY) |  | (Ratatui Radar)  |  | (TCP/gRPC/Beast)  |  |  (JSON-RPC / AI) |
++------------------+  +------------------+  +---------+---------+  +------------------+
+                                                      |
+                                                      | SSE / WebSocket / gRPC
+                                                      v
+                                            +-------------------+
+                                            |       sdk/        |
+                                            | (TypeScript SDK)  |
+                                            +---------+---------+
+                                                      |
+                                                      v
+                                            +-------------------+
+                                            | examples/web-radar|
+                                            |  (Vite + Leaflet) |
+                                            +-------------------+
 ```
 
 Sources hand this pipeline **framed bytes, never samples**: demodulation for both bands lives in
@@ -82,3 +95,25 @@ That keeps the decoders `no_std`, allocation-free and testable without hardware 
    * Invalid or uncorrectable frames are dropped immediately without hitting the tracker.
 3. **Tracker Dispatch:** Valid updates are applied via atomic or short-lived read-write locks to the track table.
 4. **Egress Stage:** Subscribers receive state change events over non-blocking broadcast channels.
+
+---
+
+## 4. Frontends & Client Ecosystem
+
+### 4.1 Terminal UI Dashboard (`aerofoil-tui`)
+* Standalone terminal application in `apps/tui` built with Ratatui.
+* Canvas-based Plan Position Indicator (PPI) radar display with customizable range rings and directional heading vectors.
+* Interactive keyboard-driven airspace filtering (by altitude band, link source, emergency squawk, or callsign prefix).
+* Telemetry inspector showing signal recovery metrics, squawk alerts (`7500`, `7600`, `7700`), and real-time message rates.
+
+### 4.2 Streaming Server & Unix CLI (`aerofoil-server` & `aerofoil-cli`)
+* `aerofoil-cli`: Minimal Unix-filter binary reading Beast or AVR hex from `stdin` and emitting validated JSON-lines to `stdout`.
+* `aerofoil-server`: Multi-source TCP ingest daemon multiplexing 1090 MHz and 978 MHz streams into the tracker, broadcasting updates via SSE, WebSocket, and gRPC.
+
+### 4.3 AI Agent Integration (`aerofoil-mcp`)
+* Model Context Protocol (MCP) server communicating over stdio JSON-RPC 2.0.
+* Exposes tools (`get_airspace_summary`, `get_track`, `find_closest`) for autonomous LLM agents to query live airspace state.
+
+### 4.4 TypeScript Client SDK (`sdk/`) & Web Demo (`examples/web-radar`)
+* `sdk/`: Lightweight TypeScript package (`AerofoilClient`) consuming generated `ts-rs` type definitions from `aerofoil-common`, offering auto-reconnecting WebSocket/SSE subscriptions and event-emitter dispatching.
+* `examples/web-radar`: Reference single-page application built with Vite and Leaflet, displaying live airspace targets on a dark-mode interactive map with rotated SVG aircraft markers and sortable telemetry tables.

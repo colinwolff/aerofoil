@@ -13,6 +13,7 @@ crates, in the imperative, one line each, with the `storypole` task key in paren
 
 ### Added
 
+- Add Terminal UI dashboard (`aerofoil-tui`), TypeScript SDK (`sdk/`), and web radar demo (`examples/web-radar`) to architecture specifications and delivery roadmap.
 - Add optional `export-ts` feature to `aerofoil-common` using `ts-rs` for TypeScript definitions (`AF-27`).
 - Implement domain telemetry and aircraft target models in `aerofoil-common` (`AF-26`).
 - Add the zero-allocation proof harness asserting zero heap traffic on decode paths (`AF-15`).

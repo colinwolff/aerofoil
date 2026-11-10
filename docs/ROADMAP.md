@@ -25,16 +25,16 @@ when its crates compile, its tests pass and the tiered gates in `AGENTS.md` §3.
 
 ## 1. Milestone 1 — Core Primitives & 978 UAT Foundation
 
-- [ ] `aerofoil-common`: `no_std` state models, units, CPR latitude/longitude decoders with the fixed
-      60-entry `NL` table (`SPEC.md` Invariant 9). The error model and unit types landed with `AF-6`;
-      CPR is the remainder.
-- [ ] `aerofoil-978`: `GF(2^8)` arithmetic and `RS(48, 34)` decoder validated against DO-282B
-      Appendix vectors (`SPEC.md` Invariant 7).
-- [ ] `aerofoil-978`: Downlink State Vector (SV) and Mode Status (MS) bitfield parsing.
-- [ ] Zero-allocation proof: test suite with a counting allocator asserting zero heap traffic on the
-      decode path (`SPEC.md` Invariant 1).
+- [x] `aerofoil-common`: `no_std` state models, units, CPR latitude/longitude decoders with the fixed
+      60-entry `NL` table (`SPEC.md` Invariant 9), domain telemetry models (`SPEC.md` Invariant 10),
+      and optional `ts-rs` TypeScript export (`AF-6`, `AF-7`, `AF-8`, `AF-9`, `AF-10`, `AF-26`, `AF-27`).
+- [x] `aerofoil-978`: `GF(2^8)` arithmetic and `RS(48, 34)` decoder validated against DO-282B
+      Appendix vectors (`SPEC.md` Invariant 7) (`AF-11`, `AF-12`).
+- [x] `aerofoil-978`: Downlink State Vector (SV) and Mode Status (MS) bitfield parsing (`AF-13`, `AF-14`).
+- [x] Zero-allocation proof: test suite with a counting allocator asserting zero heap traffic on the
+      decode path (`SPEC.md` Invariant 1) (`AF-15`).
 
-**Exit criteria:** DO-282B vectors decode byte-exactly; every reject path returns a typed error.
+**Exit criteria:** DO-282B vectors decode byte-exactly; every reject path returns a typed error; verified under `AF-5`.
 
 ---
 
@@ -50,24 +50,27 @@ when its crates compile, its tests pass and the tiered gates in `AGENTS.md` §3.
 
 ---
 
-## 3. Milestone 3 — Fusion Tracker & CLI
+## 3. Milestone 3 — Fusion Tracker, CLI & TUI Dashboard
 
 - [ ] `aerofoil-tracker`: sharded track table keyed by `(AddressType, u32)` with TTL expiry
       (`SPEC.md` Invariant 10).
 - [ ] ADS-R/TIS-B deduplication within `Δt ≤ 1.0 s`, `Δd ≤ 0.001°`; direct reception always wins.
 - [ ] `aerofoil-cli`: Beast and AVR ingestion on `stdin`, JSON-lines on `stdout`, well-behaved under
       `SIGPIPE` (`cat feed.bin | aerofoil-cli | jq`).
+- [ ] `aerofoil-tui` (`apps/tui`): Terminal UI dashboard using Ratatui with a canvas-based PPI radar display, range rings, heading vectors, interactive airspace filters, and emergency squawk alerts (7500/7600/7700).
 
 **Exit criteria:** a recorded capture replays to identical JSON on two machines; zero allocations per
-frame on the hot path.
+frame on the hot path; interactive TUI displays live radar without frame drop.
 
 ---
 
-## 4. Milestone 4 — Networking & MCP Agent Integration
+## 4. Milestone 4 — Networking, MCP Agent Integration & Client Ecosystem
 
 - [ ] `aerofoil-server`: TCP Beast ingest as two named, band-tagged sources in one process (30005 for 1090, 30978 for 978), SSE and gRPC streams with backpressure; `aerofoil-cli` stays single-stream (`ADR-0010`).
 - [ ] `aerofoil-mcp`: tools `get_airspace_summary`, `get_track(icao)`, `find_closest(lat, lon)`
       over JSON-RPC 2.0 stdio; logs to stderr only (`SPEC.md` §5).
+- [ ] `sdk/`: TypeScript client SDK package (`AerofoilClient`) consuming generated `ts-rs` definitions with auto-reconnecting WebSocket/SSE streaming.
+- [ ] `examples/web-radar/`: Single-page Vite + Leaflet web demo with dark mode, rotated aircraft icons, and live telemetry table connected via `sdk/`.
 - [ ] End-to-end test on a recorded high-density airport dataset.
 
 **Exit criteria:** `0.1.0` cut with a tagged release, fresh `Cargo.lock`, and `chalkline docs check`
