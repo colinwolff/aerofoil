@@ -10,7 +10,10 @@ use std::io::{self, BufRead, BufReader, Read, Write};
 use aerofoil_1090::df::ModeSFrame;
 use aerofoil_1090::df::es::{EsPayload, VelocityPayload};
 use aerofoil_1090::parse_frame_filtered;
-use aerofoil_common::{AddressType, ReceptionSource, TransponderSource};
+use aerofoil_common::{
+    AddressType, Position, ReceptionSource, TransponderSource,
+    cpr::{RawCpr, decode_cpr_local},
+};
 use aerofoil_tracker::{TargetUpdate, Tracker};
 
 pub use args::{CliArgs, InputFormat, OutputFormat};
@@ -88,6 +91,12 @@ pub fn process_frame(
                 EsPayload::AirbornePosition(pos) => {
                     if let Some(alt) = pos.altitude {
                         u = u.with_altitude(alt);
+                    }
+                    if let Some(raw) = RawCpr::new(pos.cpr_odd, pos.lat_cpr, pos.lon_cpr, 1_000_000)
+                        && let Some(ref_pos) = Position::from_microdegrees(52_367_600, 4_904_100)
+                        && let Ok(position) = decode_cpr_local(&raw, ref_pos)
+                    {
+                        u = u.with_position(position);
                     }
                 }
                 EsPayload::Identification(id) => {
