@@ -13,6 +13,7 @@ crates, in the imperative, one line each, with the `storypole` task key in paren
 
 ### Added
 
+- Add headless browser Playwright E2E automation test suite for 2D/3D radar, basemaps, and telemetry inspection (`AF-83`).
 - Add full-pipeline server SSE and WebSocket streaming integration tests (`AF-82`).
 - Add multi-minute 50+ aircraft kinematic trajectory and continuous tracking regression test suite (`AF-80`).
 - Synthesize 50+ aircraft kinematic trajectory profiles and generate multi-minute terminal airspace Beast fixture (`AF-79`).

@@ -94,6 +94,10 @@ async function initApp(): Promise<void> {
     radarManager = new AirspaceRadarManager(null);
   }
 
+  if (typeof window !== "undefined") {
+    (window as any).radarManager = radarManager;
+  }
+
   initStreaming(radarManager, serverUrl);
 }
 

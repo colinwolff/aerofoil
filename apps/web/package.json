@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "test": "bun test"
+    "test": "bun test tests/",
+    "test:e2e": "playwright test"
   },
   "dependencies": {
     "@aerofoil-rs/sdk": "file:../../sdk",
@@ -15,6 +16,7 @@
     "topojson-client": "^3.1.0"
   },
   "devDependencies": {
+    "@playwright/test": "^1.65.0",
     "@tailwindcss/vite": "^4.3.5",
     "@types/bun": "latest",
     "@types/geojson": "^7946.0.16",
