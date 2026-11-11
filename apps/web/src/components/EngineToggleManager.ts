@@ -37,6 +37,21 @@ export class EngineToggleManager {
     this.layers = layers;
   }
 
+  public updateConfig(config: any): void {
+    this.config = config;
+    if (this.maplibreEngine) {
+      this.maplibreEngine.setTerrainOptions({
+        provider: config.demProvider,
+        customUrl: config.demCustomUrl,
+        maptilerKey: config.maptilerKey,
+        exaggeration: config.demExaggeration,
+      });
+      if (config.demExaggeration !== undefined) {
+        this.maplibreEngine.setTerrainExaggeration?.(config.demExaggeration);
+      }
+    }
+  }
+
   public init(centerLat: number, centerLon: number, zoom: number): LeafletMapEngine {
     this.leafletEngine.init("map", centerLat, centerLon, zoom);
 
@@ -75,6 +90,12 @@ export class EngineToggleManager {
 
       if (!this.maplibreEngine) {
         this.maplibreEngine = new MapLibreMapEngine();
+        this.maplibreEngine.setTerrainOptions({
+          provider: this.config?.demProvider,
+          customUrl: this.config?.demCustomUrl,
+          maptilerKey: this.config?.maptilerKey,
+          exaggeration: this.config?.demExaggeration,
+        });
       }
 
       if (!this.maplibreInitialized) {

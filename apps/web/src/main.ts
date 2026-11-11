@@ -76,9 +76,11 @@ async function initApp(): Promise<void> {
 
     const drawer = new LayerDrawer(engine, basemapMgr, ringsLayer, vectorMgr, weatherLayer, scrubber, legalModal, attributionCtrl);
     drawer.setAntennaCoverage(antennaCoverage);
+    drawer.setToggleManager(toggleMgr);
     drawer.init("layer-drawer-container");
 
     configModal.setOnSave((newCfg) => {
+      toggleMgr.updateConfig(newCfg);
       ringsLayer.setCenter(newCfg.receiverLat, newCfg.receiverLon);
       ringsLayer.setRings(newCfg.ringIntervals);
       ringsLayer.setAzimuthInterval(newCfg.azimuthIntervalDeg);

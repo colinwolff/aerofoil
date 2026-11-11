@@ -3,7 +3,7 @@
 
 import { Map as MapLibreMap, Marker, Popup, NavigationControl } from "maplibre-gl";
 import type { AirspaceLayerOptions, AirspaceMapEngine } from "./AirspaceMapEngine";
-import { MapLibreTerrainHelper } from "./MapLibreTerrainHelper";
+import { MapLibreTerrainHelper, type TerrainOptions } from "./MapLibreTerrainHelper";
 import { MapLibreTrajectoryManager } from "./MapLibreTrajectoryManager";
 import { MapLibreAltitudeStems } from "./MapLibreAltitudeStems";
 import { MapLibreVectorManager } from "./MapLibreVectorManager";
@@ -15,9 +15,12 @@ export class MapLibreMapEngine implements AirspaceMapEngine {
   private baseLayerId: string = "aerofoil-base-layer";
   private overlayIds: Set<string> = new Set();
   private viewChangeCallbacks: (() => void)[] = [];
+  private terrainOpts: TerrainOptions = {};
   public readonly trajectoryManager = new MapLibreTrajectoryManager();
   public readonly stemsManager = new MapLibreAltitudeStems();
   private vectorManager = new MapLibreVectorManager(() => this.map);
+
+  public setTerrainOptions(opts: TerrainOptions): void { this.terrainOpts = opts; }
 
   public init(containerId: string, centerLat: number, centerLon: number, zoom: number): void {
     this.map = new MapLibreMap({
@@ -37,7 +40,8 @@ export class MapLibreMapEngine implements AirspaceMapEngine {
 
     this.map.on("load", () => {
       if (!this.map) return;
-      MapLibreTerrainHelper.enableTerrain(this.map);
+      const dem = MapLibreTerrainHelper.resolveDemUrl(this.terrainOpts.provider, this.terrainOpts.customUrl, this.terrainOpts.maptilerKey);
+      MapLibreTerrainHelper.enableTerrain(this.map, dem.url, this.terrainOpts.exaggeration ?? 1.5, dem.encoding);
       this.trajectoryManager.setupLayers(this.map);
       this.stemsManager.setupLayers(this.map);
       this.trajectoryManager.update(this.map);
@@ -65,64 +69,51 @@ export class MapLibreMapEngine implements AirspaceMapEngine {
   public setPitch(pitch: number): void { this.map?.setPitch(Math.min(85, Math.max(0, pitch))); }
   public onViewChange(callback: () => void): void { this.viewChangeCallbacks.push(callback); }
 
+  public setTerrainEnabled(enabled: boolean): void {
+    if (!this.map) return;
+    if (enabled) MapLibreTerrainHelper.enableTerrain(this.map);
+    else MapLibreTerrainHelper.disableTerrain(this.map);
+  }
+
+  public setTerrainExaggeration(exaggeration: number): void {
+    if (this.map) MapLibreTerrainHelper.setExaggeration(this.map, exaggeration);
+  }
+
+  public setHillshadingEnabled(enabled: boolean): void {
+    if (this.map) MapLibreTerrainHelper.setHillshading(this.map, enabled);
+  }
+
   private beforeLayerId(): string | undefined {
     return this.map?.getLayer("altitude-shadows-layer")
       ? "altitude-shadows-layer"
       : (this.map?.getLayer("trajectories-layer") ? "trajectories-layer" : undefined);
   }
 
-  public setBaseTileLayer(id: string, url: string, attribution: string, options?: AirspaceLayerOptions): void {
+  private addRaster(srcId: string, lyrId: string, url: string, attr: string, opt?: AirspaceLayerOptions, opacity?: number): void {
     if (!this.map) return;
-    const addLayer = () => {
+    const load = () => {
       if (!this.map) return;
-      if (this.map.getLayer(this.baseLayerId)) this.map.removeLayer(this.baseLayerId);
-      if (this.map.getSource(this.baseSourceId)) this.map.removeSource(this.baseSourceId);
-
-      const tileUrl = url.includes("{s}") ? url.replace("{s}", options?.subdomains?.[0] || "a") : url;
-      this.map.addSource(this.baseSourceId, {
-        type: "raster",
-        tiles: [tileUrl],
-        tileSize: 256,
-        attribution,
-        minzoom: options?.minZoom ?? 0,
-        maxzoom: options?.maxNativeZoom ?? options?.maxZoom ?? 19,
+      if (this.map.getLayer(lyrId)) this.map.removeLayer(lyrId);
+      if (this.map.getSource(srcId)) this.map.removeSource(srcId);
+      const tileUrl = url.includes("{s}") ? url.replace("{s}", opt?.subdomains?.[0] || "a") : url;
+      this.map.addSource(srcId, {
+        type: "raster", tiles: [tileUrl], tileSize: 256, attribution: attr,
+        minzoom: opt?.minZoom ?? 0, maxzoom: opt?.maxNativeZoom ?? opt?.maxZoom ?? 19,
       });
-
-      this.map.addLayer({ id: this.baseLayerId, type: "raster", source: this.baseSourceId }, this.beforeLayerId());
+      const paint = opacity !== undefined ? { "raster-opacity": opacity } : undefined;
+      this.map.addLayer({ id: lyrId, type: "raster", source: srcId, paint }, this.beforeLayerId());
     };
+    if (this.map.isStyleLoaded()) load(); else this.map.once("load", load);
+  }
 
-    if (this.map.isStyleLoaded()) addLayer();
-    else this.map.once("load", addLayer);
+  public setBaseTileLayer(id: string, url: string, attribution: string, options?: AirspaceLayerOptions): void {
+    this.addRaster(this.baseSourceId, this.baseLayerId, url, attribution, options);
   }
 
   public addOverlayTileLayer(id: string, url: string, attribution: string, options?: AirspaceLayerOptions): void {
-    if (!this.map) return;
-    const addLayer = () => {
-      if (!this.map) return;
-      this.removeTileLayer(id);
-
-      const srcId = `overlay-src-${id}`;
-      const lyrId = `overlay-lyr-${id}`;
-      const tileUrl = url.includes("{s}") ? url.replace("{s}", options?.subdomains?.[0] || "a") : url;
-
-      this.map.addSource(srcId, {
-        type: "raster",
-        tiles: [tileUrl],
-        tileSize: 256,
-        attribution,
-        minzoom: options?.minZoom ?? 0,
-        maxzoom: options?.maxNativeZoom ?? options?.maxZoom ?? 19,
-      });
-
-      this.map.addLayer(
-        { id: lyrId, type: "raster", source: srcId, paint: { "raster-opacity": options?.opacity ?? 0.7 } },
-        this.beforeLayerId(),
-      );
-      this.overlayIds.add(id);
-    };
-
-    if (this.map.isStyleLoaded()) addLayer();
-    else this.map.once("load", addLayer);
+    this.removeTileLayer(id);
+    this.addRaster(`overlay-src-${id}`, `overlay-lyr-${id}`, url, attribution, options, options?.opacity ?? 0.7);
+    this.overlayIds.add(id);
   }
 
   public removeTileLayer(id: string): void {

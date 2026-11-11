@@ -9,17 +9,43 @@ export const DEFAULT_TERRARIUM_DEM =
 const TERRAIN_SOURCE_ID = "raster-dem-terrain";
 const HILLSHADE_LAYER_ID = "raster-dem-hillshade";
 
+export interface TerrainOptions {
+  provider?: "aws_terrarium" | "maptiler" | "custom";
+  customUrl?: string;
+  maptilerKey?: string;
+  exaggeration?: number;
+  hillshading?: boolean;
+}
+
 export class MapLibreTerrainHelper {
+  public static resolveDemUrl(
+    provider: string = "aws_terrarium",
+    customUrl: string = "",
+    maptilerKey: string = "",
+  ): { url: string; encoding: "terrarium" | "mapbox" } {
+    if (provider === "maptiler" && maptilerKey) {
+      return {
+        url: `https://api.maptiler.com/tiles/terrain-rgb/{z}/{x}/{y}.png?key=${encodeURIComponent(maptilerKey)}`,
+        encoding: "mapbox",
+      };
+    }
+    if (provider === "custom" && customUrl) {
+      return { url: customUrl, encoding: "terrarium" };
+    }
+    return { url: DEFAULT_TERRARIUM_DEM, encoding: "terrarium" };
+  }
+
   public static enableTerrain(
     map: MapLibreMap,
     demUrl: string = DEFAULT_TERRARIUM_DEM,
-    exaggeration: number = 1.0,
+    exaggeration: number = 1.5,
+    encoding: "terrarium" | "mapbox" = "terrarium",
   ): void {
     if (!map.getSource(TERRAIN_SOURCE_ID)) {
       map.addSource(TERRAIN_SOURCE_ID, {
         type: "raster-dem",
         tiles: [demUrl],
-        encoding: "terrarium",
+        encoding,
         tileSize: 256,
         maxzoom: 15,
       });
@@ -49,11 +75,34 @@ export class MapLibreTerrainHelper {
     }
   }
 
+  public static setExaggeration(map: MapLibreMap, exaggeration: number): void {
+    try {
+      if ((map as any).getTerrain?.()) {
+        (map as any).setTerrain({
+          source: TERRAIN_SOURCE_ID,
+          exaggeration,
+        });
+      }
+    } catch (e) {
+      console.warn("[MapLibreTerrainHelper] Failed to set exaggeration:", e);
+    }
+  }
+
+  public static setHillshading(map: MapLibreMap, enabled: boolean): void {
+    try {
+      if (map.getLayer(HILLSHADE_LAYER_ID)) {
+        map.setLayoutProperty(HILLSHADE_LAYER_ID, "visibility", enabled ? "visible" : "none");
+      }
+    } catch (e) {
+      console.warn("[MapLibreTerrainHelper] Failed to toggle hillshading:", e);
+    }
+  }
+
   public static disableTerrain(map: MapLibreMap): void {
     try {
       (map as any).setTerrain(null);
       if (map.getLayer(HILLSHADE_LAYER_ID)) {
-        map.removeLayer(HILLSHADE_LAYER_ID);
+        map.setLayoutProperty(HILLSHADE_LAYER_ID, "visibility", "none");
       }
     } catch (e) {
       console.warn("[MapLibreTerrainHelper] Failed to disable 3D terrain:", e);

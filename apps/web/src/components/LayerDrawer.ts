@@ -1,4 +1,4 @@
-//! LayerDrawer — Collapsible floating glassmorphism HUD drawer for layer management.
+//! LayerDrawer — Collapsible floating glassmorphism HUD drawer for layer & 3D relief management.
 
 import type { BaseMapManager } from "../layers/BaseMapRegistry";
 import type { DynamicRingsLayer } from "../layers/DynamicRingsLayer";
@@ -8,11 +8,13 @@ import type { WeatherScrubber } from "./WeatherScrubber";
 import type { LegalModal } from "./LegalModal";
 import type { AirspaceMapEngine } from "../layers/AirspaceMapEngine";
 import type { AttributionControl } from "../layers/AttributionControl";
+import type { EngineToggleManager } from "./EngineToggleManager";
 
 export class LayerDrawer {
   private isCollapsed: boolean = true;
   private drawerEl: HTMLElement | null = null;
   private antennaCoverage: any = null;
+  private toggleMgr: EngineToggleManager | null = null;
 
   constructor(
     private engine: AirspaceMapEngine,
@@ -25,8 +27,10 @@ export class LayerDrawer {
     private attributionCtrl: AttributionControl,
   ) {}
 
-  public setAntennaCoverage(layer: any): void {
-    this.antennaCoverage = layer;
+  public setAntennaCoverage(layer: any): void { this.antennaCoverage = layer; }
+  public setToggleManager(mgr: EngineToggleManager): void { this.toggleMgr = mgr; }
+  private get activeEngine(): AirspaceMapEngine {
+    return this.toggleMgr ? this.toggleMgr.getActiveEngine() : this.engine;
   }
 
   public init(containerId: string = "layer-drawer-container"): void {
@@ -51,6 +55,23 @@ export class LayerDrawer {
         <div class="hud-section">
           <label class="hud-section-label">Basemap / Chart</label>
           <select id="hud-basemap-select" class="hud-select">${basemapOptions}</select>
+        </div>
+        <div class="hud-section">
+          <label class="hud-section-label">3D Topography & Relief</label>
+          <label class="hud-checkbox-label"><input type="checkbox" id="hud-toggle-terrain" checked /> 3D Terrain Elevation</label>
+          <label class="hud-checkbox-label"><input type="checkbox" id="hud-toggle-hillshade" checked /> Topographic Hillshading</label>
+          <div class="mt-2 text-xs">
+            <div class="flex justify-between text-slate-400 mb-1">
+              <span>Exaggeration:</span>
+              <span id="hud-exaggeration-val" class="text-cyan-400 font-mono">1.5x</span>
+            </div>
+            <input type="range" id="hud-terrain-exaggeration" class="w-full accent-cyan-400" min="0.5" max="3.0" step="0.1" value="1.5" />
+            <div class="flex gap-1 mt-1 text-[11px]">
+              <button type="button" id="hud-preset-dem-1" class="btn-tag flex-1">1.0x (Natural)</button>
+              <button type="button" id="hud-preset-dem-15" class="btn-tag flex-1">1.5x (Enhanced)</button>
+              <button type="button" id="hud-preset-dem-2" class="btn-tag flex-1">2.0x (Dramatic)</button>
+            </div>
+          </div>
         </div>
         <div class="hud-section">
           <label class="hud-section-label">Vector Airspace</label>
@@ -82,34 +103,20 @@ export class LayerDrawer {
   public toggle(): boolean {
     this.isCollapsed = !this.isCollapsed;
     const panel = document.getElementById("hud-panel");
-    if (this.isCollapsed) {
-      panel?.classList.add("hidden");
-    } else {
-      panel?.classList.remove("hidden");
-    }
+    panel?.classList.toggle("hidden", this.isCollapsed);
     return !this.isCollapsed;
   }
-
-  public isPanelOpen(): boolean {
-    return !this.isCollapsed;
-  }
+  public isPanelOpen(): boolean { return !this.isCollapsed; }
 
   public toggleWeather(): boolean {
     const chk = document.getElementById("hud-toggle-weather") as HTMLInputElement;
-    if (chk) {
-      chk.checked = !chk.checked;
-      chk.dispatchEvent(new Event("change"));
-      return chk.checked;
-    }
+    if (chk) { chk.checked = !chk.checked; chk.dispatchEvent(new Event("change")); return chk.checked; }
     return false;
   }
 
   public selectBasemap(id: string): void {
     const sel = document.getElementById("hud-basemap-select") as HTMLSelectElement;
-    if (sel) {
-      sel.value = id;
-      sel.dispatchEvent(new Event("change"));
-    }
+    if (sel) { sel.value = id; sel.dispatchEvent(new Event("change")); }
   }
 
   private bindControls(): void {
@@ -118,32 +125,42 @@ export class LayerDrawer {
       const selectedId = (e.target as HTMLSelectElement).value;
       const verifiedId = await this.basemapMgr.verifyEndpointOrFallback(selectedId);
       const def = this.basemapMgr.setBasemap(verifiedId);
-
-      this.engine.setBaseTileLayer(def.id, def.url, def.attribution, {
-        minZoom: def.minZoom,
-        maxZoom: def.maxZoom,
-        maxNativeZoom: def.maxNativeZoom,
-        subdomains: def.subdomains,
-        pane: def.pane,
-        tms: def.tms,
+      this.activeEngine.setBaseTileLayer(def.id, def.url, def.attribution, {
+        minZoom: def.minZoom, maxZoom: def.maxZoom, maxNativeZoom: def.maxNativeZoom,
+        subdomains: def.subdomains, pane: def.pane, tms: def.tms,
       });
-
       this.attributionCtrl.register({ id: "basemap", name: def.name, html: def.attribution, license: def.license });
-      const mapEl = document.getElementById("map");
-      if (def.isDarkFilterRecommended) mapEl?.classList.add("dark-tiles");
-      else mapEl?.classList.remove("dark-tiles");
-
+      document.getElementById("map")?.classList.toggle("dark-tiles", !!def.isDarkFilterRecommended);
       if (def.isOfficialFAA) {
-        const [lat, lon] = this.engine.getCenter();
-        if (lat > 55 || lat < 18 || lon < -135 || lon > -60) {
-          this.engine.setView(39.2976, -94.7139, 6);
-        }
+        const [lat, lon] = this.activeEngine.getCenter();
+        if (lat > 55 || lat < 18 || lon < -135 || lon > -60) this.activeEngine.setView(39.2976, -94.7139, 6);
       }
     });
 
     const bindChk = (id: string, cb: (chk: boolean) => void) => {
       document.getElementById(id)?.addEventListener("change", (e) => cb((e.target as HTMLInputElement).checked));
     };
+
+    bindChk("hud-toggle-terrain", (checked) => {
+      if (checked && this.toggleMgr && this.toggleMgr.getMode() === "2D") {
+        this.toggleMgr.setMode("3D");
+        (this.activeEngine as any)?.setPitch?.(55);
+      }
+      this.activeEngine.setTerrainEnabled?.(checked);
+    });
+    bindChk("hud-toggle-hillshade", (c) => this.activeEngine.setHillshadingEnabled?.(c));
+
+    const exaggSlider = document.getElementById("hud-terrain-exaggeration") as HTMLInputElement;
+    const exaggVal = document.getElementById("hud-exaggeration-val");
+    const setExagg = (val: number) => {
+      if (exaggSlider) exaggSlider.value = val.toString();
+      if (exaggVal) exaggVal.textContent = `${val.toFixed(1)}x`;
+      this.activeEngine.setTerrainExaggeration?.(val);
+    };
+    exaggSlider?.addEventListener("input", (e) => setExagg(parseFloat((e.target as HTMLInputElement).value)));
+    document.getElementById("hud-preset-dem-1")?.addEventListener("click", () => setExagg(1.0));
+    document.getElementById("hud-preset-dem-15")?.addEventListener("click", () => setExagg(1.5));
+    document.getElementById("hud-preset-dem-2")?.addEventListener("click", () => setExagg(2.0));
 
     bindChk("hud-toggle-classes", (c) => c ? this.vectorMgr.loadLayer("us_classes", "/layers/airspace_us_classes.topojson", "airspaces", VectorOverlayManager.classAirspaceStyle) : this.vectorMgr.removeLayer("us_classes"));
     bindChk("hud-toggle-sua", (c) => c ? this.vectorMgr.loadLayer("special_use", "/layers/special_use_airspace.topojson", "special_use", VectorOverlayManager.specialUseStyle) : this.vectorMgr.removeLayer("special_use"));
@@ -153,9 +170,7 @@ export class LayerDrawer {
     document.getElementById("hud-ring-preset-std")?.addEventListener("click", () => this.ringsLayer.applyPreset("standard"));
     document.getElementById("hud-ring-preset-long")?.addEventListener("click", () => this.ringsLayer.applyPreset("long_range"));
     bindChk("hud-toggle-antenna", (c) => this.antennaCoverage?.setVisible(c));
-    document.getElementById("hud-open-scrubber-btn")?.addEventListener("click", () => {
-      this.scrubber.toggleVisible();
-    });
+    document.getElementById("hud-open-scrubber-btn")?.addEventListener("click", () => this.scrubber.toggleVisible());
     bindChk("hud-toggle-weather", (c) => {
       this.weatherLayer.setVisible(c);
       this.scrubber.setVisible(c);

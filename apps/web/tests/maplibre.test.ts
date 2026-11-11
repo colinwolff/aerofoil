@@ -1,6 +1,8 @@
 import { describe, expect, test } from "bun:test";
 import { MapLibreTrajectoryManager } from "../src/layers/MapLibreTrajectoryManager";
 import { MapLibreAltitudeStems } from "../src/layers/MapLibreAltitudeStems";
+import { MapLibreTerrainHelper, DEFAULT_TERRARIUM_DEM } from "../src/layers/MapLibreTerrainHelper";
+import { DEFAULT_CONFIG, loadConfigFromStorage } from "../src/components/MapConfigTypes";
 
 describe("MapLibreTrajectoryManager", () => {
   test("maintains circular coordinate buffer per aircraft", () => {
@@ -92,5 +94,69 @@ describe("MapLibreAltitudeStems", () => {
     expect(capturedShadows).toBeDefined();
     expect(capturedShadows.features.length).toBe(1);
     expect(capturedShadows.features[0].geometry.coordinates).toEqual([4.92, 52.38, 0]);
+  });
+});
+
+describe("MapLibreTerrainHelper", () => {
+  test("resolves default AWS Terrarium DEM endpoint", () => {
+    const res = MapLibreTerrainHelper.resolveDemUrl("aws_terrarium");
+    expect(res.url).toBe(DEFAULT_TERRARIUM_DEM);
+    expect(res.encoding).toBe("terrarium");
+  });
+
+  test("resolves MapTiler terrain-rgb endpoint with API key", () => {
+    const res = MapLibreTerrainHelper.resolveDemUrl("maptiler", "", "test_key_123");
+    expect(res.url).toContain("api.maptiler.com/tiles/terrain-rgb");
+    expect(res.url).toContain("key=test_key_123");
+    expect(res.encoding).toBe("mapbox");
+  });
+
+  test("resolves custom raster-dem URL template", () => {
+    const custom = "https://custom.dem.org/{z}/{x}/{y}.png";
+    const res = MapLibreTerrainHelper.resolveDemUrl("custom", custom);
+    expect(res.url).toBe(custom);
+    expect(res.encoding).toBe("terrarium");
+  });
+
+  test("enables and configures terrain on MapLibre map", () => {
+    let terrainConfig: any = null;
+    let hillshadeVisibility: string = "visible";
+    const fakeMap: any = {
+      sources: {} as Record<string, any>,
+      layers: {} as Record<string, any>,
+      getSource(id: string) { return this.sources[id]; },
+      addSource(id: string, src: any) { this.sources[id] = src; },
+      getLayer(id: string) { return this.layers[id]; },
+      addLayer(lyr: any) { this.layers[lyr.id] = lyr; },
+      setTerrain(cfg: any) { terrainConfig = cfg; },
+      getTerrain() { return terrainConfig; },
+      setLayoutProperty(id: string, prop: string, val: any) {
+        if (id === "raster-dem-hillshade" && prop === "visibility") hillshadeVisibility = val;
+      },
+    };
+
+    MapLibreTerrainHelper.enableTerrain(fakeMap, DEFAULT_TERRARIUM_DEM, 1.5, "terrarium");
+    expect(fakeMap.getSource("raster-dem-terrain")).toBeDefined();
+    expect(fakeMap.getLayer("raster-dem-hillshade")).toBeDefined();
+    expect(terrainConfig).toEqual({ source: "raster-dem-terrain", exaggeration: 1.5 });
+
+    MapLibreTerrainHelper.setExaggeration(fakeMap, 2.0);
+    expect(terrainConfig.exaggeration).toBe(2.0);
+
+    MapLibreTerrainHelper.setHillshading(fakeMap, false);
+    expect(hillshadeVisibility).toBe("none");
+
+    MapLibreTerrainHelper.disableTerrain(fakeMap);
+    expect(terrainConfig).toBeNull();
+    expect(hillshadeVisibility).toBe("none");
+  });
+});
+
+describe("MapConfigTypes", () => {
+  test("provides standard default operator configuration with 3D DEM", () => {
+    expect(DEFAULT_CONFIG.terrainEnabled).toBe(true);
+    expect(DEFAULT_CONFIG.demProvider).toBe("aws_terrarium");
+    expect(DEFAULT_CONFIG.demExaggeration).toBe(1.5);
+    expect(DEFAULT_CONFIG.ringIntervals).toEqual([10, 25, 50, 100]);
   });
 });

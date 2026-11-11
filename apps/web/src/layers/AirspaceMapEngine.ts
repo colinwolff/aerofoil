@@ -50,4 +50,9 @@ export interface AirspaceMapEngine {
   setParametricLines(id: string, lines: [number, number][][], style: Record<string, any>): void;
   setParametricCircles(id: string, circles: { center: [number, number]; radiusMeters: number }[], style: Record<string, any>): void;
   removeParametricLayer(id: string): void;
+
+  // 3D Topography & Terrain
+  setTerrainEnabled?(enabled: boolean): void;
+  setTerrainExaggeration?(exaggeration: number): void;
+  setHillshadingEnabled?(enabled: boolean): void;
 }
