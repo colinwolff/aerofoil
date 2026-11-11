@@ -48,7 +48,9 @@ export class AirspaceRadarManager {
         const category = classifyAirframe(target.callsign, target.altitude, speed);
 
         const iconHtml = renderAircraftSvg(category, heading, target.altitude, isEmergency);
-        const popupHtml = `<b>${target.callsign ?? target.address}</b><br/>Type: ${category}<br/>Alt: ${target.altitude ?? "--"} ft<br/>Spd: ${speed ?? "--"} kt<br/>Hdg: ${Math.round(heading)}°<br/>Squawk: ${target.squawk ?? "--"}`;
+        const isMlat = target.reception === "Mlat";
+        const mlatBadge = isMlat ? ' <span class="badge bg-purple-700 text-white font-bold text-[10px] px-1 py-0.2 rounded">MLAT</span>' : '';
+        const popupHtml = `<b>${target.callsign ?? target.address}</b>${mlatBadge}<br/>Type: ${category}<br/>Alt: ${target.altitude ?? "--"} ft<br/>Spd: ${speed ?? "--"} kt<br/>Hdg: ${Math.round(heading)}°<br/>Squawk: ${target.squawk ?? "--"}`;
 
         if (typeof this.engine.updateTargetMarker === "function") {
           this.engine.updateTargetMarker(key, lat, lon, iconHtml, popupHtml);
@@ -97,6 +99,8 @@ export class AirspaceRadarManager {
         const rowCls = isEmg ? "emergency" : "";
         const spd = t.ground_speed_knots ?? t.ground_speed ?? "--";
         const hdg = t.heading_degrees ?? t.heading ?? "--";
+        const isMlat = t.reception === "Mlat";
+        const srcDisplay = isMlat ? `${t.source} <span class="badge bg-purple-700 text-white font-bold text-[10px] px-1 py-0.2 rounded">MLAT</span>` : t.source;
         return `
           <tr class="${rowCls}">
             <td>${t.address}</td>
@@ -105,7 +109,7 @@ export class AirspaceRadarManager {
             <td>${spd !== "--" ? `${spd} kt` : "--"}</td>
             <td>${hdg !== "--" ? `${Math.round(Number(hdg))}°` : "--"}</td>
             <td>${t.squawk ?? "--"}</td>
-            <td>${t.source}</td>
+            <td>${srcDisplay}</td>
           </tr>
         `;
       })

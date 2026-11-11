@@ -46,6 +46,8 @@ pub enum ReceptionSource {
     Direct,
     /// Ground station re-broadcast (ADS-R / TIS-B).
     Rebroadcast,
+    /// Multilateration (MLAT) TDOA calculated position.
+    Mlat,
 }
 
 /// Kinematic 3D velocity and ground track.

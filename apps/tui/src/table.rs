@@ -74,7 +74,10 @@ pub fn draw_table(frame: &mut Frame<'_>, area: Rect, app: &App, targets: &[Aircr
                 },
             );
 
-            let source = format!("{:?}", target.source);
+            let source = match target.reception {
+                aerofoil_common::ReceptionSource::Mlat => format!("{:?} [MLAT]", target.source),
+                _ => format!("{:?}", target.source),
+            };
 
             let mut style = Style::default();
             if is_emergency {

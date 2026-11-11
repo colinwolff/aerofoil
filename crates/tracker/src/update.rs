@@ -160,8 +160,13 @@ impl TargetUpdate {
         if let Some(cs) = self.callsign {
             target.callsign = Some(cs);
         }
-        if let Some(pos) = self.position {
+        if let Some(pos) = self.position
+            && (self.reception != ReceptionSource::Mlat
+                || target.position.is_none()
+                || target.reception == ReceptionSource::Mlat)
+        {
             target.position = Some(pos);
+            target.reception = self.reception;
         }
         if let Some(alt) = self.altitude {
             target.altitude = Some(alt);
@@ -186,7 +191,10 @@ impl TargetUpdate {
         }
 
         target.source = self.source;
-        target.reception = self.reception;
+        if target.reception != ReceptionSource::Direct || self.reception == ReceptionSource::Direct
+        {
+            target.reception = self.reception;
+        }
         target.last_seen_ms = core::cmp::max(target.last_seen_ms, self.timestamp_ms);
     }
 }

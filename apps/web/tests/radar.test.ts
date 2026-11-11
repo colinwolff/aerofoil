@@ -63,6 +63,33 @@ describe("AirspaceRadarManager", () => {
     expect(baw).toBeDefined();
     expect(baw?.squawk).toBe("7700");
   });
+
+  test("surfaces MLAT reception provenance badge in marker popup", () => {
+    let capturedPopup = "";
+    const mockEngine = {
+      updateTargetMarker: (_key: string, _lat: number, _lon: number, _icon: string, popup: string) => {
+        capturedPopup = popup;
+      },
+    };
+    const manager = new AirspaceRadarManager(mockEngine);
+
+    const mlatTarget: TargetWire = {
+      schema: "aerofoil.target",
+      version: 1,
+      address: "4CA705",
+      address_type: "Icao",
+      callsign: "RYR451",
+      altitude: 28000,
+      lat: 52.3676,
+      lon: 4.9041,
+      source: "ModeS1090",
+      reception: "Mlat",
+      last_seen_ms: 3000,
+    };
+
+    manager.updateTarget(mlatTarget);
+    expect(capturedPopup).toContain("MLAT");
+  });
 });
 
 describe("ThemeManager", () => {

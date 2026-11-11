@@ -1,6 +1,6 @@
 //! Wire JSON serialization for target telemetry conforming to `docs/SPEC.md` §5.
 
-use aerofoil_common::{AircraftTarget, TransponderSource};
+use aerofoil_common::{AircraftTarget, ReceptionSource, TransponderSource};
 use serde::{Deserialize, Serialize};
 
 /// Wire format for an aircraft target state broadcast.
@@ -37,6 +37,9 @@ pub struct TargetWireJson {
     pub lon: Option<f64>,
     /// Surveillance link band.
     pub source: TransponderSourceWire,
+    /// Provenance / reception source (e.g. "Direct", "Rebroadcast", "Mlat").
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub reception: Option<String>,
     /// Monotonic timestamp in milliseconds when last seen.
     pub last_seen_ms: u64,
 }
@@ -91,6 +94,11 @@ impl TargetWireJson {
             lat,
             lon,
             source: target.source.into(),
+            reception: Some(match target.reception {
+                ReceptionSource::Direct => "Direct".to_string(),
+                ReceptionSource::Rebroadcast => "Rebroadcast".to_string(),
+                ReceptionSource::Mlat => "Mlat".to_string(),
+            }),
             last_seen_ms: target.last_seen_ms,
         }
     }
