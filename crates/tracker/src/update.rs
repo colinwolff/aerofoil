@@ -157,9 +157,19 @@ impl TargetUpdate {
     ///
     /// Per `docs/SPEC.md` Invariant 10: a message that lacks a field never clears it.
     pub fn apply_to(&self, target: &mut AircraftTarget) {
-        if let Some(cs) = self.callsign {
-            target.callsign = Some(cs);
+        macro_rules! merge_opt {
+            ($field:ident) => {
+                if let Some(v) = self.$field {
+                    target.$field = Some(v);
+                }
+            };
         }
+        merge_opt!(callsign);
+        merge_opt!(altitude);
+        merge_opt!(squawk);
+        merge_opt!(emitter_category);
+        merge_opt!(nic);
+
         if let Some(pos) = self.position
             && (self.reception != ReceptionSource::Mlat
                 || target.position.is_none()
@@ -168,9 +178,7 @@ impl TargetUpdate {
             target.position = Some(pos);
             target.reception = self.reception;
         }
-        if let Some(alt) = self.altitude {
-            target.altitude = Some(alt);
-        }
+
         if let Some(speed) = self.ground_speed_knots {
             target.velocity.ground_speed_knots = Some(speed);
         }
@@ -179,15 +187,6 @@ impl TargetUpdate {
         }
         if let Some(rate) = self.vertical_rate_fpm {
             target.velocity.vertical_rate_fpm = Some(rate);
-        }
-        if let Some(sq) = self.squawk {
-            target.squawk = Some(sq);
-        }
-        if let Some(ec) = self.emitter_category {
-            target.emitter_category = Some(ec);
-        }
-        if let Some(n) = self.nic {
-            target.nic = Some(n);
         }
 
         target.source = self.source;

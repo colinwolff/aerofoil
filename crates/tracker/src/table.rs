@@ -64,6 +64,13 @@ impl Tracker {
             .copied()
     }
 
+    /// Retrieves an ICAO aircraft target by its 24-bit address.
+    #[inline]
+    #[must_use]
+    pub fn get_icao(&self, address: u32) -> Option<AircraftTarget> {
+        self.get(AddressType::Icao, address)
+    }
+
     /// Inserts or updates an aircraft target in its designated shard.
     #[inline]
     pub fn insert(&self, target: AircraftTarget) -> Option<AircraftTarget> {

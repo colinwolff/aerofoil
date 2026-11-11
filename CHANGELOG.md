@@ -13,6 +13,7 @@ crates, in the imperative, one line each, with the `storypole` task key in paren
 
 ### Added
 
+- Add multi-minute 50+ aircraft kinematic trajectory and continuous tracking regression test suite (`AF-80`).
 - Synthesize 50+ aircraft kinematic trajectory profiles and generate multi-minute terminal airspace Beast fixture (`AF-79`).
 - Add MADR 0019 specifying clean-room `tar1090` feature parity, avionics telemetry inspection, and spatial 3D airspace volumes (`AF-68`).
 
