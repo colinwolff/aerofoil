@@ -34,6 +34,13 @@ export function destinationPoint(
   return [(phi2 * 180) / Math.PI, (lambda2 * 180) / Math.PI];
 }
 
+export const RING_PRESETS: Record<string, number[]> = {
+  approach: [5, 10, 20],
+  standard: [10, 25, 50, 100],
+  long_range: [50, 100, 150, 250],
+  compact: [10, 20, 30],
+};
+
 export class DynamicRingsLayer {
   private ringsNm: number[] = [10, 25, 50, 100];
   private azimuthIntervalDeg: number = 30;
@@ -44,6 +51,32 @@ export class DynamicRingsLayer {
     private centerLat: number = 52.3676,
     private centerLon: number = 4.9041,
   ) {}
+
+  public setRings(ringsNm: number[]): void {
+    if (ringsNm.length > 0) {
+      this.ringsNm = ringsNm.filter((r) => r > 0).sort((a, b) => a - b);
+      if (this.enabled) this.render();
+    }
+  }
+
+  public getRings(): number[] {
+    return [...this.ringsNm];
+  }
+
+  public setAzimuthInterval(intervalDeg: number): void {
+    this.azimuthIntervalDeg = intervalDeg;
+    if (this.enabled) this.render();
+  }
+
+  public getAzimuthInterval(): number {
+    return this.azimuthIntervalDeg;
+  }
+
+  public applyPreset(presetKey: keyof typeof RING_PRESETS): void {
+    if (RING_PRESETS[presetKey]) {
+      this.setRings(RING_PRESETS[presetKey]);
+    }
+  }
 
   public setCenter(lat: number, lon: number): void {
     this.centerLat = lat;
@@ -79,25 +112,29 @@ export class DynamicRingsLayer {
       dashArray: "4, 6",
     });
 
-    // 2. Radial Azimuth Lines (every 30° out to maximum range)
-    const maxRangeMeters = Math.max(...this.ringsNm) * METERS_PER_NAUTICAL_MILE;
-    const radialLines: [number, number][][] = [];
+    // 2. Radial Azimuth Lines (if azimuthIntervalDeg > 0)
+    if (this.azimuthIntervalDeg > 0) {
+      const maxRangeMeters = Math.max(...this.ringsNm) * METERS_PER_NAUTICAL_MILE;
+      const radialLines: [number, number][][] = [];
 
-    for (let bearing = 0; bearing < 360; bearing += this.azimuthIntervalDeg) {
-      const endPoint = destinationPoint(
-        this.centerLat,
-        this.centerLon,
-        bearing,
-        maxRangeMeters,
-      );
-      radialLines.push([[this.centerLat, this.centerLon], endPoint]);
+      for (let bearing = 0; bearing < 360; bearing += this.azimuthIntervalDeg) {
+        const endPoint = destinationPoint(
+          this.centerLat,
+          this.centerLon,
+          bearing,
+          maxRangeMeters,
+        );
+        radialLines.push([[this.centerLat, this.centerLon], endPoint]);
+      }
+
+      this.engine.setParametricLines("azimuth_lines", radialLines, {
+        color: "#0369a1",
+        weight: 1.0,
+        opacity: 0.35,
+        dashArray: "2, 8",
+      });
+    } else {
+      this.engine.removeParametricLayer("azimuth_lines");
     }
-
-    this.engine.setParametricLines("azimuth_lines", radialLines, {
-      color: "#0369a1",
-      weight: 1.0,
-      opacity: 0.35,
-      dashArray: "2, 8",
-    });
   }
 }

@@ -55,7 +55,12 @@ export class LayerDrawer {
         </div>
         <div class="hud-section">
           <label class="hud-section-label">Surveillance Tools</label>
-          <label class="hud-checkbox-label"><input type="checkbox" id="hud-toggle-rings" checked /> Polar Range Rings (100nm)</label>
+          <label class="hud-checkbox-label"><input type="checkbox" id="hud-toggle-rings" checked /> Polar Range Rings</label>
+          <div class="flex gap-1 mt-1 mb-1 ml-4 text-xs">
+            <button type="button" id="hud-ring-preset-app" class="btn-tag">Approach</button>
+            <button type="button" id="hud-ring-preset-std" class="btn-tag">Standard</button>
+            <button type="button" id="hud-ring-preset-long" class="btn-tag">Long-Range</button>
+          </div>
           <label class="hud-checkbox-label"><input type="checkbox" id="hud-toggle-weather" /> Live Weather (NEXRAD)</label>
         </div>
       </div>
@@ -135,6 +140,9 @@ export class LayerDrawer {
     bindChk("hud-toggle-sua", (c) => c ? this.vectorMgr.loadLayer("special_use", "/layers/special_use_airspace.topojson", "special_use", VectorOverlayManager.specialUseStyle) : this.vectorMgr.removeLayer("special_use"));
     bindChk("hud-toggle-fir", (c) => c ? this.vectorMgr.loadLayer("fir", "/layers/fir_boundaries.topojson", "fir_boundaries", VectorOverlayManager.firStyle) : this.vectorMgr.removeLayer("fir"));
     bindChk("hud-toggle-rings", (c) => this.ringsLayer.setVisible(c));
+    document.getElementById("hud-ring-preset-app")?.addEventListener("click", () => this.ringsLayer.applyPreset("approach"));
+    document.getElementById("hud-ring-preset-std")?.addEventListener("click", () => this.ringsLayer.applyPreset("standard"));
+    document.getElementById("hud-ring-preset-long")?.addEventListener("click", () => this.ringsLayer.applyPreset("long_range"));
     bindChk("hud-toggle-weather", (c) => {
       this.weatherLayer.setVisible(c);
       this.scrubber.setVisible(c);

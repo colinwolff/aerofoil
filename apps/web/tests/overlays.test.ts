@@ -4,7 +4,7 @@ import {
   getAltitudeColor,
   renderAircraftSvg,
 } from "../src/icons/AircraftIconMatrix";
-import { destinationPoint } from "../src/layers/DynamicRingsLayer";
+import { destinationPoint, DynamicRingsLayer } from "../src/layers/DynamicRingsLayer";
 import { BASEMAPS, BaseMapManager } from "../src/layers/BaseMapRegistry";
 
 describe("AircraftIconMatrix", () => {
@@ -56,6 +56,28 @@ describe("DynamicRingsLayer Geodesic Math", () => {
 
     expect(destLat).toBeCloseTo(53.0, 1);
     expect(destLon).toBeCloseTo(4.0, 1);
+  });
+
+  test("manages presets and azimuth intervals", () => {
+    const mockEngine: any = {
+      setParametricCircles: () => {},
+      setParametricLines: () => {},
+      removeParametricLayer: () => {},
+    };
+    const rings = new DynamicRingsLayer(mockEngine, 52.3, 4.9);
+    expect(rings.getRings()).toEqual([10, 25, 50, 100]);
+
+    rings.applyPreset("approach");
+    expect(rings.getRings()).toEqual([5, 10, 20]);
+
+    rings.setRings([15, 30, 45]);
+    expect(rings.getRings()).toEqual([15, 30, 45]);
+
+    rings.setAzimuthInterval(15);
+    expect(rings.getAzimuthInterval()).toBe(15);
+
+    rings.setAzimuthInterval(0);
+    expect(rings.getAzimuthInterval()).toBe(0);
   });
 });
 

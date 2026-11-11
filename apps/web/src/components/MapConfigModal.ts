@@ -9,6 +9,7 @@ export interface MapOperatorConfig {
   mapboxToken: string;
   customTileUrl: string;
   ringIntervals: number[];
+  azimuthIntervalDeg: number;
   units: "nautical" | "metric" | "statute";
   weatherEnabled: boolean;
   airspaceEnabled: boolean;
@@ -23,6 +24,7 @@ export const DEFAULT_CONFIG: MapOperatorConfig = {
   mapboxToken: "",
   customTileUrl: "",
   ringIntervals: [10, 25, 50, 100],
+  azimuthIntervalDeg: 30,
   units: "nautical",
   weatherEnabled: false,
   airspaceEnabled: true,
@@ -157,6 +159,22 @@ export class MapConfigModal {
                 </select>
               </div>
             </div>
+
+            <div class="grid grid-cols-2 gap-3 mt-2">
+              <div>
+                <label class="hud-section-label">Range Rings (NM)</label>
+                <input type="text" id="cfg-rings" class="hud-input mt-1" placeholder="10, 25, 50, 100" value="${this.config.ringIntervals.join(', ')}" />
+              </div>
+              <div>
+                <label class="hud-section-label">Azimuth Radials</label>
+                <select id="cfg-azimuth" class="hud-input mt-1">
+                  <option value="15" ${this.config.azimuthIntervalDeg === 15 ? "selected" : ""}>Every 15°</option>
+                  <option value="30" ${(!this.config.azimuthIntervalDeg || this.config.azimuthIntervalDeg === 30) ? "selected" : ""}>Every 30°</option>
+                  <option value="45" ${this.config.azimuthIntervalDeg === 45 ? "selected" : ""}>Every 45°</option>
+                  <option value="0" ${this.config.azimuthIntervalDeg === 0 ? "selected" : ""}>Off</option>
+                </select>
+              </div>
+            </div>
           </div>
           <div class="modal-footer justify-between">
             <button id="config-modal-reset" class="btn-danger-ghost">Reset to Server Defaults</button>
@@ -197,6 +215,10 @@ export class MapConfigModal {
     });
 
     document.getElementById("config-modal-save")?.addEventListener("click", () => {
+      const ringsRaw = (document.getElementById("cfg-rings") as HTMLInputElement).value;
+      const rings = ringsRaw.split(",").map((s) => parseFloat(s.trim())).filter((n) => !isNaN(n) && n > 0);
+      const azimuth = parseInt((document.getElementById("cfg-azimuth") as HTMLSelectElement).value, 10);
+
       this.config = {
         ...this.config,
         receiverLat: parseFloat((document.getElementById("cfg-lat") as HTMLInputElement).value) || 0,
@@ -206,6 +228,8 @@ export class MapConfigModal {
         customTileUrl: (document.getElementById("cfg-custom-tiles") as HTMLInputElement).value.trim(),
         units: (document.getElementById("cfg-units") as HTMLSelectElement).value as any,
         defaultBasemap: (document.getElementById("cfg-basemap") as HTMLSelectElement).value,
+        ringIntervals: rings.length > 0 ? rings : [10, 25, 50, 100],
+        azimuthIntervalDeg: isNaN(azimuth) ? 30 : azimuth,
       };
       this.saveToStorage();
       this.hide();

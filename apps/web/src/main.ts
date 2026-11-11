@@ -73,6 +73,8 @@ async function initApp(): Promise<void> {
 
     configModal.setOnSave((newCfg) => {
       ringsLayer.setCenter(newCfg.receiverLat, newCfg.receiverLon);
+      ringsLayer.setRings(newCfg.ringIntervals);
+      ringsLayer.setAzimuthInterval(newCfg.azimuthIntervalDeg);
       toggleMgr.getActiveEngine().setView(newCfg.receiverLat, newCfg.receiverLon);
       applyBasemap(toggleMgr.getActiveEngine(), basemapMgr, attributionCtrl, newCfg);
     });
