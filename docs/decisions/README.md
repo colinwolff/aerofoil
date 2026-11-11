@@ -25,3 +25,4 @@ record is a decision nobody will find.
 | [0013](0013-production-web-radar-and-containers.md) | 2026-11-10 | Production Web Radar Architecture, Multi-Topology API Delivery, and Containerization Strategy |
 | [0014](0014-pluggable-map-engine-and-overlays.md) | 2026-11-10 | Pluggable AirspaceMapEngine, 12-Class SVG Icon Matrix, and Map Overlay Architecture |
 | [0015](0015-multi-tier-configuration-and-design-system.md) | 2026-11-10 | Multi-Tier Configuration Architecture and Avionics Glass-Cockpit Design System |
+| [0016](0016-mlat-multilateration-architecture.md) | 2026-11-10 | Multilateration (MLAT) Dual-Topology Architecture and TDOA Hyperboloid Solver |

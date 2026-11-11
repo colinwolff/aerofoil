@@ -13,6 +13,7 @@ crates, in the imperative, one line each, with the `storypole` task key in paren
 
 ### Added
 
+- Add MADR 0016 specifying Multilateration (MLAT) dual-topology architecture and TDOA hyperboloid solver (`AF-56`).
 - Add Light and Dark theme toggle with daylight OSM tile switching and `localStorage` persistence in `apps/web` (`AF-55`).
 - Implement 3-tier configuration hierarchy (ENV -> `GET /api/config` -> UI `localStorage`), collapsible telemetry sidebar, restored glassmorphic modals, and competitive benchmark documentation (`AF-55`).
 - Add Tailwind CSS integration, interactive draggable sidebar splitter, MapConfigModal for API keys and receiver coordinates, and prominent top radar navbar in `apps/web` (`AF-54`).

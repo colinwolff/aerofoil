@@ -13,6 +13,8 @@ allowed_crates = [
     "aerofoil-mcp",
     "aerofoil-persistence",
     "aerofoil-sdr",
+    "aerofoil-replay",
+    "aerofoil-mlat",
 ]
 claim_ttl_minutes = 60
 verification_commands = []

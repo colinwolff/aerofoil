@@ -22,6 +22,7 @@ allowed_crates = [
     "aerofoil-sdr",
     "aerofoil-persistence",
     "aerofoil-replay",
+    "aerofoil-mlat",
 ]
 claim_ttl_minutes = 60
 
@@ -42,4 +43,5 @@ verification_commands = [
     ["aerofoil-server", "cargo nextest run -p aerofoil-server"],
     ["aerofoil-mcp", "cargo nextest run -p aerofoil-mcp"],
     ["aerofoil-replay", "cargo nextest run -p aerofoil-replay"],
+    ["aerofoil-mlat", "cargo nextest run -p aerofoil-mlat"],
 ]
