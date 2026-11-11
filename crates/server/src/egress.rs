@@ -145,7 +145,7 @@ fn dispatch_http_client(stream: TcpStream, tracker: Arc<Tracker>, shutdown: Arc<
 
     let raw_stream = reader.into_inner();
 
-    if request_line.starts_with("GET /events") {
+    if request_line.starts_with("GET /events") || request_line.starts_with("GET /api/stream") {
         let _ = handle_sse_stream(raw_stream, tracker, shutdown, last_event_id);
     } else {
         let _ = serve_http_response(raw_stream, &tracker, &request_line);

@@ -22,6 +22,9 @@ pub fn handle_sse_stream(
     shutdown: Arc<AtomicBool>,
     mut event_id: u64,
 ) -> io::Result<()> {
+    let _ = stream.set_write_timeout(Some(Duration::from_millis(500)));
+    let _ = stream.set_read_timeout(Some(Duration::from_millis(500)));
+
     let headers = b"HTTP/1.1 200 OK\r\n\
 Content-Type: text/event-stream\r\n\
 Cache-Control: no-cache\r\n\
