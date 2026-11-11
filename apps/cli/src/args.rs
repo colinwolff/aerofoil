@@ -1,6 +1,37 @@
 //! Command-line argument definitions and filter parsing for `aerofoil-cli`.
 
-use clap::{Parser, ValueEnum};
+use clap::{Args, Parser, Subcommand, ValueEnum};
+
+/// Subcommands supported by `aerofoil-cli`.
+#[derive(Subcommand, Debug, Clone)]
+pub enum CliCommand {
+    /// Connect to a live TCP surveillance feed and record raw frames.
+    Capture(CaptureArgs),
+}
+
+/// Arguments for the `capture` subcommand.
+#[derive(Args, Debug, Clone)]
+pub struct CaptureArgs {
+    /// Remote TCP feed address to connect to (e.g. 127.0.0.1:30005).
+    #[arg(short, long, default_value = "127.0.0.1:30005")]
+    pub connect: String,
+
+    /// Output destination path (or '-' for stdout).
+    #[arg(short, long)]
+    pub output: Option<String>,
+
+    /// Maximum duration in seconds to capture before stopping.
+    #[arg(short, long)]
+    pub duration: Option<u64>,
+
+    /// Maximum raw bytes to capture before stopping.
+    #[arg(long)]
+    pub max_bytes: Option<u64>,
+
+    /// Maximum frames (Beast 0x1A or AVR lines) to capture before stopping.
+    #[arg(long)]
+    pub max_frames: Option<u64>,
+}
 
 /// Input stream wire framing formats supported by `aerofoil-cli`.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, ValueEnum, Default)]
@@ -32,6 +63,10 @@ pub enum OutputFormat {
     about = "Decodes Mode S / 1090ES and UAT streams to JSON-lines"
 )]
 pub struct CliArgs {
+    /// Optional subcommand (e.g. `capture`).
+    #[command(subcommand)]
+    pub command: Option<CliCommand>,
+
     /// Input stream framing format.
     #[arg(long, value_enum, default_value_t = InputFormat::Auto)]
     pub format: InputFormat,

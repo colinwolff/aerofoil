@@ -3,6 +3,7 @@
 pub mod args;
 pub mod avr;
 pub mod beast;
+pub mod capture;
 pub mod json;
 
 use std::io::{self, BufRead, BufReader, Read, Write};
@@ -16,9 +17,10 @@ use aerofoil_common::{
 };
 use aerofoil_tracker::{TargetUpdate, Tracker};
 
-pub use args::{CliArgs, InputFormat, OutputFormat};
+pub use args::{CaptureArgs, CliArgs, CliCommand, InputFormat, OutputFormat};
 pub use avr::{AvrMessage, AvrReader};
 pub use beast::{BeastMessage, BeastReader};
+pub use capture::{CaptureStats, capture_from_reader, run_capture};
 pub use json::TargetJsonRecord;
 
 /// Executes the core Unix pipeline from standard input to standard output.

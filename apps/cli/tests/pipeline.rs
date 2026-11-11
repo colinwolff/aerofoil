@@ -22,6 +22,7 @@ fn test_detect_format_beast_and_avr() {
 fn test_process_frame_emits_json_line() {
     let tracker = Tracker::new();
     let args = CliArgs {
+        command: None,
         format: InputFormat::Auto,
         output: OutputFormat::Json,
         filter_altitude: None,
@@ -65,6 +66,7 @@ impl io::Write for BrokenPipeWriter {
 fn test_broken_pipe_is_propagated_as_io_error() {
     let tracker = Tracker::new();
     let args = CliArgs {
+        command: None,
         format: InputFormat::Auto,
         output: OutputFormat::Json,
         filter_altitude: None,

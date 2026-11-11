@@ -7,6 +7,7 @@ use aerofoil_cli::{CliArgs, InputFormat, OutputFormat};
 #[test]
 fn test_altitude_filters() {
     let mut args = CliArgs {
+        command: None,
         format: InputFormat::Auto,
         output: OutputFormat::Json,
         filter_altitude: Some(">10000".to_string()),
@@ -34,6 +35,7 @@ fn test_altitude_filters() {
 #[test]
 fn test_squawk_filters() {
     let args = CliArgs {
+        command: None,
         format: InputFormat::Auto,
         output: OutputFormat::Json,
         filter_altitude: None,

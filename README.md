@@ -47,6 +47,9 @@ Stream demodulated Beast frames directly through Unix pipes:
 ```bash
 # Pipe from a remote Beast port (e.g. dump1090/readsb) directly into aerofoil-cli
 nc localhost 30005 | aerofoil-cli --format beast --filter-altitude ">10000" --filter-squawk "7700" --output json | jq .
+
+# Capture a live network feed to a local Beast fixture file
+aerofoil-cli capture --connect 127.0.0.1:30005 --output datasets/raw/live_capture.beast --duration 60 --max-bytes 10485760 --max-frames 10000
 ```
 
 ---
