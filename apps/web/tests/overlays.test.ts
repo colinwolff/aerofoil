@@ -5,6 +5,7 @@ import {
   renderAircraftSvg,
 } from "../src/icons/AircraftIconMatrix";
 import { destinationPoint, DynamicRingsLayer } from "../src/layers/DynamicRingsLayer";
+import { AntennaCoverageLayer, calculateBearingAndDistance } from "../src/layers/AntennaCoverageLayer";
 import { BASEMAPS, BaseMapManager } from "../src/layers/BaseMapRegistry";
 
 describe("AircraftIconMatrix", () => {
@@ -114,5 +115,33 @@ describe("BaseMapRegistry", () => {
 
     mgr.setBasemap("carto_dark");
     expect(mgr.getActiveBasemap().id).toBe("carto_dark");
+  });
+});
+
+describe("AntennaCoverageLayer", () => {
+  test("calculates bearing and distance accurately", () => {
+    // Due north 1 degree latitude (~60 nm)
+    const [bearing, distNm] = calculateBearingAndDistance(52.0, 4.0, 53.0, 4.0);
+    expect(bearing).toBeCloseTo(0, 0);
+    expect(distNm).toBeCloseTo(60, 0);
+  });
+
+  test("records target signals and updates max range bins", () => {
+    const mockEngine: any = {
+      setParametricCircles: () => {},
+      setParametricLines: () => {},
+      removeParametricLayer: () => {},
+    };
+    const antenna = new AntennaCoverageLayer(mockEngine, 52.0, 4.0);
+    antenna.recordTargetSignal(53.0, 4.0, -15, 30000);
+
+    const stats = antenna.getStats();
+    expect(stats.activeBins).toBeGreaterThanOrEqual(1);
+    expect(stats.maxRangeNm).toBeCloseTo(60, 0);
+
+    antenna.clear();
+    const cleared = antenna.getStats();
+    expect(cleared.activeBins).toBe(0);
+    expect(cleared.maxRangeNm).toBe(0);
   });
 });

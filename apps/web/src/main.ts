@@ -6,6 +6,7 @@ import "leaflet/dist/leaflet.css";
 import { LeafletMapEngine } from "./layers/LeafletMapEngine";
 import { BaseMapManager } from "./layers/BaseMapRegistry";
 import { DynamicRingsLayer } from "./layers/DynamicRingsLayer";
+import { AntennaCoverageLayer } from "./layers/AntennaCoverageLayer";
 import { VectorOverlayManager } from "./layers/VectorOverlayManager";
 import { WeatherRadarLayer } from "./layers/WeatherRadarLayer";
 import { AttributionControl } from "./layers/AttributionControl";
@@ -65,16 +66,21 @@ async function initApp(): Promise<void> {
     const weatherLayer = new WeatherRadarLayer(engine);
     weatherLayer.init();
 
+    const antennaCoverage = new AntennaCoverageLayer(engine, config.receiverLat, config.receiverLon);
+    radarManager.setAntennaLayer(antennaCoverage);
+
     const scrubber = new WeatherScrubber(weatherLayer);
     scrubber.init("weather-scrubber-dock");
 
     const drawer = new LayerDrawer(engine, basemapMgr, ringsLayer, vectorMgr, weatherLayer, scrubber, legalModal, attributionCtrl);
+    drawer.setAntennaCoverage(antennaCoverage);
     drawer.init("layer-drawer-container");
 
     configModal.setOnSave((newCfg) => {
       ringsLayer.setCenter(newCfg.receiverLat, newCfg.receiverLon);
       ringsLayer.setRings(newCfg.ringIntervals);
       ringsLayer.setAzimuthInterval(newCfg.azimuthIntervalDeg);
+      antennaCoverage.setCenter(newCfg.receiverLat, newCfg.receiverLon);
       toggleMgr.getActiveEngine().setView(newCfg.receiverLat, newCfg.receiverLon);
       applyBasemap(toggleMgr.getActiveEngine(), basemapMgr, attributionCtrl, newCfg);
     });

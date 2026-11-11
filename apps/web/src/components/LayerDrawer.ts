@@ -12,6 +12,7 @@ import type { AttributionControl } from "../layers/AttributionControl";
 export class LayerDrawer {
   private isCollapsed: boolean = true;
   private drawerEl: HTMLElement | null = null;
+  private antennaCoverage: any = null;
 
   constructor(
     private engine: AirspaceMapEngine,
@@ -23,6 +24,10 @@ export class LayerDrawer {
     private legalModal: LegalModal,
     private attributionCtrl: AttributionControl,
   ) {}
+
+  public setAntennaCoverage(layer: any): void {
+    this.antennaCoverage = layer;
+  }
 
   public init(containerId: string = "layer-drawer-container"): void {
     let container = document.getElementById(containerId);
@@ -62,6 +67,7 @@ export class LayerDrawer {
             <button type="button" id="hud-ring-preset-long" class="btn-tag">Long-Range</button>
           </div>
           <label class="hud-checkbox-label"><input type="checkbox" id="hud-toggle-weather" /> Live Weather (NEXRAD)</label>
+          <label class="hud-checkbox-label mt-1"><input type="checkbox" id="hud-toggle-antenna" /> Antenna Reception Map</label>
         </div>
       </div>
     `;
@@ -143,6 +149,7 @@ export class LayerDrawer {
     document.getElementById("hud-ring-preset-app")?.addEventListener("click", () => this.ringsLayer.applyPreset("approach"));
     document.getElementById("hud-ring-preset-std")?.addEventListener("click", () => this.ringsLayer.applyPreset("standard"));
     document.getElementById("hud-ring-preset-long")?.addEventListener("click", () => this.ringsLayer.applyPreset("long_range"));
+    bindChk("hud-toggle-antenna", (c) => this.antennaCoverage?.setVisible(c));
     bindChk("hud-toggle-weather", (c) => {
       this.weatherLayer.setVisible(c);
       this.scrubber.setVisible(c);

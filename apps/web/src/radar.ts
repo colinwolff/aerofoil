@@ -22,8 +22,13 @@ export function createPlaneSvg(heading: number, emergency: boolean): string {
 
 export class AirspaceRadarManager {
   private targets: Map<string, TargetWire> = new Map();
+  private antennaLayer: any = null;
 
   constructor(private engine: AirspaceMapEngine | any = null) {}
+
+  public setAntennaLayer(layer: any): void {
+    this.antennaLayer = layer;
+  }
 
   public updateTarget(target: TargetWire): void {
     const key = target.address.toUpperCase();
@@ -32,22 +37,27 @@ export class AirspaceRadarManager {
     const lat = target.latitude ?? target.lat;
     const lon = target.longitude ?? target.lon;
 
-    if (lat != null && lon != null && this.engine) {
-      const heading = target.heading_degrees ?? target.heading ?? 0;
-      const isEmergency = isEmergencySquawk(target.squawk);
-      const speed = target.ground_speed_knots ?? target.ground_speed;
-      const category = classifyAirframe(target.callsign, target.altitude, speed);
-
-      const iconHtml = renderAircraftSvg(category, heading, target.altitude, isEmergency);
-      const popupHtml = `<b>${target.callsign ?? target.address}</b><br/>Type: ${category}<br/>Alt: ${target.altitude ?? "--"} ft<br/>Spd: ${speed ?? "--"} kt<br/>Hdg: ${Math.round(heading)}°<br/>Squawk: ${target.squawk ?? "--"}`;
-
-      if (typeof this.engine.updateTargetMarker === "function") {
-        this.engine.updateTargetMarker(key, lat, lon, iconHtml, popupHtml);
+    if (lat != null && lon != null) {
+      if (this.antennaLayer && typeof this.antennaLayer.recordTargetSignal === "function") {
+        this.antennaLayer.recordTargetSignal(lat, lon, (target as any).rssi, target.altitude);
       }
-      if (typeof (this.engine as any).trajectoryManager?.addCoordinate === "function") {
-        const altMeters = (target.altitude ?? 0) * 0.3048;
-        const vRate = (target as any).vertical_rate ?? (target as any).vertical_rate_fpm ?? 0;
-        (this.engine as any).trajectoryManager.addCoordinate(key, lon, lat, altMeters, vRate);
+      if (this.engine) {
+        const heading = target.heading_degrees ?? target.heading ?? 0;
+        const isEmergency = isEmergencySquawk(target.squawk);
+        const speed = target.ground_speed_knots ?? target.ground_speed;
+        const category = classifyAirframe(target.callsign, target.altitude, speed);
+
+        const iconHtml = renderAircraftSvg(category, heading, target.altitude, isEmergency);
+        const popupHtml = `<b>${target.callsign ?? target.address}</b><br/>Type: ${category}<br/>Alt: ${target.altitude ?? "--"} ft<br/>Spd: ${speed ?? "--"} kt<br/>Hdg: ${Math.round(heading)}°<br/>Squawk: ${target.squawk ?? "--"}`;
+
+        if (typeof this.engine.updateTargetMarker === "function") {
+          this.engine.updateTargetMarker(key, lat, lon, iconHtml, popupHtml);
+        }
+        if (typeof (this.engine as any).trajectoryManager?.addCoordinate === "function") {
+          const altMeters = (target.altitude ?? 0) * 0.3048;
+          const vRate = (target as any).vertical_rate ?? (target as any).vertical_rate_fpm ?? 0;
+          (this.engine as any).trajectoryManager.addCoordinate(key, lon, lat, altMeters, vRate);
+        }
       }
     }
 
