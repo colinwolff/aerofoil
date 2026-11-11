@@ -13,6 +13,7 @@ crates, in the imperative, one line each, with the `storypole` task key in paren
 
 ### Added
 
+- Scaffold `aerofoil-mlat` crate with WGS84/ECEF coordinate math, surveyed receiver registry, clock offset calibration, and Bancroft TDOA hyperbolic solver (`AF-56`).
 - Add antenna reception range polar contour and theoretical 10k/20k/30k ft radio horizon elevation masks (`AF-62`).
 - Add configurable distance rings with approach, standard, and long-range presets and customizable azimuth radials (`AF-61`).
 - Implement MapLibre GL 3D engine with 85-degree pitch, DEM terrain elevation, climb-profiled 3D flight ribbons, and dual-engine 2D/3D toggle (`AF-60`).

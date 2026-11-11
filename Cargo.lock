@@ -48,6 +48,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "aerofoil-mlat"
+version = "0.1.0-beta.1"
+dependencies = [
+ "aerofoil-common",
+]
+
+[[package]]
 name = "aerofoil-persistence"
 version = "0.1.0-beta.1"
 dependencies = [

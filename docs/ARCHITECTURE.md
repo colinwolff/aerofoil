@@ -89,6 +89,10 @@ That keeps the decoders `no_std`, allocation-free and testable without hardware 
 * **Data Capture & Replay:** Self-describing JSONL sink and deterministic replay reader for raw surveillance frames across 1090 MHz and 978 MHz bands.
 * **Decoupled Architecture:** Bounded drop-oldest worker queue isolating the frame decode path from disk I/O, maintaining zero-allocation hot paths.
 
+### 2.5 Multilateration Engine (`aerofoil-mlat`)
+* **Receiver Registry:** Zero-allocation table tracking surveyed ground stations with WGS84 and ECEF cartesian coordinates and nanosecond clock calibration offsets (`ADR-0016`).
+* **Hyperbolic TDOA Solver:** Closed-form Bancroft algebraic initial estimate followed by iterative Gauss-Newton/Levenberg-Marquardt WGS84 optimization computing 3D position and GDOP metrics.
+
 ---
 
 ## 3. Concurrency & Dataflow Model

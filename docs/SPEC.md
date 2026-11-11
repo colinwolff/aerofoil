@@ -45,6 +45,7 @@ Persistence and capture boundary operations report failure via typed errors:
 - `HexError`: Raised when decoding raw hex byte representations from recorded payloads (odd length, invalid hex characters).
 - `ReplayError`: Raised during frame capture stream replay on I/O failure, corrupt JSON-lines framing, or malformed recorded frame structures.
 - `SinkError`: Raised on bounded worker channel exhaustion or I/O write failures in capture sinks.
+- `MlatError`: Raised when observations lack sufficient receivers, receiver IDs are unregistered, geometry matrices are singular, non-linear optimization diverges, GDOP exceeds tolerance, or computed altitudes are physically impossible (`ADR-0016`).
 
 ---
 
