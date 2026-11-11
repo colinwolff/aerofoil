@@ -101,7 +101,7 @@ when its crates compile, its tests pass and the tiered gates in `AGENTS.md` §3.
 
 ## 6. Milestone 6 — Advanced Surveillance Avionics, Clean-Room Parity & 3D Spatial Airspace (planned)
 
-> **Target:** `0.2.0-beta.1` (lockstep SemVer) · **Scope:** `ADR-0019`
+> **Target:** `0.1.0-beta.3` (lockstep SemVer) · **Scope:** `ADR-0019`
 > **Specification of reference:** Clean-room functional parity with `tar1090` (17 U.S.C. § 102(b), zero GPL contamination) translated into native spatial 3D.
 
 - [ ] Epic: Milestone 6 — Advanced Surveillance Avionics, Clean-Room Parity & 3D Spatial Airspace (`AF-68`).
@@ -119,7 +119,7 @@ when its crates compile, its tests pass and the tiered gates in `AGENTS.md` §3.
 
 ---
 
-## 7. Horizons (post-`0.2.0`)
+## 7. Horizons (post-`0.1.0`)
 
 - **H1 — Hardening:** fuzzing (`cargo-fuzz`) over every decoder entry point, property tests relating the table-driven and CLMUL CRC paths, and a published throughput regression budget.
 - **H2 — Breadth:** uplink `RS(92, 72)` and FIS-B APDU disassembly, UAT uplink scheduling, multi-band time-synchronised fusion.
