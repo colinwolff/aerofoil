@@ -13,6 +13,7 @@ crates, in the imperative, one line each, with the `storypole` task key in paren
 
 ### Added
 
+- Implement outbound MLAT client and streaming feeder protocol for community mlat-server networks (`AF-57`).
 - Scaffold `aerofoil-mlat` crate with WGS84/ECEF coordinate math, surveyed receiver registry, clock offset calibration, and Bancroft TDOA hyperbolic solver (`AF-56`).
 - Add antenna reception range polar contour and theoretical 10k/20k/30k ft radio horizon elevation masks (`AF-62`).
 - Add configurable distance rings with approach, standard, and long-range presets and customizable azimuth radials (`AF-61`).

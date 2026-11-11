@@ -173,6 +173,9 @@ and transponder capability by `TransponderCapability`. Airborne position reports
 - The HTTP/1.1 web API exposes server runtime configuration via `GET /api/config`, specified by the
   `ServerWebConfig` boundary model (`receiver_lat`, `receiver_lon`, `receiver_name`, `default_basemap`,
   `carto_key`, `mapbox_token`, `custom_tile_url`, `units`, `weather_enabled`, `airspace_enabled`).
+- Outbound community multilateration feeder connections are configured via the `MlatClientConfig`
+  boundary model (`server_addr`, `user`, `lat`, `lon`, `alt_m`), synchronizing station coordinates
+  before streaming timestamped Beast frames (`ADR-0016`).
 - Field definitions, types, optionality, units, and versioning schemas across all egress surfaces
   are specified in [`CONTRACTS.md`](CONTRACTS.md), which serves as the single field-level source of truth.
 

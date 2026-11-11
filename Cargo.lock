@@ -85,6 +85,7 @@ dependencies = [
  "aerofoil-1090",
  "aerofoil-978",
  "aerofoil-common",
+ "aerofoil-mlat",
  "aerofoil-tracker",
  "serde",
  "serde_json",

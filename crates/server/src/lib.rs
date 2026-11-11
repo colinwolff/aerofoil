@@ -12,6 +12,7 @@ pub mod egress;
 pub mod ingest;
 pub mod json;
 pub mod metrics;
+pub mod mlat_client;
 pub mod source;
 pub mod sse;
 pub mod web;
@@ -24,6 +25,9 @@ pub use egress::{DEFAULT_EGRESS_PORT, EgressServer};
 pub use ingest::DualBandIngest;
 pub use json::{TargetWireJson, TransponderSourceWire};
 pub use metrics::IngestMetrics;
+pub use mlat_client::{
+    MlatClientConfig, encode_beast_timestamped_frame, encode_handshake, parse_mlat_solution_line,
+};
 pub use source::{BandSource, DEFAULT_PORT_978, DEFAULT_PORT_1090};
 pub use sse::handle_sse_stream;
 pub use ws::handle_ws_client;
