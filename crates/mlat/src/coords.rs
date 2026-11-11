@@ -3,6 +3,8 @@
 
 use core::f64::consts::PI;
 
+use aerofoil_common::Position;
+
 /// WGS84 semi-major axis in meters (equatorial radius).
 pub const WGS84_A: f64 = 6_378_137.0;
 /// WGS84 reciprocal flattening factor (1 / f).
@@ -92,4 +94,12 @@ pub fn ecef_to_geodetic(ecef: EcefCoord) -> (f64, f64, f64) {
     let alt = p / cos_phi - n;
 
     (phi * 180.0 / PI, lon, alt)
+}
+
+impl From<Position> for EcefCoord {
+    #[inline]
+    fn from(pos: Position) -> Self {
+        let (lat, lon) = pos.to_f64();
+        geodetic_to_ecef(lat, lon, 0.0)
+    }
 }

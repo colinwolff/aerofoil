@@ -44,6 +44,11 @@ impl MlatClientConfig {
             alt_m,
         })
     }
+
+    /// Returns the surveyed station position in ECEF cartesian coordinates.
+    pub fn ecef_position(&self) -> aerofoil_mlat::EcefCoord {
+        aerofoil_mlat::geodetic_to_ecef(self.lat, self.lon, self.alt_m)
+    }
 }
 
 /// Encodes initial feeder identification and geodetic coordinate synchronization packet.
