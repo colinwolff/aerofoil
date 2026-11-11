@@ -26,3 +26,4 @@ record is a decision nobody will find.
 | [0014](0014-pluggable-map-engine-and-overlays.md) | 2026-11-10 | Pluggable AirspaceMapEngine, 12-Class SVG Icon Matrix, and Map Overlay Architecture |
 | [0015](0015-multi-tier-configuration-and-design-system.md) | 2026-11-10 | Multi-Tier Configuration Architecture and Avionics Glass-Cockpit Design System |
 | [0016](0016-mlat-multilateration-architecture.md) | 2026-11-10 | Multilateration (MLAT) Dual-Topology Architecture and TDOA Hyperboloid Solver |
+| [0017](0017-dual-engine-2d-3d-and-antenna-coverage.md) | 2026-11-10 | Dual-Engine 2D/3D Map Viewport, Layer Stacking Panes, and Antenna Coverage Heuristics |

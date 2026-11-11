@@ -73,7 +73,7 @@ when its crates compile, its tests pass and the tiered gates in `AGENTS.md` §3.
 
 ## 5. Milestone 5 — Production Web Radar, Multi-Topology Containerization & Cloud Deployment (in progress)
 
-> **Target:** `0.1.0-beta.2` (lockstep SemVer) · **Scope:** `ADR-0013`, `ADR-0014`, `ADR-0015`, `ADR-0016`
+> **Target:** `0.1.0-beta.2` (lockstep SemVer) · **Scope:** `ADR-0013`, `ADR-0014`, `ADR-0015`, `ADR-0016`, `ADR-0017`
 
 - [x] Dependency modernization & Leaflet 2.0 sync: audit and upgrade all workspace Cargo crates and npm packages to latest releases; rebase `feat/leaflet-2.0` with OpenStreetMap basemap (`AF-48`).
 - [x] Kinematic trajectory simulation & real-world capture: add multi-waypoint flight loops to `dual_band_hub.beast` and live hub capture to `scripts/download-datasets.sh` (`AF-49`).
@@ -85,8 +85,12 @@ when its crates compile, its tests pass and the tiered gates in `AGENTS.md` §3.
 - [ ] Multilateration core solver & clock synchronization: scaffold `aerofoil-mlat` crate with geodetic receiver registry, clock drift synchronization, and closed-form Bancroft / Levenberg-Marquardt TDOA hyperboloid solver (`AF-56`).
 - [ ] Outbound MLAT feeder & client transport: implement streaming feeder client protocol compatible with community `mlat-server` instances (`AF-57`).
 - [ ] Multi-source MLAT track fusion & UI badges: integrate `ReceptionSource::Mlat` into `aerofoil-tracker` and render distinct MLAT badges in web radar and TUI (`AF-58`).
+- [ ] Custom Leaflet map panes & chart stacking: implement explicit z-index panes (basemap 200, charts 250, weather 300, airspace 350, antenna 400, markers 600), maxNativeZoom upscaling, and OpenAIP TMS overlay support (`AF-59`).
+- [ ] MapLibre GL 3D globe & altitude flight profiles: hardware-accelerated WebGL 3D mode with camera pitch to 85°, multi-tier DEM terrain elevation, and vertical rate climb-colored 3D trajectory ribbons (`AF-60`).
+- [ ] Configurable polar distance rings & radial azimuths: presets, custom comma-separated radii, and dynamic azimuth intervals in Web Radar (`AF-61`).
+- [ ] Antenna reception range & signal strength heatmap overlay: empirical polar maximum range contour, RSSI signal strength gradient, and line-of-sight elevation mask (`AF-62`).
 
-**Exit criteria:** `0.1.0-beta.2` tagged with lockstep SemVer; `apps/web` operating cleanly under unified Docker container and decoupled Kubernetes Ingress; dynamic multi-waypoint replay verified across TUI and browser; MLAT TDOA solver verified against multi-receiver synthetic vectors.
+**Exit criteria:** `0.1.0-beta.2` tagged with lockstep SemVer; `apps/web` operating cleanly under unified Docker container and decoupled Kubernetes Ingress; dynamic multi-waypoint replay verified across TUI, 2D Leaflet, and 3D MapLibre viewports; MLAT TDOA solver verified against multi-receiver synthetic vectors.
 
 ---
 
