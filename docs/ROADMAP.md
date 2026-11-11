@@ -113,8 +113,9 @@ when its crates compile, its tests pass and the tiered gates in `AGENTS.md` §3.
 - [ ] 3D extruded polygonal airspace volumes: render FAA Class B/C/D and Special Use Airspace (SUA) as semi-transparent 3D polygonal columns extruded from aeronautical floor to ceiling MSL (`AF-74`).
 - [ ] Smooth 3D chase camera tracking and follow mode: camera locks behind selected aircraft along its kinematic velocity vector with interpolated pitch/heading tracking (`AF-75`).
 - [ ] Instanced 3D aircraft models with true pitch, roll, and heading orientation in MapLibre GL: replace flat 2D icons in 3D mode with low-poly 3D models (Jet, Heavy, Turboprop, Heli, Light GA) oriented dynamically in WebGL (`AF-76`).
+- [ ] Elevated 3D range rings and volumetric surveillance dome: render elevated concentric 3D range rings and dome tiers (e.g., FL100, FL200, FL300) with elevated distance and altitude labels using MapLibre 3D symbol elevation (`AF-77`).
 
-**Exit criteria:** Complete clean-room feature parity with `tar1090` without GPL code contamination; full 3D spatial airspace extrusion, instanced 3D aircraft models, and chase camera verified in MapLibre GL; deep linking and regex filtering verified in test suites.
+**Exit criteria:** Complete clean-room feature parity with `tar1090` without GPL code contamination; full 3D spatial airspace extrusion, instanced 3D aircraft models, elevated 3D surveillance dome rings, and chase camera verified in MapLibre GL; deep linking and regex filtering verified in test suites.
 
 ---
 
