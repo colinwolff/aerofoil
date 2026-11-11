@@ -40,6 +40,8 @@ export class MapLibreMapEngine implements AirspaceMapEngine {
       MapLibreTerrainHelper.enableTerrain(this.map);
       this.trajectoryManager.setupLayers(this.map);
       this.stemsManager.setupLayers(this.map);
+      this.trajectoryManager.update(this.map);
+      this.stemsManager.update(this.map);
     });
 
     this.map.on("moveend", () => {
@@ -47,6 +49,7 @@ export class MapLibreMapEngine implements AirspaceMapEngine {
     });
   }
 
+  public resize(): void { this.map?.resize(); }
   public setView(lat: number, lon: number, zoom?: number): void {
     this.map?.jumpTo({ center: [lon, lat], zoom: zoom ?? this.map.getZoom() });
   }
@@ -61,6 +64,12 @@ export class MapLibreMapEngine implements AirspaceMapEngine {
   public getPitch(): number { return this.map ? this.map.getPitch() : 0; }
   public setPitch(pitch: number): void { this.map?.setPitch(Math.min(85, Math.max(0, pitch))); }
   public onViewChange(callback: () => void): void { this.viewChangeCallbacks.push(callback); }
+
+  private beforeLayerId(): string | undefined {
+    return this.map?.getLayer("altitude-shadows-layer")
+      ? "altitude-shadows-layer"
+      : (this.map?.getLayer("trajectories-layer") ? "trajectories-layer" : undefined);
+  }
 
   public setBaseTileLayer(id: string, url: string, attribution: string, options?: AirspaceLayerOptions): void {
     if (!this.map) return;
@@ -79,10 +88,7 @@ export class MapLibreMapEngine implements AirspaceMapEngine {
         maxzoom: options?.maxNativeZoom ?? options?.maxZoom ?? 19,
       });
 
-      this.map.addLayer(
-        { id: this.baseLayerId, type: "raster", source: this.baseSourceId },
-        this.map.getLayer("background") ? undefined : undefined,
-      );
+      this.map.addLayer({ id: this.baseLayerId, type: "raster", source: this.baseSourceId }, this.beforeLayerId());
     };
 
     if (this.map.isStyleLoaded()) addLayer();
@@ -108,13 +114,10 @@ export class MapLibreMapEngine implements AirspaceMapEngine {
         maxzoom: options?.maxNativeZoom ?? options?.maxZoom ?? 19,
       });
 
-      this.map.addLayer({
-        id: lyrId,
-        type: "raster",
-        source: srcId,
-        paint: { "raster-opacity": options?.opacity ?? 0.7 },
-      });
-
+      this.map.addLayer(
+        { id: lyrId, type: "raster", source: srcId, paint: { "raster-opacity": options?.opacity ?? 0.7 } },
+        this.beforeLayerId(),
+      );
       this.overlayIds.add(id);
     };
 
@@ -186,14 +189,11 @@ export class MapLibreMapEngine implements AirspaceMapEngine {
   }
 
   public removeVectorLayer(id: string): void { this.vectorManager.removeVectorLayer(id); }
-
   public setParametricLines(id: string, lines: [number, number][][], style: Record<string, any>): void {
     this.vectorManager.setParametricLines(id, lines, style);
   }
-
   public setParametricCircles(id: string, circles: { center: [number, number]; radiusMeters: number }[], style: Record<string, any>): void {
     this.vectorManager.setParametricCircles(id, circles, style);
   }
-
   public removeParametricLayer(id: string): void { this.vectorManager.removeParametricLayer(id); }
 }

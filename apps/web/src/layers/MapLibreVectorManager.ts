@@ -8,17 +8,27 @@ export class MapLibreVectorManager {
   public setVectorLayer(id: string, geoJsonData: any): void {
     const map = this.mapGetter();
     if (!map) return;
-    this.removeVectorLayer(id);
 
-    const srcId = `vector-src-${id}`;
-    const lyrId = `vector-lyr-${id}`;
-    map.addSource(srcId, { type: "geojson", data: geoJsonData });
-    map.addLayer({
-      id: lyrId,
-      type: "line",
-      source: srcId,
-      paint: { "line-color": "#38bdf8", "line-width": 1.5, "line-opacity": 0.6 },
-    });
+    const run = () => {
+      if (!map) return;
+      this.removeVectorLayer(id);
+      const srcId = `vector-src-${id}`;
+      const lyrId = `vector-lyr-${id}`;
+      map.addSource(srcId, { type: "geojson", data: geoJsonData });
+      const beforeId = map.getLayer("altitude-shadows-layer") ? "altitude-shadows-layer" : undefined;
+      map.addLayer(
+        {
+          id: lyrId,
+          type: "line",
+          source: srcId,
+          paint: { "line-color": "#38bdf8", "line-width": 1.5, "line-opacity": 0.6 },
+        },
+        beforeId,
+      );
+    };
+
+    if (map.isStyleLoaded()) run();
+    else map.once("load", run);
   }
 
   public removeVectorLayer(id: string): void {
@@ -33,31 +43,41 @@ export class MapLibreVectorManager {
   public setParametricLines(id: string, lines: [number, number][][], style: Record<string, any>): void {
     const map = this.mapGetter();
     if (!map) return;
-    this.removeParametricLayer(id);
 
-    const srcId = `param-src-${id}`;
-    const lyrId = `param-lyr-${id}`;
-    map.addSource(srcId, {
-      type: "geojson",
-      data: {
-        type: "FeatureCollection",
-        features: lines.map((l) => ({
-          type: "Feature" as const,
-          properties: {},
-          geometry: { type: "LineString" as const, coordinates: l.map(([lat, lon]) => [lon, lat]) },
-        })),
-      },
-    });
-    map.addLayer({
-      id: lyrId,
-      type: "line",
-      source: srcId,
-      paint: {
-        "line-color": style.color ?? "#38bdf8",
-        "line-width": style.weight ?? 1,
-        "line-opacity": style.opacity ?? 0.4,
-      },
-    });
+    const run = () => {
+      if (!map) return;
+      this.removeParametricLayer(id);
+      const srcId = `param-src-${id}`;
+      const lyrId = `param-lyr-${id}`;
+      map.addSource(srcId, {
+        type: "geojson",
+        data: {
+          type: "FeatureCollection",
+          features: lines.map((l) => ({
+            type: "Feature" as const,
+            properties: {},
+            geometry: { type: "LineString" as const, coordinates: l.map(([lat, lon]) => [lon, lat]) },
+          })),
+        },
+      });
+      const beforeId = map.getLayer("altitude-shadows-layer") ? "altitude-shadows-layer" : undefined;
+      map.addLayer(
+        {
+          id: lyrId,
+          type: "line",
+          source: srcId,
+          paint: {
+            "line-color": style.color ?? "#38bdf8",
+            "line-width": style.weight ?? 1,
+            "line-opacity": style.opacity ?? 0.4,
+          },
+        },
+        beforeId,
+      );
+    };
+
+    if (map.isStyleLoaded()) run();
+    else map.once("load", run);
   }
 
   public setParametricCircles(

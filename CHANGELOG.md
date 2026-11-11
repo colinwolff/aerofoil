@@ -42,6 +42,7 @@ crates, in the imperative, one line each, with the `storypole` task key in paren
 
 ### Fixed
 
+- Fix 3D viewport canvas sizing with auto-resize and style-load race guards, and replace single toggle button with unambiguous [ 2D | 3D ] segmented control.
 - Eliminate weather radar scrubber playback latency by caching active frames and preloading adjacent frames with zero-flicker opacity swapping.
 
 ## [0.1.0-beta.1] - 2026-11-10

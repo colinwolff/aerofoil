@@ -34,9 +34,10 @@
           <button type="button" id="btn-open-settings" class="toolbar-btn" title="Configure Maps & API Keys">
             <span>⚙</span> Settings
           </button>
-          <button type="button" id="btn-toggle-engine" class="toolbar-btn" title="Toggle 2D (Leaflet) / 3D (MapLibre GL)">
-            <span id="engine-icon">🌐</span> <span id="engine-label">3D</span>
-          </button>
+          <div class="engine-toggle-group" title="Map Viewport Mode">
+            <button type="button" id="btn-engine-2d" class="engine-seg-btn active" title="2D Tactical Radar View (Leaflet)">2D</button>
+            <button type="button" id="btn-engine-3d" class="engine-seg-btn" title="3D Globe & Elevation Profile View (MapLibre GL)">3D</button>
+          </div>
           <button type="button" id="btn-toggle-theme" class="toolbar-btn" title="Toggle Light / Dark Theme">
             <span>☼</span>
           </button>

@@ -40,9 +40,11 @@ export class EngineToggleManager {
   public init(centerLat: number, centerLon: number, zoom: number): LeafletMapEngine {
     this.leafletEngine.init("map", centerLat, centerLon, zoom);
 
-    const toggleBtn = document.getElementById("btn-toggle-engine");
-    toggleBtn?.addEventListener("click", () => this.toggleMode());
+    document.getElementById("btn-engine-2d")?.addEventListener("click", () => this.setMode("2D"));
+    document.getElementById("btn-engine-3d")?.addEventListener("click", () => this.setMode("3D"));
+    document.getElementById("btn-toggle-engine")?.addEventListener("click", () => this.toggleMode());
 
+    this.updateButtonStates();
     return this.leafletEngine;
   }
 
@@ -54,11 +56,14 @@ export class EngineToggleManager {
     return this.mode;
   }
 
+  public setMode(targetMode: ViewportMode): ViewportMode {
+    if (this.mode === targetMode) return this.mode;
+    return this.toggleMode();
+  }
+
   public toggleMode(): ViewportMode {
     const map2d = document.getElementById("map");
     const map3d = document.getElementById("map-3d");
-    const btn = document.getElementById("btn-toggle-engine");
-    const label = document.getElementById("engine-label");
 
     if (this.mode === "2D") {
       this.mode = "3D";
@@ -67,8 +72,6 @@ export class EngineToggleManager {
 
       map2d?.classList.add("hidden");
       map3d?.classList.remove("hidden");
-      btn?.classList.add("active");
-      if (label) label.textContent = "2D";
 
       if (!this.maplibreEngine) {
         this.maplibreEngine = new MapLibreMapEngine();
@@ -81,7 +84,11 @@ export class EngineToggleManager {
         this.maplibreEngine.setView(lat, lon, zoom);
       }
 
-      // Sync active basemap to MapLibre
+      this.maplibreEngine.resize();
+      if (typeof requestAnimationFrame !== "undefined") {
+        requestAnimationFrame(() => this.maplibreEngine?.resize());
+      }
+
       const def = this.basemapMgr.getActiveBasemap();
       this.maplibreEngine.setBaseTileLayer(def.id, def.url, def.attribution, {
         minZoom: def.minZoom,
@@ -99,15 +106,30 @@ export class EngineToggleManager {
 
       map3d?.classList.add("hidden");
       map2d?.classList.remove("hidden");
-      btn?.classList.remove("active");
-      if (label) label.textContent = "3D";
 
       this.leafletEngine.setView(lat, lon, zoom);
+      const rawLeafletMap = (this.leafletEngine as any).map;
+      if (rawLeafletMap?.invalidateSize) rawLeafletMap.invalidateSize();
+
       this.radarManager.setEngine(this.leafletEngine);
       this.syncLayersToEngine(this.leafletEngine);
     }
 
+    this.updateButtonStates();
     return this.mode;
+  }
+
+  private updateButtonStates(): void {
+    const btn2d = document.getElementById("btn-engine-2d");
+    const btn3d = document.getElementById("btn-engine-3d");
+    const legacyBtn = document.getElementById("btn-toggle-engine");
+    const legacyLabel = document.getElementById("engine-label");
+
+    if (btn2d) btn2d.classList.toggle("active", this.mode === "2D");
+    if (btn3d) btn3d.classList.toggle("active", this.mode === "3D");
+
+    if (legacyBtn) legacyBtn.classList.toggle("active", this.mode === "3D");
+    if (legacyLabel) legacyLabel.textContent = this.mode;
   }
 
   private syncLayersToEngine(engine: AirspaceMapEngine): void {

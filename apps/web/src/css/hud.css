@@ -191,3 +191,37 @@
 .scrubber-close-btn:hover {
   color: #f87171;
 }
+
+/* 2D / 3D Viewport Segmented Control */
+.engine-toggle-group {
+  display: inline-flex;
+  align-items: center;
+  background: rgba(15, 23, 42, 0.75);
+  border: 1px solid rgba(51, 65, 85, 0.8);
+  border-radius: 6px;
+  padding: 2px;
+  gap: 2px;
+}
+
+.engine-seg-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-dim);
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 3px 9px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  line-height: 1.2;
+}
+
+.engine-seg-btn:hover {
+  color: #ffffff;
+}
+
+.engine-seg-btn.active {
+  background: #0284c7;
+  color: #ffffff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
+}
