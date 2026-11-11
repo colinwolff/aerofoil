@@ -58,6 +58,17 @@ export class AntennaCoverageLayer {
     if (this.visible) this.render();
   }
 
+  public setEngine(newEngine: AirspaceMapEngine): void {
+    if (this.visible) {
+      this.engine.removeParametricLayer("antenna_los_masks");
+      this.engine.removeParametricLayer("antenna_coverage_contour");
+    }
+    this.engine = newEngine;
+    if (this.visible) {
+      this.render();
+    }
+  }
+
   public setVisible(visible: boolean): void {
     this.visible = visible;
     if (visible) {

@@ -13,6 +13,9 @@ crates, in the imperative, one line each, with the `storypole` task key in paren
 
 ### Added
 
+- Render 3D vertical aircraft altitude drop-lines and terrain ground shadows in MapLibre GL (`AF-64`).
+- Implement 3D terrain overlay draping, synchronized layer controls, and interactive NEXRAD timeline weather scrubber (`AF-63`).
+- Add MADR 0018 establishing MapLibre 3D overlay draping, layer synchronization, and altitude stems (`AF-63`).
 - Integrate MLAT reception provenance into fusion tracker and surface MLAT badges in web radar and TUI (`AF-58`).
 - Implement outbound MLAT client and streaming feeder protocol for community mlat-server networks (`AF-57`).
 - Scaffold `aerofoil-mlat` crate with WGS84/ECEF coordinate math, surveyed receiver registry, clock offset calibration, and Bancroft TDOA hyperbolic solver (`AF-56`).

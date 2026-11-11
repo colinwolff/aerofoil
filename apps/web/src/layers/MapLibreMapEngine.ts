@@ -5,6 +5,7 @@ import { Map as MapLibreMap, Marker, Popup, NavigationControl } from "maplibre-g
 import type { AirspaceLayerOptions, AirspaceMapEngine } from "./AirspaceMapEngine";
 import { MapLibreTerrainHelper } from "./MapLibreTerrainHelper";
 import { MapLibreTrajectoryManager } from "./MapLibreTrajectoryManager";
+import { MapLibreAltitudeStems } from "./MapLibreAltitudeStems";
 import { MapLibreVectorManager } from "./MapLibreVectorManager";
 
 export class MapLibreMapEngine implements AirspaceMapEngine {
@@ -15,6 +16,7 @@ export class MapLibreMapEngine implements AirspaceMapEngine {
   private overlayIds: Set<string> = new Set();
   private viewChangeCallbacks: (() => void)[] = [];
   public readonly trajectoryManager = new MapLibreTrajectoryManager();
+  public readonly stemsManager = new MapLibreAltitudeStems();
   private vectorManager = new MapLibreVectorManager(() => this.map);
 
   public init(containerId: string, centerLat: number, centerLon: number, zoom: number): void {
@@ -37,6 +39,7 @@ export class MapLibreMapEngine implements AirspaceMapEngine {
       if (!this.map) return;
       MapLibreTerrainHelper.enableTerrain(this.map);
       this.trajectoryManager.setupLayers(this.map);
+      this.stemsManager.setupLayers(this.map);
     });
 
     this.map.on("moveend", () => {
@@ -54,10 +57,7 @@ export class MapLibreMapEngine implements AirspaceMapEngine {
     return [c.lat, c.lng];
   }
 
-  public getZoom(): number {
-    return this.map ? this.map.getZoom() : 8;
-  }
-
+  public getZoom(): number { return this.map ? this.map.getZoom() : 8; }
   public getPitch(): number { return this.map ? this.map.getPitch() : 0; }
   public setPitch(pitch: number): void { this.map?.setPitch(Math.min(85, Math.max(0, pitch))); }
   public onViewChange(callback: () => void): void { this.viewChangeCallbacks.push(callback); }
@@ -80,13 +80,8 @@ export class MapLibreMapEngine implements AirspaceMapEngine {
       });
 
       this.map.addLayer(
-        {
-          id: this.baseLayerId,
-          type: "raster",
-          source: this.baseSourceId,
-          paint: { "raster-opacity": options?.opacity ?? 1.0 },
-        },
-        this.map.getLayer("trajectories-layer") ? "trajectories-layer" : undefined,
+        { id: this.baseLayerId, type: "raster", source: this.baseSourceId },
+        this.map.getLayer("background") ? undefined : undefined,
       );
     };
 
@@ -96,29 +91,35 @@ export class MapLibreMapEngine implements AirspaceMapEngine {
 
   public addOverlayTileLayer(id: string, url: string, attribution: string, options?: AirspaceLayerOptions): void {
     if (!this.map) return;
-    this.removeTileLayer(id);
+    const addLayer = () => {
+      if (!this.map) return;
+      this.removeTileLayer(id);
 
-    const srcId = `overlay-src-${id}`;
-    const lyrId = `overlay-lyr-${id}`;
-    const tileUrl = url.includes("{s}") ? url.replace("{s}", options?.subdomains?.[0] || "a") : url;
+      const srcId = `overlay-src-${id}`;
+      const lyrId = `overlay-lyr-${id}`;
+      const tileUrl = url.includes("{s}") ? url.replace("{s}", options?.subdomains?.[0] || "a") : url;
 
-    this.map.addSource(srcId, {
-      type: "raster",
-      tiles: [tileUrl],
-      tileSize: 256,
-      attribution,
-      minzoom: options?.minZoom ?? 0,
-      maxzoom: options?.maxNativeZoom ?? options?.maxZoom ?? 19,
-    });
+      this.map.addSource(srcId, {
+        type: "raster",
+        tiles: [tileUrl],
+        tileSize: 256,
+        attribution,
+        minzoom: options?.minZoom ?? 0,
+        maxzoom: options?.maxNativeZoom ?? options?.maxZoom ?? 19,
+      });
 
-    this.map.addLayer({
-      id: lyrId,
-      type: "raster",
-      source: srcId,
-      paint: { "raster-opacity": options?.opacity ?? 0.7 },
-    });
+      this.map.addLayer({
+        id: lyrId,
+        type: "raster",
+        source: srcId,
+        paint: { "raster-opacity": options?.opacity ?? 0.7 },
+      });
 
-    this.overlayIds.add(id);
+      this.overlayIds.add(id);
+    };
+
+    if (this.map.isStyleLoaded()) addLayer();
+    else this.map.once("load", addLayer);
   }
 
   public removeTileLayer(id: string): void {
@@ -154,9 +155,14 @@ export class MapLibreMapEngine implements AirspaceMapEngine {
       marker.getElement().innerHTML = iconHtml;
       marker.getPopup()?.setHTML(popupHtml);
     }
+  }
 
-    if (this.map.isStyleLoaded()) {
+  public updateTargetTrajectory(address: string, lon: number, lat: number, altMeters: number, vRate: number = 0): void {
+    this.trajectoryManager.addCoordinate(address, lon, lat, altMeters, vRate);
+    this.stemsManager.updateTarget(address, lon, lat, altMeters);
+    if (this.map?.isStyleLoaded()) {
       this.trajectoryManager.update(this.map);
+      this.stemsManager.update(this.map);
     }
   }
 
@@ -168,8 +174,10 @@ export class MapLibreMapEngine implements AirspaceMapEngine {
       this.markers.delete(key);
     }
     this.trajectoryManager.removeTarget(key);
+    this.stemsManager.removeTarget(key);
     if (this.map?.isStyleLoaded()) {
       this.trajectoryManager.update(this.map);
+      this.stemsManager.update(this.map);
     }
   }
 
@@ -177,23 +185,15 @@ export class MapLibreMapEngine implements AirspaceMapEngine {
     this.vectorManager.setVectorLayer(id, geoJsonData);
   }
 
-  public removeVectorLayer(id: string): void {
-    this.vectorManager.removeVectorLayer(id);
-  }
+  public removeVectorLayer(id: string): void { this.vectorManager.removeVectorLayer(id); }
 
   public setParametricLines(id: string, lines: [number, number][][], style: Record<string, any>): void {
     this.vectorManager.setParametricLines(id, lines, style);
   }
 
-  public setParametricCircles(
-    id: string,
-    circles: { center: [number, number]; radiusMeters: number }[],
-    style: Record<string, any>,
-  ): void {
+  public setParametricCircles(id: string, circles: { center: [number, number]; radiusMeters: number }[], style: Record<string, any>): void {
     this.vectorManager.setParametricCircles(id, circles, style);
   }
 
-  public removeParametricLayer(id: string): void {
-    this.vectorManager.removeParametricLayer(id);
-  }
+  public removeParametricLayer(id: string): void { this.vectorManager.removeParametricLayer(id); }
 }

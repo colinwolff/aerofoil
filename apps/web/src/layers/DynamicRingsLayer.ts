@@ -86,6 +86,17 @@ export class DynamicRingsLayer {
     }
   }
 
+  public setEngine(newEngine: AirspaceMapEngine): void {
+    if (this.enabled) {
+      this.engine.removeParametricLayer("range_rings");
+      this.engine.removeParametricLayer("azimuth_lines");
+    }
+    this.engine = newEngine;
+    if (this.enabled) {
+      this.render();
+    }
+  }
+
   public setVisible(visible: boolean): void {
     this.enabled = visible;
     if (visible) {

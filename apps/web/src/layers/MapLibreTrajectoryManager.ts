@@ -110,7 +110,7 @@ export class MapLibreTrajectoryManager {
 
     const now = performance.now();
     if (now - this.lastFlushTime < this.minFlushIntervalMs) {
-      if (this.rafId === null) {
+      if (this.rafId === null && typeof requestAnimationFrame !== "undefined") {
         this.rafId = requestAnimationFrame(() => {
           this.rafId = null;
           this.update(map);

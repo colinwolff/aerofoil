@@ -55,9 +55,11 @@ export class AirspaceRadarManager {
         if (typeof this.engine.updateTargetMarker === "function") {
           this.engine.updateTargetMarker(key, lat, lon, iconHtml, popupHtml);
         }
-        if (typeof (this.engine as any).trajectoryManager?.addCoordinate === "function") {
-          const altMeters = (target.altitude ?? 0) * 0.3048;
-          const vRate = (target as any).vertical_rate ?? (target as any).vertical_rate_fpm ?? 0;
+        const altMeters = (target.altitude ?? 0) * 0.3048;
+        const vRate = (target as any).vertical_rate ?? (target as any).vertical_rate_fpm ?? 0;
+        if (typeof (this.engine as any).updateTargetTrajectory === "function") {
+          (this.engine as any).updateTargetTrajectory(key, lon, lat, altMeters, vRate);
+        } else if (typeof (this.engine as any).trajectoryManager?.addCoordinate === "function") {
           (this.engine as any).trajectoryManager.addCoordinate(key, lon, lat, altMeters, vRate);
         }
       }

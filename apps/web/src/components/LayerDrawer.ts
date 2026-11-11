@@ -66,7 +66,10 @@ export class LayerDrawer {
             <button type="button" id="hud-ring-preset-std" class="btn-tag">Standard</button>
             <button type="button" id="hud-ring-preset-long" class="btn-tag">Long-Range</button>
           </div>
-          <label class="hud-checkbox-label"><input type="checkbox" id="hud-toggle-weather" /> Live Weather (NEXRAD)</label>
+          <div class="flex items-center justify-between mt-1">
+            <label class="hud-checkbox-label"><input type="checkbox" id="hud-toggle-weather" /> Live Weather (NEXRAD)</label>
+            <button type="button" id="hud-open-scrubber-btn" class="btn-tag text-[10px]" title="Toggle Weather Scrubber Dock">Dock ⏱</button>
+          </div>
           <label class="hud-checkbox-label mt-1"><input type="checkbox" id="hud-toggle-antenna" /> Antenna Reception Map</label>
         </div>
       </div>
@@ -150,6 +153,9 @@ export class LayerDrawer {
     document.getElementById("hud-ring-preset-std")?.addEventListener("click", () => this.ringsLayer.applyPreset("standard"));
     document.getElementById("hud-ring-preset-long")?.addEventListener("click", () => this.ringsLayer.applyPreset("long_range"));
     bindChk("hud-toggle-antenna", (c) => this.antennaCoverage?.setVisible(c));
+    document.getElementById("hud-open-scrubber-btn")?.addEventListener("click", () => {
+      this.scrubber.toggleVisible();
+    });
     bindChk("hud-toggle-weather", (c) => {
       this.weatherLayer.setVisible(c);
       this.scrubber.setVisible(c);

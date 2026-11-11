@@ -3,7 +3,6 @@
 import { AerofoilClient, type TargetWire } from "@aerofoil-rs/sdk";
 import "leaflet/dist/leaflet.css";
 
-import { LeafletMapEngine } from "./layers/LeafletMapEngine";
 import { BaseMapManager } from "./layers/BaseMapRegistry";
 import { DynamicRingsLayer } from "./layers/DynamicRingsLayer";
 import { AntennaCoverageLayer } from "./layers/AntennaCoverageLayer";
@@ -17,6 +16,7 @@ import { MapConfigModal } from "./components/MapConfigModal";
 import { SidebarSplitter } from "./components/SidebarSplitter";
 import { EngineToggleManager } from "./components/EngineToggleManager";
 import { ThemeManager } from "./components/ThemeManager";
+import { applyBasemap, bindToolbar } from "./components/ToolbarBinder";
 import { AirspaceRadarManager } from "./radar";
 
 async function initApp(): Promise<void> {
@@ -69,6 +69,8 @@ async function initApp(): Promise<void> {
     const antennaCoverage = new AntennaCoverageLayer(engine, config.receiverLat, config.receiverLon);
     radarManager.setAntennaLayer(antennaCoverage);
 
+    toggleMgr.setLayers({ weatherLayer, ringsLayer, antennaCoverage, vectorMgr });
+
     const scrubber = new WeatherScrubber(weatherLayer);
     scrubber.init("weather-scrubber-dock");
 
@@ -85,7 +87,7 @@ async function initApp(): Promise<void> {
       applyBasemap(toggleMgr.getActiveEngine(), basemapMgr, attributionCtrl, newCfg);
     });
 
-    bindToolbar(drawer, configModal, splitter, toggleMgr, configModal);
+    bindToolbar(drawer, configModal, splitter, toggleMgr);
   } else {
     radarManager = new AirspaceRadarManager(null);
   }
@@ -108,77 +110,6 @@ function startUtcClock(): void {
   };
   update();
   setInterval(update, 1000);
-}
-
-function applyBasemap(engine: LeafletMapEngine, mgr: BaseMapManager, attr: AttributionControl, cfg: any): void {
-  const mapEl = document.getElementById("map");
-  if (cfg.customTileUrl) {
-    engine.setBaseTileLayer("custom", cfg.customTileUrl, "Custom Tiles", { maxZoom: 19 });
-    attr.register({ id: "basemap", name: "Custom Tiles", html: "Custom Operator Tiles", license: "Custom License" });
-    mapEl?.classList.remove("dark-tiles");
-  } else if (cfg.cartoKey) {
-    const def = mgr.setBasemap("carto_dark");
-    const url = `https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png?api_key=${encodeURIComponent(cfg.cartoKey)}`;
-    engine.setBaseTileLayer("carto_dark", url, def.attribution, { maxZoom: 19, subdomains: "abcd" });
-    attr.register({ id: "basemap", name: def.name, html: def.attribution, license: def.license });
-    mapEl?.classList.remove("dark-tiles");
-  } else {
-    const def = mgr.setBasemap(cfg.defaultBasemap || "osm_dark");
-    if (mapEl) {
-      mapEl.dataset.darkFilter = def.isDarkFilterRecommended ? "true" : "false";
-      const isDark = document.body.classList.contains("dark-theme");
-      mapEl.classList.toggle("dark-tiles", isDark && !!def.isDarkFilterRecommended);
-    }
-    engine.setBaseTileLayer(def.id, def.url, def.attribution, {
-      minZoom: def.minZoom,
-      maxZoom: def.maxZoom,
-      maxNativeZoom: def.maxNativeZoom,
-      subdomains: def.subdomains,
-      pane: def.pane,
-      tms: def.tms,
-    });
-    attr.register({ id: "basemap", name: def.name, html: def.attribution, license: def.license });
-  }
-}
-
-function bindToolbar(drawer: LayerDrawer, cfgModal: MapConfigModal, splitter: SidebarSplitter, toggleMgr: EngineToggleManager, cfg: MapConfigModal): void {
-  const btnLayers = document.getElementById("btn-toggle-layers");
-  btnLayers?.addEventListener("click", () => {
-    const open = drawer.toggle();
-    btnLayers.classList.toggle("active", open);
-  });
-
-  const btnWeather = document.getElementById("btn-toggle-weather");
-  btnWeather?.addEventListener("click", () => {
-    const active = drawer.toggleWeather();
-    btnWeather.classList.toggle("active", active);
-  });
-
-  const centerDropdown = document.getElementById("center-menu-dropdown");
-  document.getElementById("btn-center-menu")?.addEventListener("click", (e) => {
-    e.stopPropagation();
-    centerDropdown?.classList.toggle("hidden");
-  });
-  window.addEventListener("click", () => centerDropdown?.classList.add("hidden"));
-
-  const getEngine = () => toggleMgr.getActiveEngine();
-  document.getElementById("btn-center-receiver")?.addEventListener("click", () => {
-    const c = cfg.getConfig();
-    getEngine().setView(c.receiverLat, c.receiverLon, 8);
-  });
-  document.getElementById("btn-center-conus")?.addEventListener("click", () => getEngine().setView(39.2976, -94.7139, 6));
-  document.getElementById("btn-center-europe")?.addEventListener("click", () => getEngine().setView(52.3676, 4.9041, 8));
-  document.getElementById("btn-center-gps")?.addEventListener("click", () => {
-    if ("geolocation" in navigator) {
-      navigator.geolocation.getCurrentPosition((pos) => getEngine().setView(pos.coords.latitude, pos.coords.longitude, 9));
-    }
-  });
-
-  document.getElementById("btn-open-settings")?.addEventListener("click", () => cfgModal.show());
-
-  const toggleSidebar = () => splitter.toggleCollapse();
-  document.getElementById("btn-toggle-sidebar")?.addEventListener("click", toggleSidebar);
-  document.getElementById("btn-collapse-sidebar")?.addEventListener("click", toggleSidebar);
 }
 
 function initStreaming(radarManager: AirspaceRadarManager, serverUrl: string): void {

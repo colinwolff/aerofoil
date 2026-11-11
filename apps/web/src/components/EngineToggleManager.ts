@@ -10,11 +10,19 @@ import type { AirspaceRadarManager } from "../radar";
 
 export type ViewportMode = "2D" | "3D";
 
+export interface LayerSyncContext {
+  weatherLayer?: any;
+  ringsLayer?: any;
+  antennaCoverage?: any;
+  vectorMgr?: any;
+}
+
 export class EngineToggleManager {
   private mode: ViewportMode = "2D";
   private leafletEngine: LeafletMapEngine;
   private maplibreEngine: MapLibreMapEngine | null = null;
   private maplibreInitialized: boolean = false;
+  private layers: LayerSyncContext = {};
 
   constructor(
     private radarManager: AirspaceRadarManager,
@@ -23,6 +31,10 @@ export class EngineToggleManager {
     private config: any,
   ) {
     this.leafletEngine = new LeafletMapEngine();
+  }
+
+  public setLayers(layers: LayerSyncContext): void {
+    this.layers = layers;
   }
 
   public init(centerLat: number, centerLon: number, zoom: number): LeafletMapEngine {
@@ -79,6 +91,7 @@ export class EngineToggleManager {
       });
 
       this.radarManager.setEngine(this.maplibreEngine);
+      this.syncLayersToEngine(this.maplibreEngine);
     } else {
       this.mode = "2D";
       const [lat, lon] = this.maplibreEngine ? this.maplibreEngine.getCenter() : [this.config.receiverLat, this.config.receiverLon];
@@ -91,8 +104,24 @@ export class EngineToggleManager {
 
       this.leafletEngine.setView(lat, lon, zoom);
       this.radarManager.setEngine(this.leafletEngine);
+      this.syncLayersToEngine(this.leafletEngine);
     }
 
     return this.mode;
+  }
+
+  private syncLayersToEngine(engine: AirspaceMapEngine): void {
+    if (typeof this.layers.weatherLayer?.setEngine === "function") {
+      this.layers.weatherLayer.setEngine(engine);
+    }
+    if (typeof this.layers.ringsLayer?.setEngine === "function") {
+      this.layers.ringsLayer.setEngine(engine);
+    }
+    if (typeof this.layers.antennaCoverage?.setEngine === "function") {
+      this.layers.antennaCoverage.setEngine(engine);
+    }
+    if (typeof this.layers.vectorMgr?.setEngine === "function") {
+      this.layers.vectorMgr.setEngine(engine);
+    }
   }
 }

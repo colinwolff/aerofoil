@@ -15,8 +15,21 @@ export interface AirspaceFeatureProperties {
 
 export class VectorOverlayManager {
   private activeLayers: Set<string> = new Set();
+  private cachedLayers: Map<string, { geoJson: any; styleFn: any }> = new Map();
 
   constructor(private engine: AirspaceMapEngine) {}
+
+  public setEngine(newEngine: AirspaceMapEngine): void {
+    for (const layerId of this.activeLayers) {
+      this.engine.removeVectorLayer(layerId);
+    }
+    this.engine = newEngine;
+    for (const [layerId, item] of this.cachedLayers.entries()) {
+      if (this.activeLayers.has(layerId)) {
+        this.engine.setVectorLayer(layerId, item.geoJson, item.styleFn);
+      }
+    }
+  }
 
   public async loadLayer(
     layerId: string,
@@ -61,6 +74,7 @@ export class VectorOverlayManager {
         },
       );
 
+      this.cachedLayers.set(layerId, { geoJson, styleFn });
       this.activeLayers.add(layerId);
       return true;
     } catch (e) {

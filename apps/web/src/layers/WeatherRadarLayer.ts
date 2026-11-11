@@ -45,6 +45,10 @@ export class WeatherRadarLayer {
       if (this.frames.length > 0) {
         // Start at most recent historical frame
         this.currentFrameIndex = past.length > 0 ? past.length - 1 : 0;
+        this.notifyFrameChanged();
+        if (this.isVisible) {
+          this.renderCurrentFrame();
+        }
         return true;
       }
       return false;
@@ -64,6 +68,20 @@ export class WeatherRadarLayer {
       this.pause();
       this.engine.removeTileLayer("rainviewer_nexrad");
     }
+  }
+
+  public setEngine(newEngine: AirspaceMapEngine): void {
+    if (this.isVisible) {
+      this.engine.removeTileLayer("rainviewer_nexrad");
+    }
+    this.engine = newEngine;
+    if (this.isVisible) {
+      this.renderCurrentFrame();
+    }
+  }
+
+  public isLayerVisible(): boolean {
+    return this.isVisible;
   }
 
   public getFrames(): RadarFrame[] {

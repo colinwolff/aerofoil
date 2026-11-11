@@ -27,3 +27,4 @@ record is a decision nobody will find.
 | [0015](0015-multi-tier-configuration-and-design-system.md) | 2026-11-10 | Multi-Tier Configuration Architecture and Avionics Glass-Cockpit Design System |
 | [0016](0016-mlat-multilateration-architecture.md) | 2026-11-10 | Multilateration (MLAT) Dual-Topology Architecture and TDOA Hyperboloid Solver |
 | [0017](0017-dual-engine-2d-3d-and-antenna-coverage.md) | 2026-11-10 | Dual-Engine 2D/3D Map Viewport, Layer Stacking Panes, and Antenna Coverage Heuristics |
+| [0018](0018-maplibre-3d-overlays-and-altitude-stems.md) | 2026-11-10 | MapLibre 3D Overlay Draping, Terrain Synchronization, and Aircraft Altitude Stems |
