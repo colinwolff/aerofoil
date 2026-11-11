@@ -2,11 +2,12 @@
 
 use aerofoil_1090::crc::crc24;
 
-pub fn encode_beast_frame(msg_type: u8, payload: &[u8]) -> Vec<u8> {
+pub fn encode_beast_frame_timestamped(msg_type: u8, payload: &[u8], mlat_ticks: u64) -> Vec<u8> {
     let mut out = Vec::new();
     out.push(0x1A);
     out.push(msg_type);
-    out.extend_from_slice(&[0, 0, 0, 0, 0x27, 0x10]); // MLAT timestamp
+    let ts_bytes = mlat_ticks.to_be_bytes();
+    out.extend_from_slice(&ts_bytes[2..8]); // 6-byte MLAT counter
     out.push(0x90); // Signal level
     for &b in payload {
         out.push(b);
@@ -15,6 +16,10 @@ pub fn encode_beast_frame(msg_type: u8, payload: &[u8]) -> Vec<u8> {
         }
     }
     out
+}
+
+pub fn encode_beast_frame(msg_type: u8, payload: &[u8]) -> Vec<u8> {
+    encode_beast_frame_timestamped(msg_type, payload, 0x2710)
 }
 
 pub fn make_df17_ident(icao: u32, callsign: &str) -> [u8; 14] {

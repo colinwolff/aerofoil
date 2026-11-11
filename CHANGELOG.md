@@ -13,6 +13,7 @@ crates, in the imperative, one line each, with the `storypole` task key in paren
 
 ### Added
 
+- Synthesize 50+ aircraft kinematic trajectory profiles and generate multi-minute terminal airspace Beast fixture (`AF-79`).
 - Add MADR 0019 specifying clean-room `tar1090` feature parity, avionics telemetry inspection, and spatial 3D airspace volumes (`AF-68`).
 
 - Add interactive 3D topography and relief controls, terrain exaggeration presets, and multi-provider DEM configuration in LayerDrawer and MapConfigModal (`AF-63`).
