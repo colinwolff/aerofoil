@@ -1,6 +1,8 @@
 //! BaseMapRegistry — Registered Basemaps and Chart Tile Services.
 //! Handles official FAA ArcGIS REST MapServer charts, openAIP, satellite, and fallback mechanics.
 
+import { getEnvCartoKey } from "../components/MapConfigTypes";
+
 export interface BaseMapDefinition {
   id: string;
   name: string;
@@ -39,12 +41,22 @@ export const BASEMAPS: Record<string, BaseMapDefinition> = {
   carto_dark: {
     id: "carto_dark",
     name: "CARTO Dark Matter",
-    url: "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
-    attribution: '&copy; <a href="https://carto.com/">CARTO</a>, &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+    url: "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png",
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions" target="_blank">CARTO</a>',
     maxZoom: 19,
     subdomains: "abcd",
     isDarkFilterRecommended: false,
-    license: "Commercial Free Tier (Requires API Key for High Volume)",
+    license: "CARTO Basemaps Terms of Service (https://carto.com/attributions)",
+  },
+  carto_voyager: {
+    id: "carto_voyager",
+    name: "CARTO Voyager",
+    url: "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png",
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions" target="_blank">CARTO</a>',
+    maxZoom: 19,
+    subdomains: "abcd",
+    isDarkFilterRecommended: false,
+    license: "CARTO Basemaps Terms of Service (https://carto.com/attributions)",
   },
   esri_satellite: {
     id: "esri_satellite",
@@ -99,9 +111,22 @@ export const BASEMAPS: Record<string, BaseMapDefinition> = {
 
 export class BaseMapManager {
   private activeBasemapId: string = "osm_dark";
+  private cartoKey: string = getEnvCartoKey();
+
+  public setCartoKey(key: string): void {
+    this.cartoKey = key || getEnvCartoKey();
+  }
+
+  public getCartoKey(): string {
+    return this.cartoKey;
+  }
 
   public getActiveBasemap(): BaseMapDefinition {
-    return BASEMAPS[this.activeBasemapId] || BASEMAPS.osm_dark;
+    const def = BASEMAPS[this.activeBasemapId] || BASEMAPS.osm_dark;
+    if ((def.id === "carto_dark" || def.id === "carto_voyager") && this.cartoKey) {
+      return { ...def, url: `${def.url}?key=${encodeURIComponent(this.cartoKey)}` };
+    }
+    return def;
   }
 
   public setBasemap(id: string): BaseMapDefinition {

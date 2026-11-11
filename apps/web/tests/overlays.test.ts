@@ -110,12 +110,18 @@ describe("BaseMapRegistry", () => {
     expect(openaip.pane).toBe("chartsPane");
   });
 
-  test("manages active basemap selection", () => {
+  test("manages active basemap selection and CARTO ?key= authentication", () => {
     const mgr = new BaseMapManager();
     expect(mgr.getActiveBasemap().id).toBe("osm_dark");
 
-    mgr.setBasemap("carto_dark");
-    expect(mgr.getActiveBasemap().id).toBe("carto_dark");
+    mgr.setCartoKey("test_carto_key");
+    const dark = mgr.setBasemap("carto_dark");
+    expect(dark.id).toBe("carto_dark");
+    expect(dark.url).toContain("?key=test_carto_key");
+    expect(dark.attribution).toContain("carto.com/attributions");
+
+    const voyager = mgr.setBasemap("carto_voyager");
+    expect(voyager.url).toContain("rastertiles/voyager/{z}/{x}/{y}.png?key=test_carto_key");
   });
 });
 
@@ -171,24 +177,17 @@ describe("WeatherRadarLayer Cached Playback", () => {
     ];
     (weather as any).currentFrameIndex = 0;
 
-    // Enabling weather mounts frame 0 at opacity 0.65 and preloads adjacent frame 1 & 2 at 0
     weather.setVisible(true);
     expect(layers.size).toBe(3);
     expect(layers.get("rainviewer_1000")?.opacity).toBe(0.65);
     expect(layers.get("rainviewer_1600")?.opacity).toBe(0);
     expect(layers.get("rainviewer_2200")?.opacity).toBe(0);
-
-    // Stepping to frame 1 sets frame 0 to 0 and frame 1 to 0.65 without recreating layers
     weather.setFrameIndex(1);
     expect(layers.get("rainviewer_1000")?.opacity).toBe(0);
     expect(layers.get("rainviewer_1600")?.opacity).toBe(0.65);
-
-    // Dynamic opacity update alters the active frame
     weather.setOpacity(0.85);
     expect(layers.get("rainviewer_1600")?.opacity).toBe(0.85);
     expect(layers.get("rainviewer_1000")?.opacity).toBe(0);
-
-    // Disabling clears all cached layers cleanly
     weather.setVisible(false);
     expect(layers.size).toBe(0);
   });

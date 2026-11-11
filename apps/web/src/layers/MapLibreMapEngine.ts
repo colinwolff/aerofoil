@@ -39,7 +39,7 @@ export class MapLibreMapEngine implements AirspaceMapEngine {
       container: containerId,
       center: [centerLon, centerLat],
       zoom,
-      pitch: 45,
+      pitch: 60,
       maxPitch: 85,
       style: {
         version: 8,
@@ -53,7 +53,8 @@ export class MapLibreMapEngine implements AirspaceMapEngine {
     this.map.on("load", () => {
       if (!this.map) return;
       this.styleReady = true;
-      this.trajectoryManager.setupLayers(this.map); this.stemsManager.setupLayers(this.map);
+      (this.map as any).setSky?.({ "sky-color": "#06090e", "horizon-color": "#1e293b", "fog-color": "#090d16", "sky-horizon-blend": 0.5 });
+      this.stemsManager.setupLayers(this.map); this.trajectoryManager.setupLayers(this.map);
       const dem = MapLibreTerrainHelper.resolveDemUrl(this.terrainOpts.provider, this.terrainOpts.customUrl, this.terrainOpts.maptilerKey);
       MapLibreTerrainHelper.enableTerrain(this.map, dem.url, this.terrainOpts.exaggeration ?? 1.5, dem.encoding, dem.tileSize, this.beforeLayerId());
       while (this.readyQueue.length > 0) this.readyQueue.shift()?.();
@@ -96,6 +97,7 @@ export class MapLibreMapEngine implements AirspaceMapEngine {
   }
 
   public setTerrainExaggeration(exaggeration: number): void {
+    this.terrainOpts.exaggeration = exaggeration;
     this.whenReady(() => { if (this.map) MapLibreTerrainHelper.setExaggeration(this.map, exaggeration); });
   }
 
@@ -183,16 +185,9 @@ export class MapLibreMapEngine implements AirspaceMapEngine {
     if (this.styleReady && this.map) { this.trajectoryManager.update(this.map); this.stemsManager.update(this.map); }
   }
 
-  public setVectorLayer(id: string, geoJsonData: any, _styleFn: (feature: any) => Record<string, any>): void {
-    this.vectorManager.setVectorLayer(id, geoJsonData);
-  }
-
+  public setVectorLayer(id: string, geoJsonData: any, _styleFn: (feature: any) => Record<string, any>): void { this.vectorManager.setVectorLayer(id, geoJsonData); }
   public removeVectorLayer(id: string): void { this.vectorManager.removeVectorLayer(id); }
-  public setParametricLines(id: string, lines: [number, number][][], style: Record<string, any>): void {
-    this.vectorManager.setParametricLines(id, lines, style);
-  }
-  public setParametricCircles(id: string, circles: { center: [number, number]; radiusMeters: number }[], style: Record<string, any>): void {
-    this.vectorManager.setParametricCircles(id, circles, style);
-  }
+  public setParametricLines(id: string, lines: [number, number][][], style: Record<string, any>): void { this.vectorManager.setParametricLines(id, lines, style); }
+  public setParametricCircles(id: string, circles: { center: [number, number]; radiusMeters: number }[], style: Record<string, any>): void { this.vectorManager.setParametricCircles(id, circles, style); }
   public removeParametricLayer(id: string): void { this.vectorManager.removeParametricLayer(id); }
 }

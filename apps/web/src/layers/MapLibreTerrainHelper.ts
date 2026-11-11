@@ -84,7 +84,7 @@ export class MapLibreTerrainHelper {
               "hillshade-shadow-color": "#000000",
               "hillshade-highlight-color": "#ffffff",
               "hillshade-accent-color": "#38bdf8",
-              "hillshade-exaggeration": 0.25,
+              "hillshade-exaggeration": 0.6,
             },
           },
           beforeId,

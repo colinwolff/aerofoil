@@ -44,7 +44,8 @@ export class LayerDrawer {
     this.drawerEl = container;
 
     const basemaps = this.basemapMgr.getAvailableBasemaps();
-    const basemapOptions = basemaps.map((b) => `<option value="${b.id}">${b.name}</option>`).join("");
+    const activeId = this.basemapMgr.getActiveBasemap().id;
+    const basemapOptions = basemaps.map((b) => `<option value="${b.id}" ${b.id === activeId ? "selected" : ""}>${b.name}</option>`).join("");
 
     container.innerHTML = `
       <div class="hud-panel hidden" id="hud-panel">
@@ -67,9 +68,14 @@ export class LayerDrawer {
             </div>
             <input type="range" id="hud-terrain-exaggeration" class="w-full accent-cyan-400" min="0.5" max="3.0" step="0.1" value="1.5" />
             <div class="flex gap-1 mt-1 text-[11px]">
-              <button type="button" id="hud-preset-dem-1" class="btn-tag flex-1">1.0x (Natural)</button>
-              <button type="button" id="hud-preset-dem-15" class="btn-tag flex-1">1.5x (Enhanced)</button>
-              <button type="button" id="hud-preset-dem-2" class="btn-tag flex-1">2.0x (Dramatic)</button>
+              <button type="button" id="hud-preset-dem-1" class="btn-tag flex-1">1.0x</button>
+              <button type="button" id="hud-preset-dem-15" class="btn-tag flex-1">1.5x</button>
+              <button type="button" id="hud-preset-dem-2" class="btn-tag flex-1">2.0x</button>
+            </div>
+            <div class="flex gap-1 mt-1.5 text-[11px]">
+              <button type="button" id="hud-jump-rainier" class="btn-tag flex-1" title="Jump to Mt. Rainier 3D Terrain">🏔 Rainier</button>
+              <button type="button" id="hud-jump-alps" class="btn-tag flex-1" title="Jump to Swiss Alps 3D Terrain">🏔 Alps</button>
+              <button type="button" id="hud-jump-canyon" class="btn-tag flex-1" title="Jump to Grand Canyon 3D Terrain">🏔 Canyon</button>
             </div>
           </div>
         </div>
@@ -153,6 +159,7 @@ export class LayerDrawer {
     const exaggSlider = document.getElementById("hud-terrain-exaggeration") as HTMLInputElement;
     const exaggVal = document.getElementById("hud-exaggeration-val");
     const setExagg = (val: number) => {
+      if (this.toggleMgr?.getMode() === "2D") this.toggleMgr.setMode("3D");
       if (exaggSlider) exaggSlider.value = val.toString();
       if (exaggVal) exaggVal.textContent = `${val.toFixed(1)}x`;
       this.activeEngine.setTerrainExaggeration?.(val);
@@ -161,7 +168,13 @@ export class LayerDrawer {
     document.getElementById("hud-preset-dem-1")?.addEventListener("click", () => setExagg(1.0));
     document.getElementById("hud-preset-dem-15")?.addEventListener("click", () => setExagg(1.5));
     document.getElementById("hud-preset-dem-2")?.addEventListener("click", () => setExagg(2.0));
-
+    const jump3d = (lat: number, lon: number) => {
+      this.toggleMgr?.setMode("3D"); this.activeEngine.setTerrainEnabled?.(true);
+      this.activeEngine.setView(lat, lon, 11.5); (this.activeEngine as any).setPitch?.(68);
+    };
+    document.getElementById("hud-jump-rainier")?.addEventListener("click", () => jump3d(46.8523, -121.7603));
+    document.getElementById("hud-jump-alps")?.addEventListener("click", () => jump3d(45.9766, 7.6585));
+    document.getElementById("hud-jump-canyon")?.addEventListener("click", () => jump3d(36.0985, -112.0965));
     bindChk("hud-toggle-classes", (c) => c ? this.vectorMgr.loadLayer("us_classes", "/layers/airspace_us_classes.topojson", "airspaces", VectorOverlayManager.classAirspaceStyle) : this.vectorMgr.removeLayer("us_classes"));
     bindChk("hud-toggle-sua", (c) => c ? this.vectorMgr.loadLayer("special_use", "/layers/special_use_airspace.topojson", "special_use", VectorOverlayManager.specialUseStyle) : this.vectorMgr.removeLayer("special_use"));
     bindChk("hud-toggle-fir", (c) => c ? this.vectorMgr.loadLayer("fir", "/layers/fir_boundaries.topojson", "fir_boundaries", VectorOverlayManager.firStyle) : this.vectorMgr.removeLayer("fir"));
@@ -172,13 +185,9 @@ export class LayerDrawer {
     bindChk("hud-toggle-antenna", (c) => this.antennaCoverage?.setVisible(c));
     document.getElementById("hud-open-scrubber-btn")?.addEventListener("click", () => this.scrubber.toggleVisible());
     bindChk("hud-toggle-weather", (c) => {
-      this.weatherLayer.setVisible(c);
-      this.scrubber.setVisible(c);
-      if (c) {
-        this.attributionCtrl.register({ id: "rainviewer", name: "RainViewer", html: '&copy; <a href="https://www.rainviewer.com/" target="_blank">RainViewer</a>', license: "Free Weather API" });
-      } else {
-        this.attributionCtrl.unregister("rainviewer");
-      }
+      this.weatherLayer.setVisible(c); this.scrubber.setVisible(c);
+      if (c) this.attributionCtrl.register({ id: "rainviewer", name: "RainViewer", html: '&copy; <a href="https://www.rainviewer.com/" target="_blank">RainViewer</a>', license: "Free Weather API" });
+      else this.attributionCtrl.unregister("rainviewer");
     });
   }
 }

@@ -43,6 +43,7 @@ crates, in the imperative, one line each, with the `storypole` task key in paren
 
 ### Fixed
 
+- Expose `CARTO_API_KEY` from `.env` in Vite, authenticate CARTO Dark Matter and CARTO Voyager tiles with `?key=` and visible `carto.com/attributions`, and add 3D mountain jump presets and sky/hillshade enhancements (`AF-67`).
 - Configure MapLibre GL v6 WebWorker URL for Vite, fix undefined raster paint validation error, separate DEM terrain/hillshade sources, and replace `isStyleLoaded()` race with a deterministic `whenReady` queue (`AF-66`).
 - Fix MapLibre 3D DEM terrain black screen by adopting CORS-enabled Mapterhorn Terrarium tiles, resilient error fallback, and proper WebGL raster layer z-ordering (`AF-65`).
 - Fix 3D viewport canvas sizing with auto-resize and style-load race guards, and replace single toggle button with unambiguous [ 2D | 3D ] segmented control (`AF-60`).

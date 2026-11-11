@@ -15,18 +15,16 @@ export function applyBasemap(
   cfg: any,
 ): void {
   const mapEl = document.getElementById("map");
+  mgr.setCartoKey(cfg.cartoKey || "");
   if (cfg.customTileUrl) {
     engine.setBaseTileLayer("custom", cfg.customTileUrl, "Custom Tiles", { maxZoom: 19 });
     attr.register({ id: "basemap", name: "Custom Tiles", html: "Custom Operator Tiles", license: "Custom License" });
     mapEl?.classList.remove("dark-tiles");
-  } else if (cfg.cartoKey) {
-    const def = mgr.setBasemap("carto_dark");
-    const url = `https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png?api_key=${encodeURIComponent(cfg.cartoKey)}`;
-    engine.setBaseTileLayer("carto_dark", url, def.attribution, { maxZoom: 19, subdomains: "abcd" });
-    attr.register({ id: "basemap", name: def.name, html: def.attribution, license: def.license });
-    mapEl?.classList.remove("dark-tiles");
   } else {
-    const def = mgr.setBasemap(cfg.defaultBasemap || "osm_dark");
+    const targetId = cfg.defaultBasemap || (mgr.getCartoKey() ? "carto_dark" : "osm_dark");
+    const def = mgr.setBasemap(targetId);
+    const sel = document.getElementById("hud-basemap-select") as HTMLSelectElement | null;
+    if (sel) sel.value = def.id;
     if (mapEl) {
       mapEl.dataset.darkFilter = def.isDarkFilterRecommended ? "true" : "false";
       const isDark = document.body.classList.contains("dark-theme");
@@ -76,6 +74,16 @@ export function bindToolbar(
   });
   document.getElementById("btn-center-conus")?.addEventListener("click", () => getEngine().setView(39.2976, -94.7139, 6));
   document.getElementById("btn-center-europe")?.addEventListener("click", () => getEngine().setView(52.3676, 4.9041, 8));
+  document.getElementById("btn-center-rainier")?.addEventListener("click", () => {
+    toggleMgr.setMode("3D");
+    getEngine().setView(46.8523, -121.7603, 11.5);
+    (getEngine() as any).setPitch?.(68);
+  });
+  document.getElementById("btn-center-alps")?.addEventListener("click", () => {
+    toggleMgr.setMode("3D");
+    getEngine().setView(45.9766, 7.6585, 11.5);
+    (getEngine() as any).setPitch?.(68);
+  });
   document.getElementById("btn-center-gps")?.addEventListener("click", () => {
     if ("geolocation" in navigator) {
       navigator.geolocation.getCurrentPosition((pos) => getEngine().setView(pos.coords.latitude, pos.coords.longitude, 9));

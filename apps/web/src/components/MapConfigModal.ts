@@ -24,10 +24,8 @@ export class MapConfigModal {
       if (resp.ok) {
         const data = await resp.json();
         this.serverDefaults = { ...DEFAULT_CONFIG, ...data };
-        if (!localStorage.getItem("aerofoil_map_config")) {
-          this.config = { ...this.serverDefaults };
-          this.render();
-        }
+        this.config = loadConfigFromStorage(this.serverDefaults);
+        this.render();
       }
     } catch {}
   }
@@ -116,6 +114,7 @@ export class MapConfigModal {
                 <select id="cfg-basemap" class="hud-input mt-1">
                   <option value="osm_dark" ${this.config.defaultBasemap === "osm_dark" ? "selected" : ""}>OSM Dark</option>
                   <option value="carto_dark" ${this.config.defaultBasemap === "carto_dark" ? "selected" : ""}>CARTO Dark</option>
+                  <option value="carto_voyager" ${this.config.defaultBasemap === "carto_voyager" ? "selected" : ""}>CARTO Voyager</option>
                   <option value="faa_vfr_sectional" ${this.config.defaultBasemap === "faa_vfr_sectional" ? "selected" : ""}>FAA VFR</option>
                   <option value="faa_ifr_low" ${this.config.defaultBasemap === "faa_ifr_low" ? "selected" : ""}>FAA IFR Low</option>
                 </select>
