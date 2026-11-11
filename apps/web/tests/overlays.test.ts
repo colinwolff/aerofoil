@@ -7,6 +7,7 @@ import {
 import { destinationPoint, DynamicRingsLayer } from "../src/layers/DynamicRingsLayer";
 import { AntennaCoverageLayer, calculateBearingAndDistance } from "../src/layers/AntennaCoverageLayer";
 import { BASEMAPS, BaseMapManager } from "../src/layers/BaseMapRegistry";
+import { WeatherRadarLayer } from "../src/layers/WeatherRadarLayer";
 
 describe("AircraftIconMatrix", () => {
   test("classifies airframe categories accurately", () => {
@@ -145,3 +146,51 @@ describe("AntennaCoverageLayer", () => {
     expect(cleared.maxRangeNm).toBe(0);
   });
 });
+
+describe("WeatherRadarLayer Cached Playback", () => {
+  test("preloads adjacent frames and swaps opacity instead of recreating layers", () => {
+    const layers: Map<string, { opacity: number; url: string }> = new Map();
+    const mockEngine: any = {
+      addOverlayTileLayer: (id: string, url: string, _attr: string, opts: any) => {
+        layers.set(id, { opacity: opts.opacity, url });
+      },
+      setLayerOpacity: (id: string, opacity: number) => {
+        const lyr = layers.get(id);
+        if (lyr) lyr.opacity = opacity;
+      },
+      removeTileLayer: (id: string) => {
+        layers.delete(id);
+      },
+    };
+
+    const weather = new WeatherRadarLayer(mockEngine);
+    (weather as any).frames = [
+      { time: 1000, path: "/v2/radar/1000" },
+      { time: 1600, path: "/v2/radar/1600" },
+      { time: 2200, path: "/v2/radar/2200" },
+    ];
+    (weather as any).currentFrameIndex = 0;
+
+    // Enabling weather mounts frame 0 at opacity 0.65 and preloads adjacent frame 1 & 2 at 0
+    weather.setVisible(true);
+    expect(layers.size).toBe(3);
+    expect(layers.get("rainviewer_1000")?.opacity).toBe(0.65);
+    expect(layers.get("rainviewer_1600")?.opacity).toBe(0);
+    expect(layers.get("rainviewer_2200")?.opacity).toBe(0);
+
+    // Stepping to frame 1 sets frame 0 to 0 and frame 1 to 0.65 without recreating layers
+    weather.setFrameIndex(1);
+    expect(layers.get("rainviewer_1000")?.opacity).toBe(0);
+    expect(layers.get("rainviewer_1600")?.opacity).toBe(0.65);
+
+    // Dynamic opacity update alters the active frame
+    weather.setOpacity(0.85);
+    expect(layers.get("rainviewer_1600")?.opacity).toBe(0.85);
+    expect(layers.get("rainviewer_1000")?.opacity).toBe(0);
+
+    // Disabling clears all cached layers cleanly
+    weather.setVisible(false);
+    expect(layers.size).toBe(0);
+  });
+});
+
