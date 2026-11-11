@@ -13,6 +13,8 @@ crates, in the imperative, one line each, with the `storypole` task key in paren
 
 ### Added
 
+- Add MADR 0019 specifying clean-room `tar1090` feature parity, avionics telemetry inspection, and spatial 3D airspace volumes (`AF-68`).
+
 - Add interactive 3D topography and relief controls, terrain exaggeration presets, and multi-provider DEM configuration in LayerDrawer and MapConfigModal (`AF-63`).
 - Render 3D vertical aircraft altitude drop-lines and terrain ground shadows in MapLibre GL (`AF-64`).
 - Implement 3D terrain overlay draping, synchronized layer controls, and interactive NEXRAD timeline weather scrubber (`AF-63`).

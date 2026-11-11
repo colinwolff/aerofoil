@@ -89,14 +89,35 @@ when its crates compile, its tests pass and the tiered gates in `AGENTS.md` §3.
 - [x] MapLibre GL 3D globe & altitude flight profiles: hardware-accelerated WebGL 3D mode with camera pitch to 85°, multi-tier DEM terrain elevation, and vertical rate climb-colored 3D trajectory ribbons (`AF-60`).
 - [x] Configurable polar distance rings & radial azimuths: presets, custom comma-separated radii, and dynamic azimuth intervals in Web Radar (`AF-61`).
 - [x] Antenna reception range & signal strength heatmap overlay: empirical polar maximum range contour, RSSI signal strength gradient, and line-of-sight elevation mask (`AF-62`).
-- [ ] MapLibre 3D terrain overlay draping & synchronized layer controls: drape NEXRAD weather radar with dynamic opacity, FAA VFR/IFR charts, range rings, and antenna coverage contours across 3D DEM terrain (`AF-63`).
-- [ ] 3D aircraft altitude drop-lines and ground shadow projections: render vertical drop-stems from target 3D altitudes down to terrain surface with soft circular ground shadows (`AF-64`).
+- [x] MapLibre 3D terrain overlay draping & synchronized layer controls: drape NEXRAD weather radar with dynamic opacity, FAA VFR/IFR charts, range rings, and antenna coverage contours across 3D DEM terrain (`AF-63`).
+- [x] 3D aircraft altitude drop-lines and ground shadow projections: render vertical drop-stems from target 3D altitudes down to terrain surface with soft circular ground shadows (`AF-64`).
+- [x] 3D DEM terrain relief bugfixes: CORS-enabled Mapterhorn Terrarium tiles, resilient fallback, and WebGL layer z-ordering (`AF-65`).
+- [x] MapLibre GL v6 WebWorker URL resolution for Vite and deterministic whenReady queue mounting (`AF-66`).
+- [x] CARTO_API_KEY .env loading with ?key= authentication, CARTO Voyager basemap, and 3D mountain jump presets (`AF-67`).
 
 **Exit criteria:** `0.1.0-beta.2` tagged with lockstep SemVer; `apps/web` operating cleanly under unified Docker container and decoupled Kubernetes Ingress; dynamic multi-waypoint replay verified across TUI, 2D Leaflet, and 3D MapLibre viewports; MLAT TDOA solver verified against multi-receiver synthetic vectors.
 
 ---
 
-## 6. Horizons (post-`0.1.0`)
+## 6. Milestone 6 — Advanced Surveillance Avionics, Clean-Room Parity & 3D Spatial Airspace (planned)
+
+> **Target:** `0.2.0-beta.1` (lockstep SemVer) · **Scope:** `ADR-0019`
+> **Specification of reference:** Clean-room functional parity with `tar1090` (17 U.S.C. § 102(b), zero GPL contamination) translated into native spatial 3D.
+
+- [ ] Epic: Milestone 6 — Advanced Surveillance Avionics, Clean-Room Parity & 3D Spatial Airspace (`AF-68`).
+- [ ] Glassmorphic Aircraft Inspector Pane: floating avionics card displaying registration, airframe type, operator, squawk, TAS/IAS, Mach, roll angle, selected MCP altitude, RSSI, message rate, and dynamic 3D altitude profile sparkline (`AF-69`).
+- [ ] LOD-aware aircraft callsign and altitude flight level map labels: collision-tested callsign/FL/speed text badges beside aircraft markers with zoom-level density decluttering in 2D and 3D (`AF-70`).
+- [ ] Persistent multi-aircraft track trails and global track toggle hotkey (`T`): keyboard shortcut `T` to toggle all flight trails, individual selection persistence, and multiselect inspection mode (`AF-71`).
+- [ ] Dynamic regex callsign search and spatial altitude/speed/provenance filtering: interactive search bar supporting callsign regex (`^UAL|DAL`), altitude bounds slider ($FL_{min} \dots FL_{max}$), speed boundaries, and data source toggle (`adsb`, `uat`, `mlat`) (`AF-72`).
+- [ ] Bidirectional URL search/hash state persistence: deep-linking query parameters for map center, zoom, pitch, bearing, viewport mode, isolated ICAO hexes (`?icao=...`), and active filter criteria (`AF-73`).
+- [ ] 3D extruded polygonal airspace volumes: render FAA Class B/C/D and Special Use Airspace (SUA) as semi-transparent 3D polygonal columns extruded from aeronautical floor to ceiling MSL (`AF-74`).
+- [ ] Smooth 3D chase camera tracking and follow mode: camera locks behind selected aircraft along its kinematic velocity vector with interpolated pitch/heading tracking (`AF-75`).
+
+**Exit criteria:** Complete clean-room feature parity with `tar1090` without GPL code contamination; full 3D spatial airspace extrusion and chase camera verified in MapLibre GL; deep linking and regex filtering verified in test suites.
+
+---
+
+## 7. Horizons (post-`0.2.0`)
 
 - **H1 — Hardening:** fuzzing (`cargo-fuzz`) over every decoder entry point, property tests relating the table-driven and CLMUL CRC paths, and a published throughput regression budget.
 - **H2 — Breadth:** uplink `RS(92, 72)` and FIS-B APDU disassembly, UAT uplink scheduling, multi-band time-synchronised fusion.

@@ -28,3 +28,4 @@ record is a decision nobody will find.
 | [0016](0016-mlat-multilateration-architecture.md) | 2026-11-10 | Multilateration (MLAT) Dual-Topology Architecture and TDOA Hyperboloid Solver |
 | [0017](0017-dual-engine-2d-3d-and-antenna-coverage.md) | 2026-11-10 | Dual-Engine 2D/3D Map Viewport, Layer Stacking Panes, and Antenna Coverage Heuristics |
 | [0018](0018-maplibre-3d-overlays-and-altitude-stems.md) | 2026-11-10 | MapLibre 3D Overlay Draping, Terrain Synchronization, and Aircraft Altitude Stems |
+| [0019](0019-clean-room-tar1090-parity-and-3d-airspace-architecture.md) | 2026-11-11 | Clean-Room tar1090 Feature Parity, Avionics Telemetry Inspector, and 3D Spatial Airspaces |
