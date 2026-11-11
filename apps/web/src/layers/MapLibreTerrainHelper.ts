@@ -1,38 +1,52 @@
 //! MapLibreTerrainHelper — Configures raster-dem 3D terrain elevation and hillshading.
-//! Supports AWS Terrarium DEM (public, no key) and custom MapTiler terrain-rgb.
+//! Supports Mapterhorn Open Terrarium (CORS enabled, default), AWS Terrarium, and MapTiler.
 
 import type { Map as MapLibreMap } from "maplibre-gl";
 
 export const DEFAULT_TERRARIUM_DEM =
-  "https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png";
+  "https://tiles.mapterhorn.com/{z}/{x}/{y}.webp";
 
 const TERRAIN_SOURCE_ID = "raster-dem-terrain";
 const HILLSHADE_LAYER_ID = "raster-dem-hillshade";
 
 export interface TerrainOptions {
-  provider?: "aws_terrarium" | "maptiler" | "custom";
+  provider?: "mapterhorn" | "aws_terrarium" | "maptiler" | "custom";
   customUrl?: string;
   maptilerKey?: string;
   exaggeration?: number;
   hillshading?: boolean;
 }
 
+export interface DemResolution {
+  url: string;
+  encoding: "terrarium" | "mapbox";
+  tileSize: number;
+}
+
 export class MapLibreTerrainHelper {
   public static resolveDemUrl(
-    provider: string = "aws_terrarium",
+    provider: string = "mapterhorn",
     customUrl: string = "",
     maptilerKey: string = "",
-  ): { url: string; encoding: "terrarium" | "mapbox" } {
+  ): DemResolution {
     if (provider === "maptiler" && maptilerKey) {
       return {
         url: `https://api.maptiler.com/tiles/terrain-rgb/{z}/{x}/{y}.png?key=${encodeURIComponent(maptilerKey)}`,
         encoding: "mapbox",
+        tileSize: 256,
+      };
+    }
+    if (provider === "aws_terrarium") {
+      return {
+        url: "https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png",
+        encoding: "terrarium",
+        tileSize: 256,
       };
     }
     if (provider === "custom" && customUrl) {
-      return { url: customUrl, encoding: "terrarium" };
+      return { url: customUrl, encoding: "terrarium", tileSize: 256 };
     }
-    return { url: DEFAULT_TERRARIUM_DEM, encoding: "terrarium" };
+    return { url: DEFAULT_TERRARIUM_DEM, encoding: "terrarium", tileSize: 512 };
   }
 
   public static enableTerrain(
@@ -40,13 +54,15 @@ export class MapLibreTerrainHelper {
     demUrl: string = DEFAULT_TERRARIUM_DEM,
     exaggeration: number = 1.5,
     encoding: "terrarium" | "mapbox" = "terrarium",
+    tileSize: number = 512,
+    beforeId?: string,
   ): void {
     if (!map.getSource(TERRAIN_SOURCE_ID)) {
       map.addSource(TERRAIN_SOURCE_ID, {
         type: "raster-dem",
         tiles: [demUrl],
         encoding,
-        tileSize: 256,
+        tileSize,
         maxzoom: 15,
       });
     }
@@ -58,17 +74,20 @@ export class MapLibreTerrainHelper {
       });
 
       if (!map.getLayer(HILLSHADE_LAYER_ID)) {
-        map.addLayer({
-          id: HILLSHADE_LAYER_ID,
-          type: "hillshade",
-          source: TERRAIN_SOURCE_ID,
-          paint: {
-            "hillshade-shadow-color": "#090d16",
-            "hillshade-highlight-color": "#ffffff",
-            "hillshade-accent-color": "#0ea5e9",
-            "hillshade-exaggeration": 0.4,
+        map.addLayer(
+          {
+            id: HILLSHADE_LAYER_ID,
+            type: "hillshade",
+            source: TERRAIN_SOURCE_ID,
+            paint: {
+              "hillshade-shadow-color": "#000000",
+              "hillshade-highlight-color": "#ffffff",
+              "hillshade-accent-color": "#38bdf8",
+              "hillshade-exaggeration": 0.25,
+            },
           },
-        });
+          beforeId,
+        );
       }
     } catch (e) {
       console.warn("[MapLibreTerrainHelper] Failed to enable 3D terrain elevation:", e);
@@ -78,10 +97,7 @@ export class MapLibreTerrainHelper {
   public static setExaggeration(map: MapLibreMap, exaggeration: number): void {
     try {
       if ((map as any).getTerrain?.()) {
-        (map as any).setTerrain({
-          source: TERRAIN_SOURCE_ID,
-          exaggeration,
-        });
+        (map as any).setTerrain({ source: TERRAIN_SOURCE_ID, exaggeration });
       }
     } catch (e) {
       console.warn("[MapLibreTerrainHelper] Failed to set exaggeration:", e);

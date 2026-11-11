@@ -98,10 +98,18 @@ describe("MapLibreAltitudeStems", () => {
 });
 
 describe("MapLibreTerrainHelper", () => {
-  test("resolves default AWS Terrarium DEM endpoint", () => {
-    const res = MapLibreTerrainHelper.resolveDemUrl("aws_terrarium");
+  test("resolves default Mapterhorn Open Terrarium DEM endpoint with CORS", () => {
+    const res = MapLibreTerrainHelper.resolveDemUrl("mapterhorn");
     expect(res.url).toBe(DEFAULT_TERRARIUM_DEM);
     expect(res.encoding).toBe("terrarium");
+    expect(res.tileSize).toBe(512);
+  });
+
+  test("resolves AWS S3 Terrarium fallback endpoint", () => {
+    const res = MapLibreTerrainHelper.resolveDemUrl("aws_terrarium");
+    expect(res.url).toContain("s3.amazonaws.com/elevation-tiles-prod");
+    expect(res.encoding).toBe("terrarium");
+    expect(res.tileSize).toBe(256);
   });
 
   test("resolves MapTiler terrain-rgb endpoint with API key", () => {
@@ -135,8 +143,9 @@ describe("MapLibreTerrainHelper", () => {
       },
     };
 
-    MapLibreTerrainHelper.enableTerrain(fakeMap, DEFAULT_TERRARIUM_DEM, 1.5, "terrarium");
+    MapLibreTerrainHelper.enableTerrain(fakeMap, DEFAULT_TERRARIUM_DEM, 1.5, "terrarium", 512);
     expect(fakeMap.getSource("raster-dem-terrain")).toBeDefined();
+    expect(fakeMap.getSource("raster-dem-terrain").tileSize).toBe(512);
     expect(fakeMap.getLayer("raster-dem-hillshade")).toBeDefined();
     expect(terrainConfig).toEqual({ source: "raster-dem-terrain", exaggeration: 1.5 });
 
@@ -155,7 +164,7 @@ describe("MapLibreTerrainHelper", () => {
 describe("MapConfigTypes", () => {
   test("provides standard default operator configuration with 3D DEM", () => {
     expect(DEFAULT_CONFIG.terrainEnabled).toBe(true);
-    expect(DEFAULT_CONFIG.demProvider).toBe("aws_terrarium");
+    expect(DEFAULT_CONFIG.demProvider).toBe("mapterhorn");
     expect(DEFAULT_CONFIG.demExaggeration).toBe(1.5);
     expect(DEFAULT_CONFIG.ringIntervals).toEqual([10, 25, 50, 100]);
   });

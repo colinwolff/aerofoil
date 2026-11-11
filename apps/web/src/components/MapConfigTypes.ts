@@ -15,7 +15,7 @@ export interface MapOperatorConfig {
   weatherEnabled: boolean;
   airspaceEnabled: boolean;
   terrainEnabled: boolean;
-  demProvider: "aws_terrarium" | "maptiler" | "custom";
+  demProvider: "mapterhorn" | "aws_terrarium" | "maptiler" | "custom";
   demCustomUrl: string;
   demExaggeration: number;
 }
@@ -35,7 +35,7 @@ export const DEFAULT_CONFIG: MapOperatorConfig = {
   weatherEnabled: false,
   airspaceEnabled: true,
   terrainEnabled: true,
-  demProvider: "aws_terrarium",
+  demProvider: "mapterhorn",
   demCustomUrl: "",
   demExaggeration: 1.5,
 };
@@ -46,7 +46,9 @@ export function loadConfigFromStorage(serverDefaults: MapOperatorConfig): MapOpe
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (raw) {
-      return { ...serverDefaults, ...JSON.parse(raw) };
+      const parsed = JSON.parse(raw);
+      if (parsed.demProvider === "aws_terrarium") parsed.demProvider = "mapterhorn";
+      return { ...serverDefaults, ...parsed };
     }
   } catch {
     // Ignore storage parse errors

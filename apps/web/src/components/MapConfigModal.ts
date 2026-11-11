@@ -29,9 +29,7 @@ export class MapConfigModal {
           this.render();
         }
       }
-    } catch {
-      // Offline fallback
-    }
+    } catch {}
   }
 
   public init(containerId: string = "config-modal-container"): void {
@@ -52,7 +50,7 @@ export class MapConfigModal {
     localStorage.removeItem("aerofoil_map_config");
     this.config = { ...this.serverDefaults };
     this.render();
-    if (this.onSaveCallback) this.onSaveCallback(this.config);
+    this.onSaveCallback?.(this.config);
   }
 
   private render(): void {
@@ -82,7 +80,8 @@ export class MapConfigModal {
               <label class="hud-section-label">3D Topography Elevation (DEM)</label>
               <div class="grid grid-cols-2 gap-2 mt-1">
                 <select id="cfg-dem-provider" class="hud-input">
-                  <option value="aws_terrarium" ${this.config.demProvider === "aws_terrarium" ? "selected" : ""}>AWS Terrarium (Free)</option>
+                  <option value="mapterhorn" ${this.config.demProvider === "mapterhorn" ? "selected" : ""}>Mapterhorn (Free, CORS)</option>
+                  <option value="aws_terrarium" ${this.config.demProvider === "aws_terrarium" ? "selected" : ""}>AWS S3 Terrarium</option>
                   <option value="maptiler" ${this.config.demProvider === "maptiler" ? "selected" : ""}>MapTiler Terrain-RGB</option>
                   <option value="custom" ${this.config.demProvider === "custom" ? "selected" : ""}>Custom Raster DEM</option>
                 </select>
@@ -193,7 +192,7 @@ export class MapConfigModal {
       };
       saveConfigToStorage(this.config);
       this.hide();
-      if (this.onSaveCallback) this.onSaveCallback(this.config);
+      this.onSaveCallback?.(this.config);
     });
   }
 }

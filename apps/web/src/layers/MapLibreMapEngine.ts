@@ -41,29 +41,29 @@ export class MapLibreMapEngine implements AirspaceMapEngine {
     this.map.on("load", () => {
       if (!this.map) return;
       const dem = MapLibreTerrainHelper.resolveDemUrl(this.terrainOpts.provider, this.terrainOpts.customUrl, this.terrainOpts.maptilerKey);
-      MapLibreTerrainHelper.enableTerrain(this.map, dem.url, this.terrainOpts.exaggeration ?? 1.5, dem.encoding);
-      this.trajectoryManager.setupLayers(this.map);
-      this.stemsManager.setupLayers(this.map);
-      this.trajectoryManager.update(this.map);
-      this.stemsManager.update(this.map);
+      MapLibreTerrainHelper.enableTerrain(this.map, dem.url, this.terrainOpts.exaggeration ?? 1.5, dem.encoding, dem.tileSize, this.beforeLayerId());
+      this.trajectoryManager.setupLayers(this.map); this.stemsManager.setupLayers(this.map);
+      this.trajectoryManager.update(this.map); this.stemsManager.update(this.map);
     });
 
-    this.map.on("moveend", () => {
-      for (const cb of this.viewChangeCallbacks) cb();
+    this.map.on("error", (e: any) => {
+      if (e?.sourceId === "raster-dem-terrain" || e?.error?.message?.toLowerCase().includes("terrain")) {
+        console.warn("[MapLibreMapEngine] Terrain DEM failed, disabling relief:", e?.error?.message || e);
+        if (this.map) MapLibreTerrainHelper.disableTerrain(this.map);
+      }
     });
+
+    this.map.on("moveend", () => { for (const cb of this.viewChangeCallbacks) cb(); });
   }
 
   public resize(): void { this.map?.resize(); }
   public setView(lat: number, lon: number, zoom?: number): void {
     this.map?.jumpTo({ center: [lon, lat], zoom: zoom ?? this.map.getZoom() });
   }
-
   public getCenter(): [number, number] {
-    if (!this.map) return [52.3676, 4.9041];
-    const c = this.map.getCenter();
-    return [c.lat, c.lng];
+    const c = this.map?.getCenter();
+    return c ? [c.lat, c.lng] : [52.3676, 4.9041];
   }
-
   public getZoom(): number { return this.map ? this.map.getZoom() : 8; }
   public getPitch(): number { return this.map ? this.map.getPitch() : 0; }
   public setPitch(pitch: number): void { this.map?.setPitch(Math.min(85, Math.max(0, pitch))); }
@@ -71,8 +71,12 @@ export class MapLibreMapEngine implements AirspaceMapEngine {
 
   public setTerrainEnabled(enabled: boolean): void {
     if (!this.map) return;
-    if (enabled) MapLibreTerrainHelper.enableTerrain(this.map);
-    else MapLibreTerrainHelper.disableTerrain(this.map);
+    if (enabled) {
+      const dem = MapLibreTerrainHelper.resolveDemUrl(this.terrainOpts.provider, this.terrainOpts.customUrl, this.terrainOpts.maptilerKey);
+      MapLibreTerrainHelper.enableTerrain(this.map, dem.url, this.terrainOpts.exaggeration ?? 1.5, dem.encoding, dem.tileSize, this.beforeLayerId());
+    } else {
+      MapLibreTerrainHelper.disableTerrain(this.map);
+    }
   }
 
   public setTerrainExaggeration(exaggeration: number): void {
@@ -101,7 +105,10 @@ export class MapLibreMapEngine implements AirspaceMapEngine {
         minzoom: opt?.minZoom ?? 0, maxzoom: opt?.maxNativeZoom ?? opt?.maxZoom ?? 19,
       });
       const paint = opacity !== undefined ? { "raster-opacity": opacity } : undefined;
-      this.map.addLayer({ id: lyrId, type: "raster", source: srcId, paint }, this.beforeLayerId());
+      const beforeId = lyrId === this.baseLayerId && this.map.getLayer("raster-dem-hillshade")
+        ? "raster-dem-hillshade"
+        : this.beforeLayerId();
+      this.map.addLayer({ id: lyrId, type: "raster", source: srcId, paint }, beforeId);
     };
     if (this.map.isStyleLoaded()) load(); else this.map.once("load", load);
   }

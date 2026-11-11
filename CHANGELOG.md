@@ -43,6 +43,7 @@ crates, in the imperative, one line each, with the `storypole` task key in paren
 
 ### Fixed
 
+- Fix MapLibre 3D DEM terrain black screen by adopting CORS-enabled Mapterhorn Terrarium tiles, resilient error fallback, and proper WebGL raster layer z-ordering (`AF-65`).
 - Fix 3D viewport canvas sizing with auto-resize and style-load race guards, and replace single toggle button with unambiguous [ 2D | 3D ] segmented control (`AF-60`).
 - Eliminate weather radar scrubber playback latency by caching active frames and preloading adjacent frames with zero-flicker opacity swapping (`AF-63`).
 
