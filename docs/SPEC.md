@@ -176,6 +176,8 @@ and transponder capability by `TransponderCapability`. Airborne position reports
 - Outbound community multilateration feeder connections are configured via the `MlatClientConfig`
   boundary model (`server_addr`, `user`, `lat`, `lon`, `alt_m`), synchronizing station coordinates
   before streaming timestamped Beast frames (`ADR-0016`).
+- Direct SDR hardware receivers and `rtl_tcp` network streaming are configured via the `SdrReceiverConfig`
+  boundary model (`frequency_hz`, `sample_rate_hz`, `auto_gain`).
 - Field definitions, types, optionality, units, and versioning schemas across all egress surfaces
   are specified in [`CONTRACTS.md`](CONTRACTS.md), which serves as the single field-level source of truth.
 
