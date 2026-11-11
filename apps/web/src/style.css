@@ -1,6 +1,7 @@
 /* Master stylesheet for aerofoil web radar */
 
 @import "tailwindcss";
+@import "maplibre-gl/dist/maplibre-gl.css";
 @import "./css/base.css";
 @import "./css/hud.css";
 @import "./css/modal.css";

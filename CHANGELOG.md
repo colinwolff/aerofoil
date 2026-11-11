@@ -13,6 +13,7 @@ crates, in the imperative, one line each, with the `storypole` task key in paren
 
 ### Added
 
+- Implement MapLibre GL 3D engine with 85-degree pitch, DEM terrain elevation, climb-profiled 3D flight ribbons, and dual-engine 2D/3D toggle (`AF-60`).
 - Implement custom Leaflet map panes with explicit z-indices and maxNativeZoom raster upscaling for FAA VFR and IFR charts (`AF-59`).
 - Add MADR 0017 establishing dual-engine 2D/3D map viewport, custom Leaflet panes, and antenna coverage heuristics (`AF-59`).
 - Add MADR 0016 specifying Multilateration (MLAT) dual-topology architecture and TDOA hyperboloid solver (`AF-56`).

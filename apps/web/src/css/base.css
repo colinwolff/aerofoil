@@ -90,7 +90,7 @@ body.light-theme .toolbar-btn:hover { background: #e2e8f0; border-color: #0284c7
 
 #app-container { display: flex; flex-direction: row; flex: 1; overflow: hidden; position: relative; }
 #map-container { flex: 1; height: 100%; position: relative; min-width: 280px; }
-#map { height: 100%; width: 100%; background: var(--bg-dark); }
+#map, #map-3d { height: 100%; width: 100%; background: var(--bg-dark); }
 
 .dark-tiles .leaflet-tile-pane {
   filter: brightness(0.65) invert(1) contrast(2.8) hue-rotate(200deg) saturate(0.25);

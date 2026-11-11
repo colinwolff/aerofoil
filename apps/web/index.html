@@ -34,6 +34,9 @@
           <button type="button" id="btn-open-settings" class="toolbar-btn" title="Configure Maps & API Keys">
             <span>⚙</span> Settings
           </button>
+          <button type="button" id="btn-toggle-engine" class="toolbar-btn" title="Toggle 2D (Leaflet) / 3D (MapLibre GL)">
+            <span id="engine-icon">🌐</span> <span id="engine-label">3D</span>
+          </button>
           <button type="button" id="btn-toggle-theme" class="toolbar-btn" title="Toggle Light / Dark Theme">
             <span>☼</span>
           </button>
@@ -52,6 +55,7 @@
     <main id="app-container">
       <div id="map-container">
         <div id="map"></div>
+        <div id="map-3d" class="hidden"></div>
         <div id="layer-drawer-container" class="layer-drawer-hud"></div>
         <div id="weather-scrubber-dock"></div>
       </div>

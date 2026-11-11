@@ -14,6 +14,7 @@ import { WeatherScrubber } from "./components/WeatherScrubber";
 import { LayerDrawer } from "./components/LayerDrawer";
 import { MapConfigModal } from "./components/MapConfigModal";
 import { SidebarSplitter } from "./components/SidebarSplitter";
+import { EngineToggleManager } from "./components/EngineToggleManager";
 import { ThemeManager } from "./components/ThemeManager";
 import { AirspaceRadarManager } from "./radar";
 
@@ -35,9 +36,7 @@ async function initApp(): Promise<void> {
   startUtcClock();
 
   if (mapElement) {
-    const engine = new LeafletMapEngine();
-    engine.init("map", config.receiverLat, config.receiverLon, 8);
-
+    radarManager = new AirspaceRadarManager(null);
     const legalModal = new LegalModal();
     legalModal.init();
 
@@ -45,6 +44,10 @@ async function initApp(): Promise<void> {
     attributionCtrl.setOpenModalHandler(() => legalModal.show());
 
     const basemapMgr = new BaseMapManager();
+    const toggleMgr = new EngineToggleManager(radarManager, basemapMgr, attributionCtrl, config);
+    const engine = toggleMgr.init(config.receiverLat, config.receiverLon, 8);
+    radarManager.setEngine(engine);
+
     applyBasemap(engine, basemapMgr, attributionCtrl, config);
 
     const ringsLayer = new DynamicRingsLayer(engine, config.receiverLat, config.receiverLon);
@@ -70,12 +73,11 @@ async function initApp(): Promise<void> {
 
     configModal.setOnSave((newCfg) => {
       ringsLayer.setCenter(newCfg.receiverLat, newCfg.receiverLon);
-      engine.setView(newCfg.receiverLat, newCfg.receiverLon);
-      applyBasemap(engine, basemapMgr, attributionCtrl, newCfg);
+      toggleMgr.getActiveEngine().setView(newCfg.receiverLat, newCfg.receiverLon);
+      applyBasemap(toggleMgr.getActiveEngine(), basemapMgr, attributionCtrl, newCfg);
     });
 
-    bindToolbar(drawer, configModal, splitter, engine, configModal);
-    radarManager = new AirspaceRadarManager(engine);
+    bindToolbar(drawer, configModal, splitter, toggleMgr, configModal);
   } else {
     radarManager = new AirspaceRadarManager(null);
   }
@@ -131,7 +133,7 @@ function applyBasemap(engine: LeafletMapEngine, mgr: BaseMapManager, attr: Attri
   }
 }
 
-function bindToolbar(drawer: LayerDrawer, cfgModal: MapConfigModal, splitter: SidebarSplitter, engine: LeafletMapEngine, cfg: MapConfigModal): void {
+function bindToolbar(drawer: LayerDrawer, cfgModal: MapConfigModal, splitter: SidebarSplitter, toggleMgr: EngineToggleManager, cfg: MapConfigModal): void {
   const btnLayers = document.getElementById("btn-toggle-layers");
   btnLayers?.addEventListener("click", () => {
     const open = drawer.toggle();
@@ -151,15 +153,16 @@ function bindToolbar(drawer: LayerDrawer, cfgModal: MapConfigModal, splitter: Si
   });
   window.addEventListener("click", () => centerDropdown?.classList.add("hidden"));
 
+  const getEngine = () => toggleMgr.getActiveEngine();
   document.getElementById("btn-center-receiver")?.addEventListener("click", () => {
     const c = cfg.getConfig();
-    engine.setView(c.receiverLat, c.receiverLon, 8);
+    getEngine().setView(c.receiverLat, c.receiverLon, 8);
   });
-  document.getElementById("btn-center-conus")?.addEventListener("click", () => engine.setView(39.2976, -94.7139, 6));
-  document.getElementById("btn-center-europe")?.addEventListener("click", () => engine.setView(52.3676, 4.9041, 8));
+  document.getElementById("btn-center-conus")?.addEventListener("click", () => getEngine().setView(39.2976, -94.7139, 6));
+  document.getElementById("btn-center-europe")?.addEventListener("click", () => getEngine().setView(52.3676, 4.9041, 8));
   document.getElementById("btn-center-gps")?.addEventListener("click", () => {
     if ("geolocation" in navigator) {
-      navigator.geolocation.getCurrentPosition((pos) => engine.setView(pos.coords.latitude, pos.coords.longitude, 9));
+      navigator.geolocation.getCurrentPosition((pos) => getEngine().setView(pos.coords.latitude, pos.coords.longitude, 9));
     }
   });
 

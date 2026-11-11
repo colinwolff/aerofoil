@@ -44,9 +44,21 @@ export class AirspaceRadarManager {
       if (typeof this.engine.updateTargetMarker === "function") {
         this.engine.updateTargetMarker(key, lat, lon, iconHtml, popupHtml);
       }
+      if (typeof (this.engine as any).trajectoryManager?.addCoordinate === "function") {
+        const altMeters = (target.altitude ?? 0) * 0.3048;
+        const vRate = (target as any).vertical_rate ?? (target as any).vertical_rate_fpm ?? 0;
+        (this.engine as any).trajectoryManager.addCoordinate(key, lon, lat, altMeters, vRate);
+      }
     }
 
     this.renderTable();
+  }
+
+  public setEngine(engine: AirspaceMapEngine): void {
+    this.engine = engine;
+    for (const target of this.targets.values()) {
+      this.updateTarget(target);
+    }
   }
 
   public getTargets(): TargetWire[] {
