@@ -3,13 +3,14 @@
 import type { Map as MapLibreMap } from "maplibre-gl";
 
 export class MapLibreVectorManager {
-  constructor(private mapGetter: () => MapLibreMap | null) {}
+  constructor(
+    private mapGetter: () => MapLibreMap | null,
+    private whenReady: (cb: () => void) => void = (cb) => cb(),
+  ) {}
 
   public setVectorLayer(id: string, geoJsonData: any): void {
-    const map = this.mapGetter();
-    if (!map) return;
-
     const run = () => {
+      const map = this.mapGetter();
       if (!map) return;
       this.removeVectorLayer(id);
       const srcId = `vector-src-${id}`;
@@ -27,8 +28,7 @@ export class MapLibreVectorManager {
       );
     };
 
-    if (map.isStyleLoaded()) run();
-    else map.once("load", run);
+    this.whenReady(run);
   }
 
   public removeVectorLayer(id: string): void {
@@ -41,10 +41,8 @@ export class MapLibreVectorManager {
   }
 
   public setParametricLines(id: string, lines: [number, number][][], style: Record<string, any>): void {
-    const map = this.mapGetter();
-    if (!map) return;
-
     const run = () => {
+      const map = this.mapGetter();
       if (!map) return;
       this.removeParametricLayer(id);
       const srcId = `param-src-${id}`;
@@ -76,8 +74,7 @@ export class MapLibreVectorManager {
       );
     };
 
-    if (map.isStyleLoaded()) run();
-    else map.once("load", run);
+    this.whenReady(run);
   }
 
   public setParametricCircles(

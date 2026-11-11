@@ -1,7 +1,9 @@
 //! MapLibre GL 3D implementation of AirspaceMapEngine.
 //! WebGL/GPU accelerated with 85-degree pitch, DEM terrain elevation, and 3D flight ribbons.
 
-import { Map as MapLibreMap, Marker, Popup, NavigationControl } from "maplibre-gl";
+/// <reference types="vite/client" />
+import { Map as MapLibreMap, Marker, Popup, NavigationControl, setWorkerUrl } from "maplibre-gl";
+import maplibreWorkerUrl from "maplibre-gl/dist/maplibre-gl-worker.mjs?url";
 import type { AirspaceLayerOptions, AirspaceMapEngine } from "./AirspaceMapEngine";
 import { MapLibreTerrainHelper, type TerrainOptions } from "./MapLibreTerrainHelper";
 import { MapLibreTrajectoryManager } from "./MapLibreTrajectoryManager";
@@ -10,6 +12,8 @@ import { MapLibreVectorManager } from "./MapLibreVectorManager";
 
 export class MapLibreMapEngine implements AirspaceMapEngine {
   private map: MapLibreMap | null = null;
+  private styleReady: boolean = false;
+  private readyQueue: (() => void)[] = [];
   private markers: Map<string, Marker> = new Map();
   private baseSourceId: string = "aerofoil-base-source";
   private baseLayerId: string = "aerofoil-base-layer";
@@ -18,11 +22,19 @@ export class MapLibreMapEngine implements AirspaceMapEngine {
   private terrainOpts: TerrainOptions = {};
   public readonly trajectoryManager = new MapLibreTrajectoryManager();
   public readonly stemsManager = new MapLibreAltitudeStems();
-  private vectorManager = new MapLibreVectorManager(() => this.map);
+  private vectorManager = new MapLibreVectorManager(() => this.map, (cb) => this.whenReady(cb));
 
   public setTerrainOptions(opts: TerrainOptions): void { this.terrainOpts = opts; }
 
+  public whenReady(cb: () => void): void {
+    if (this.styleReady && this.map) cb();
+    else this.readyQueue.push(cb);
+  }
+
   public init(containerId: string, centerLat: number, centerLon: number, zoom: number): void {
+    if (typeof maplibreWorkerUrl === "string" && maplibreWorkerUrl.length > 0) setWorkerUrl(maplibreWorkerUrl);
+    this.styleReady = false;
+    this.readyQueue = [];
     this.map = new MapLibreMap({
       container: containerId,
       center: [centerLon, centerLat],
@@ -40,15 +52,17 @@ export class MapLibreMapEngine implements AirspaceMapEngine {
 
     this.map.on("load", () => {
       if (!this.map) return;
+      this.styleReady = true;
+      this.trajectoryManager.setupLayers(this.map); this.stemsManager.setupLayers(this.map);
       const dem = MapLibreTerrainHelper.resolveDemUrl(this.terrainOpts.provider, this.terrainOpts.customUrl, this.terrainOpts.maptilerKey);
       MapLibreTerrainHelper.enableTerrain(this.map, dem.url, this.terrainOpts.exaggeration ?? 1.5, dem.encoding, dem.tileSize, this.beforeLayerId());
-      this.trajectoryManager.setupLayers(this.map); this.stemsManager.setupLayers(this.map);
+      while (this.readyQueue.length > 0) this.readyQueue.shift()?.();
       this.trajectoryManager.update(this.map); this.stemsManager.update(this.map);
     });
 
     this.map.on("error", (e: any) => {
+      console.warn("[MapLibreMapEngine]", e?.error?.message || e);
       if (e?.sourceId === "raster-dem-terrain" || e?.error?.message?.toLowerCase().includes("terrain")) {
-        console.warn("[MapLibreMapEngine] Terrain DEM failed, disabling relief:", e?.error?.message || e);
         if (this.map) MapLibreTerrainHelper.disableTerrain(this.map);
       }
     });
@@ -70,21 +84,23 @@ export class MapLibreMapEngine implements AirspaceMapEngine {
   public onViewChange(callback: () => void): void { this.viewChangeCallbacks.push(callback); }
 
   public setTerrainEnabled(enabled: boolean): void {
-    if (!this.map) return;
-    if (enabled) {
-      const dem = MapLibreTerrainHelper.resolveDemUrl(this.terrainOpts.provider, this.terrainOpts.customUrl, this.terrainOpts.maptilerKey);
-      MapLibreTerrainHelper.enableTerrain(this.map, dem.url, this.terrainOpts.exaggeration ?? 1.5, dem.encoding, dem.tileSize, this.beforeLayerId());
-    } else {
-      MapLibreTerrainHelper.disableTerrain(this.map);
-    }
+    this.whenReady(() => {
+      if (!this.map) return;
+      if (enabled) {
+        const dem = MapLibreTerrainHelper.resolveDemUrl(this.terrainOpts.provider, this.terrainOpts.customUrl, this.terrainOpts.maptilerKey);
+        MapLibreTerrainHelper.enableTerrain(this.map, dem.url, this.terrainOpts.exaggeration ?? 1.5, dem.encoding, dem.tileSize, this.beforeLayerId());
+      } else {
+        MapLibreTerrainHelper.disableTerrain(this.map);
+      }
+    });
   }
 
   public setTerrainExaggeration(exaggeration: number): void {
-    if (this.map) MapLibreTerrainHelper.setExaggeration(this.map, exaggeration);
+    this.whenReady(() => { if (this.map) MapLibreTerrainHelper.setExaggeration(this.map, exaggeration); });
   }
 
   public setHillshadingEnabled(enabled: boolean): void {
-    if (this.map) MapLibreTerrainHelper.setHillshading(this.map, enabled);
+    this.whenReady(() => { if (this.map) MapLibreTerrainHelper.setHillshading(this.map, enabled); });
   }
 
   private beforeLayerId(): string | undefined {
@@ -93,28 +109,32 @@ export class MapLibreMapEngine implements AirspaceMapEngine {
       : (this.map?.getLayer("trajectories-layer") ? "trajectories-layer" : undefined);
   }
 
-  private addRaster(srcId: string, lyrId: string, url: string, attr: string, opt?: AirspaceLayerOptions, opacity?: number): void {
-    if (!this.map) return;
+  private addRaster(srcId: string, lyrId: string, url: string, attr: string, opt?: AirspaceLayerOptions, opacity?: number, isDark?: boolean): void {
     const load = () => {
       if (!this.map) return;
       if (this.map.getLayer(lyrId)) this.map.removeLayer(lyrId);
       if (this.map.getSource(srcId)) this.map.removeSource(srcId);
-      const tileUrl = url.includes("{s}") ? url.replace("{s}", opt?.subdomains?.[0] || "a") : url;
+      const tileUrl = url.replace("{r}", "").replace("{s}", opt?.subdomains?.[0] || "a");
       this.map.addSource(srcId, {
         type: "raster", tiles: [tileUrl], tileSize: 256, attribution: attr,
         minzoom: opt?.minZoom ?? 0, maxzoom: opt?.maxNativeZoom ?? opt?.maxZoom ?? 19,
       });
-      const paint = opacity !== undefined ? { "raster-opacity": opacity } : undefined;
       const beforeId = lyrId === this.baseLayerId && this.map.getLayer("raster-dem-hillshade")
         ? "raster-dem-hillshade"
         : this.beforeLayerId();
+      const paint: Record<string, number> = { "raster-opacity": opacity ?? 1 };
+      if (isDark) {
+        paint["raster-brightness-max"] = 0.45;
+        paint["raster-saturation"] = -0.6;
+        paint["raster-contrast"] = 0.25;
+      }
       this.map.addLayer({ id: lyrId, type: "raster", source: srcId, paint }, beforeId);
     };
-    if (this.map.isStyleLoaded()) load(); else this.map.once("load", load);
+    this.whenReady(load);
   }
 
   public setBaseTileLayer(id: string, url: string, attribution: string, options?: AirspaceLayerOptions): void {
-    this.addRaster(this.baseSourceId, this.baseLayerId, url, attribution, options);
+    this.addRaster(this.baseSourceId, this.baseLayerId, url, attribution, options, 1, id === "osm_dark");
   }
 
   public addOverlayTileLayer(id: string, url: string, attribution: string, options?: AirspaceLayerOptions): void {
@@ -124,8 +144,7 @@ export class MapLibreMapEngine implements AirspaceMapEngine {
   }
 
   public removeTileLayer(id: string): void {
-    const srcId = `overlay-src-${id}`;
-    const lyrId = `overlay-lyr-${id}`;
+    const srcId = `overlay-src-${id}`; const lyrId = `overlay-lyr-${id}`;
     if (this.map?.getLayer(lyrId)) this.map.removeLayer(lyrId);
     if (this.map?.getSource(srcId)) this.map.removeSource(srcId);
     this.overlayIds.delete(id);
@@ -133,53 +152,35 @@ export class MapLibreMapEngine implements AirspaceMapEngine {
 
   public setLayerOpacity(id: string, opacity: number): void {
     const lyrId = `overlay-lyr-${id}`;
-    if (this.map?.getLayer(lyrId)) {
-      this.map.setPaintProperty(lyrId, "raster-opacity", opacity);
-    }
+    if (this.map?.getLayer(lyrId)) this.map.setPaintProperty(lyrId, "raster-opacity", opacity);
   }
 
   public updateTargetMarker(address: string, lat: number, lon: number, iconHtml: string, popupHtml: string): void {
     if (!this.map) return;
     const key = address.toUpperCase();
-
     let marker = this.markers.get(key);
     if (!marker) {
-      const el = document.createElement("div");
-      el.className = "custom-plane-icon";
-      el.innerHTML = iconHtml;
-
+      const el = document.createElement("div"); el.className = "custom-plane-icon"; el.innerHTML = iconHtml;
       const popup = new Popup({ offset: 16 }).setHTML(popupHtml);
       marker = new Marker({ element: el }).setLngLat([lon, lat]).setPopup(popup).addTo(this.map);
       this.markers.set(key, marker);
     } else {
-      marker.setLngLat([lon, lat]);
-      marker.getElement().innerHTML = iconHtml;
-      marker.getPopup()?.setHTML(popupHtml);
+      marker.setLngLat([lon, lat]); marker.getElement().innerHTML = iconHtml; marker.getPopup()?.setHTML(popupHtml);
     }
   }
 
   public updateTargetTrajectory(address: string, lon: number, lat: number, altMeters: number, vRate: number = 0): void {
     this.trajectoryManager.addCoordinate(address, lon, lat, altMeters, vRate);
     this.stemsManager.updateTarget(address, lon, lat, altMeters);
-    if (this.map?.isStyleLoaded()) {
-      this.trajectoryManager.update(this.map);
-      this.stemsManager.update(this.map);
-    }
+    if (this.styleReady && this.map) { this.trajectoryManager.update(this.map); this.stemsManager.update(this.map); }
   }
 
   public removeTargetMarker(address: string): void {
     const key = address.toUpperCase();
     const marker = this.markers.get(key);
-    if (marker) {
-      marker.remove();
-      this.markers.delete(key);
-    }
-    this.trajectoryManager.removeTarget(key);
-    this.stemsManager.removeTarget(key);
-    if (this.map?.isStyleLoaded()) {
-      this.trajectoryManager.update(this.map);
-      this.stemsManager.update(this.map);
-    }
+    if (marker) { marker.remove(); this.markers.delete(key); }
+    this.trajectoryManager.removeTarget(key); this.stemsManager.removeTarget(key);
+    if (this.styleReady && this.map) { this.trajectoryManager.update(this.map); this.stemsManager.update(this.map); }
   }
 
   public setVectorLayer(id: string, geoJsonData: any, _styleFn: (feature: any) => Record<string, any>): void {

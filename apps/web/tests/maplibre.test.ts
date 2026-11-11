@@ -2,6 +2,7 @@ import { describe, expect, test } from "bun:test";
 import { MapLibreTrajectoryManager } from "../src/layers/MapLibreTrajectoryManager";
 import { MapLibreAltitudeStems } from "../src/layers/MapLibreAltitudeStems";
 import { MapLibreTerrainHelper, DEFAULT_TERRARIUM_DEM } from "../src/layers/MapLibreTerrainHelper";
+import { MapLibreVectorManager } from "../src/layers/MapLibreVectorManager";
 import { DEFAULT_CONFIG, loadConfigFromStorage } from "../src/components/MapConfigTypes";
 
 describe("MapLibreTrajectoryManager", () => {
@@ -145,8 +146,9 @@ describe("MapLibreTerrainHelper", () => {
 
     MapLibreTerrainHelper.enableTerrain(fakeMap, DEFAULT_TERRARIUM_DEM, 1.5, "terrarium", 512);
     expect(fakeMap.getSource("raster-dem-terrain")).toBeDefined();
+    expect(fakeMap.getSource("raster-dem-hillshade-src")).toBeDefined();
     expect(fakeMap.getSource("raster-dem-terrain").tileSize).toBe(512);
-    expect(fakeMap.getLayer("raster-dem-hillshade")).toBeDefined();
+    expect(fakeMap.getLayer("raster-dem-hillshade").source).toBe("raster-dem-hillshade-src");
     expect(terrainConfig).toEqual({ source: "raster-dem-terrain", exaggeration: 1.5 });
 
     MapLibreTerrainHelper.setExaggeration(fakeMap, 2.0);
@@ -158,6 +160,29 @@ describe("MapLibreTerrainHelper", () => {
     MapLibreTerrainHelper.disableTerrain(fakeMap);
     expect(terrainConfig).toBeNull();
     expect(hillshadeVisibility).toBe("none");
+  });
+});
+
+describe("MapLibreVectorManager", () => {
+  test("mounts vector and parametric layers deterministically via whenReady", () => {
+    const queue: (() => void)[] = [];
+    const fakeMap: any = {
+      sources: {} as Record<string, any>,
+      layers: {} as Record<string, any>,
+      getSource(id: string) { return this.sources[id]; },
+      addSource(id: string, src: any) { this.sources[id] = src; },
+      removeSource(id: string) { delete this.sources[id]; },
+      getLayer(id: string) { return this.layers[id]; },
+      addLayer(lyr: any) { this.layers[lyr.id] = lyr; },
+      removeLayer(id: string) { delete this.layers[id]; },
+    };
+    const mgr = new MapLibreVectorManager(() => fakeMap, (cb) => queue.push(cb));
+    mgr.setVectorLayer("fir", { type: "FeatureCollection", features: [] });
+    mgr.setParametricCircles("rings", [{ center: [52.3, 4.9], radiusMeters: 18520 }], { color: "#38bdf8" });
+    expect(Object.keys(fakeMap.layers).length).toBe(0);
+    while (queue.length > 0) queue.shift()?.();
+    expect(fakeMap.getLayer("vector-lyr-fir")).toBeDefined();
+    expect(fakeMap.getLayer("param-lyr-rings")).toBeDefined();
   });
 });
 

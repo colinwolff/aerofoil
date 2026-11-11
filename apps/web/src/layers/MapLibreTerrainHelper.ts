@@ -7,6 +7,7 @@ export const DEFAULT_TERRARIUM_DEM =
   "https://tiles.mapterhorn.com/{z}/{x}/{y}.webp";
 
 const TERRAIN_SOURCE_ID = "raster-dem-terrain";
+const HILLSHADE_SOURCE_ID = "raster-dem-hillshade-src";
 const HILLSHADE_LAYER_ID = "raster-dem-hillshade";
 
 export interface TerrainOptions {
@@ -57,15 +58,15 @@ export class MapLibreTerrainHelper {
     tileSize: number = 512,
     beforeId?: string,
   ): void {
-    if (!map.getSource(TERRAIN_SOURCE_ID)) {
-      map.addSource(TERRAIN_SOURCE_ID, {
-        type: "raster-dem",
-        tiles: [demUrl],
-        encoding,
-        tileSize,
-        maxzoom: 15,
-      });
-    }
+    const demSpec = {
+      type: "raster-dem" as const,
+      tiles: [demUrl],
+      encoding,
+      tileSize,
+      maxzoom: 15,
+    };
+    if (!map.getSource(TERRAIN_SOURCE_ID)) map.addSource(TERRAIN_SOURCE_ID, demSpec);
+    if (!map.getSource(HILLSHADE_SOURCE_ID)) map.addSource(HILLSHADE_SOURCE_ID, { ...demSpec });
 
     try {
       (map as any).setTerrain({
@@ -78,7 +79,7 @@ export class MapLibreTerrainHelper {
           {
             id: HILLSHADE_LAYER_ID,
             type: "hillshade",
-            source: TERRAIN_SOURCE_ID,
+            source: HILLSHADE_SOURCE_ID,
             paint: {
               "hillshade-shadow-color": "#000000",
               "hillshade-highlight-color": "#ffffff",
@@ -88,6 +89,8 @@ export class MapLibreTerrainHelper {
           },
           beforeId,
         );
+      } else {
+        map.setLayoutProperty(HILLSHADE_LAYER_ID, "visibility", "visible");
       }
     } catch (e) {
       console.warn("[MapLibreTerrainHelper] Failed to enable 3D terrain elevation:", e);
