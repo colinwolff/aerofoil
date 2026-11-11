@@ -13,6 +13,7 @@ crates, in the imperative, one line each, with the `storypole` task key in paren
 
 ### Added
 
+- Add raw RF IQ baseband sample recording sink and replay demodulator engine in aerofoil-sdr and aerofoil-replay (`AF-85`).
 - Add RTL-SDR rtl_tcp streaming client and 1090 MHz PPM bit-slicing demodulator in aerofoil-sdr (`AF-84`).
 - Add live Beast/AVR network feed capture CLI subcommand and curate public ADS-B dataset fetcher (`AF-81`).
 - Add headless browser Playwright E2E automation test suite for 2D/3D radar, basemaps, and telemetry inspection (`AF-83`).

@@ -94,14 +94,14 @@ when its crates compile, its tests pass and the tiered gates in `AGENTS.md` §3.
 - [x] 3D DEM terrain relief bugfixes: CORS-enabled Mapterhorn Terrarium tiles, resilient fallback, and WebGL layer z-ordering (`AF-65`).
 - [x] MapLibre GL v6 WebWorker URL resolution for Vite and deterministic whenReady queue mounting (`AF-66`).
 - [x] CARTO_API_KEY .env loading with ?key= authentication, CARTO Voyager basemap, and 3D mountain jump presets (`AF-67`).
-- [ ] Epic: Comprehensive End-to-End Test Suite, Kinematic Airspace Simulation & Live Capture Pipeline (`AF-78`).
+- [x] Epic: Comprehensive End-to-End Test Suite, Kinematic Airspace Simulation & Live Capture Pipeline (`AF-78`).
 - [x] High-fidelity kinematic airspace trajectory synthesizer and realistic terminal hub fixture: model 50+ aircraft across realistic STAR/SID/holding procedures into loopable Beast fixture (`AF-79`).
 - [x] Long-run flight kinematic trajectory and continuous tracking regression test suite: multi-minute track continuity tests without heading or CPR discontinuities (`AF-80`).
 - [x] Live Beast network feed capture and public dataset downloader script: record live Beast/AVR streams and fetch public traces (`AF-81`).
 - [x] Full-pipeline server SSE and WebSocket streaming integration tests: end-to-end ingestion from Beast inputs through tracker to live web clients (`AF-82`).
 - [x] Headless browser end-to-end automation test suite with Playwright: automated browser testing of Leaflet 2.0 and MapLibre GL 3D canvases (`AF-83`).
 - [x] RTL-SDR DSP demodulation pipeline and direct hardware receiver interface: direct USB/rtl_tcp streaming into PPM/FSK demodulators (`AF-84`).
-- [ ] Raw IQ modulated sample capture and RF replay engine: capture .cu8/.cf32 raw samples and replay into DSP demodulator (`AF-85`).
+- [x] Raw IQ modulated sample capture and RF replay engine: capture .cu8/.cf32 raw samples and replay into DSP demodulator (`AF-85`).
 
 **Exit criteria:** `0.1.0-beta.2` tagged with lockstep SemVer; `apps/web` operating cleanly under unified Docker container and decoupled Kubernetes Ingress; dynamic multi-waypoint replay verified across TUI, 2D Leaflet, and 3D MapLibre viewports; MLAT TDOA solver verified against multi-receiver synthetic vectors; comprehensive E2E test suites passing.
 

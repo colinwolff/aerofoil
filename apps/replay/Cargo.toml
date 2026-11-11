@@ -10,6 +10,7 @@ homepage.workspace = true
 description = "Standalone multi-tier surveillance and RF sample replay engine"
 
 [dependencies]
+aerofoil-sdr = { path = "../../crates/sdr", version = "0.1.0-beta.1" }
 clap = { version = "4.5", features = ["derive"] }
 
 [dev-dependencies]

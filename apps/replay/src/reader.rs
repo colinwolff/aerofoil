@@ -163,13 +163,17 @@ fn parse_jsonl_frames(buf: &[u8]) -> io::Result<Vec<ReplayFrame>> {
 }
 
 fn parse_iq_chunks(buf: &[u8]) -> io::Result<Vec<ReplayFrame>> {
-    let chunk_size = 4096;
-    let frames = buf
-        .chunks(chunk_size)
-        .map(|chunk| ReplayFrame {
-            timestamp_us: None,
-            raw_bytes: chunk.to_vec(),
-        })
-        .collect();
+    let mut replayer = crate::iq_replay::IqDemodulatingReplayer::new();
+    let frames = replayer.demodulate_cu8_to_frames(buf);
+    if frames.is_empty() {
+        let chunk_size = 4096;
+        return Ok(buf
+            .chunks(chunk_size)
+            .map(|chunk| ReplayFrame {
+                timestamp_us: None,
+                raw_bytes: chunk.to_vec(),
+            })
+            .collect());
+    }
     Ok(frames)
 }

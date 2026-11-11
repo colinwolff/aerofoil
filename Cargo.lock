@@ -70,6 +70,7 @@ dependencies = [
  "aerofoil-1090",
  "aerofoil-978",
  "aerofoil-common",
+ "aerofoil-sdr",
  "clap",
  "criterion",
 ]
