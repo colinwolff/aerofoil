@@ -119,7 +119,14 @@ function applyBasemap(engine: LeafletMapEngine, mgr: BaseMapManager, attr: Attri
       const isDark = document.body.classList.contains("dark-theme");
       mapEl.classList.toggle("dark-tiles", isDark && !!def.isDarkFilterRecommended);
     }
-    engine.setBaseTileLayer(def.id, def.url, def.attribution, { maxZoom: def.maxZoom });
+    engine.setBaseTileLayer(def.id, def.url, def.attribution, {
+      minZoom: def.minZoom,
+      maxZoom: def.maxZoom,
+      maxNativeZoom: def.maxNativeZoom,
+      subdomains: def.subdomains,
+      pane: def.pane,
+      tms: def.tms,
+    });
     attr.register({ id: "basemap", name: def.name, html: def.attribution, license: def.license });
   }
 }

@@ -5,9 +5,13 @@ import type { TargetWire } from "@aerofoil-rs/sdk";
 
 export interface AirspaceLayerOptions {
   opacity?: number;
+  minZoom?: number;
   maxZoom?: number;
+  maxNativeZoom?: number;
   subdomains?: string;
   zIndex?: number;
+  pane?: string;
+  tms?: boolean;
 }
 
 export interface AirspaceMapEngine {

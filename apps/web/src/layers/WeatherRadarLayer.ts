@@ -149,6 +149,7 @@ export class WeatherRadarLayer {
         opacity: this.opacity,
         maxZoom: 12,
         zIndex: 5,
+        pane: "weatherPane",
       },
     );
   }

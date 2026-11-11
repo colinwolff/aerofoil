@@ -69,10 +69,21 @@ describe("BaseMapRegistry", () => {
     expect(vfr).toBeDefined();
     expect(vfr.isOfficialFAA).toBe(true);
     expect(vfr.license).toBe("US Public Domain");
+    expect(vfr.minZoom).toBe(7);
+    expect(vfr.maxNativeZoom).toBe(12);
+    expect(vfr.pane).toBe("chartsPane");
 
     const ifr = BASEMAPS.faa_ifr_low;
     expect(ifr).toBeDefined();
     expect(ifr.isOfficialFAA).toBe(true);
+    expect(ifr.minZoom).toBe(4);
+    expect(ifr.maxNativeZoom).toBe(11);
+    expect(ifr.pane).toBe("chartsPane");
+
+    const openaip = BASEMAPS.openaip;
+    expect(openaip).toBeDefined();
+    expect(openaip.tms).toBe(true);
+    expect(openaip.pane).toBe("chartsPane");
   });
 
   test("manages active basemap selection", () => {

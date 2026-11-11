@@ -1,16 +1,16 @@
 //! Leaflet 2.0 implementation of the AirspaceMapEngine interface.
 
 import {
-  Circle,
   DivIcon,
   GeoJSON,
   LeafletMap,
   Marker,
-  Polyline,
   TileLayer,
   type LatLngExpression,
 } from "leaflet";
 import type { AirspaceLayerOptions, AirspaceMapEngine } from "./AirspaceMapEngine";
+import { setupLeafletPanes, PANE_BASEMAP, PANE_AIRSPACE } from "./LeafletPanes";
+import { LeafletParametricManager } from "./LeafletParametricManager";
 
 export class LeafletMapEngine implements AirspaceMapEngine {
   private map: LeafletMap | null = null;
@@ -18,7 +18,7 @@ export class LeafletMapEngine implements AirspaceMapEngine {
   private overlayTiles: Map<string, TileLayer> = new Map();
   private targetMarkers: Map<string, Marker> = new Map();
   private vectorLayers: Map<string, GeoJSON> = new Map();
-  private parametricLayers: Map<string, (Circle | Polyline)[]> = new Map();
+  private parametricManager: LeafletParametricManager | null = null;
   private viewChangeCallbacks: (() => void)[] = [];
 
   public init(containerId: string, centerLat: number, centerLon: number, zoom: number): void {
@@ -27,6 +27,9 @@ export class LeafletMapEngine implements AirspaceMapEngine {
       zoom,
       zoomControl: true,
     });
+
+    setupLeafletPanes(this.map);
+    this.parametricManager = new LeafletParametricManager(this.map);
 
     this.map.on("moveend", () => {
       for (const cb of this.viewChangeCallbacks) {
@@ -62,27 +65,36 @@ export class LeafletMapEngine implements AirspaceMapEngine {
       this.baseLayer = null;
     }
 
-    this.baseLayer = new TileLayer(url, {
+    const tileOptions: any = {
       attribution,
+      minZoom: options?.minZoom ?? 0,
       maxZoom: options?.maxZoom ?? 19,
+      maxNativeZoom: options?.maxNativeZoom ?? options?.maxZoom ?? 19,
       subdomains: options?.subdomains ?? "abc",
       opacity: options?.opacity ?? 1.0,
-      zIndex: 1,
-    }).addTo(this.map);
+      pane: options?.pane ?? PANE_BASEMAP,
+      tms: options?.tms ?? false,
+    };
+
+    this.baseLayer = new TileLayer(url, tileOptions).addTo(this.map);
   }
 
   public addOverlayTileLayer(id: string, url: string, attribution: string, options?: AirspaceLayerOptions): void {
     if (!this.map) return;
     this.removeTileLayer(id);
 
-    const layer = new TileLayer(url, {
+    const tileOptions: any = {
       attribution,
+      minZoom: options?.minZoom ?? 0,
       maxZoom: options?.maxZoom ?? 19,
+      maxNativeZoom: options?.maxNativeZoom ?? options?.maxZoom ?? 19,
       subdomains: options?.subdomains ?? "abc",
       opacity: options?.opacity ?? 0.7,
-      zIndex: options?.zIndex ?? 10,
-    }).addTo(this.map);
+      pane: options?.pane ?? "overlayPane",
+      tms: options?.tms ?? false,
+    };
 
+    const layer = new TileLayer(url, tileOptions).addTo(this.map);
     this.overlayTiles.set(id, layer);
   }
 
@@ -151,6 +163,7 @@ export class LeafletMapEngine implements AirspaceMapEngine {
     const layer = new GeoJSON(geoJsonData, {
       style: styleFn,
       onEachFeature: onEachFeatureFn,
+      pane: PANE_AIRSPACE,
     }).addTo(this.map);
 
     this.vectorLayers.set(id, layer);
@@ -165,21 +178,7 @@ export class LeafletMapEngine implements AirspaceMapEngine {
   }
 
   public setParametricLines(id: string, lines: [number, number][][], style: Record<string, any>): void {
-    if (!this.map) return;
-    this.removeParametricLayer(id);
-
-    const elements: (Circle | Polyline)[] = [];
-    for (const line of lines) {
-      const poly = new Polyline(line as LatLngExpression[], {
-        color: style.color ?? "#38bdf8",
-        weight: style.weight ?? 1,
-        dashArray: style.dashArray ?? "4, 6",
-        opacity: style.opacity ?? 0.4,
-      }).addTo(this.map);
-      elements.push(poly);
-    }
-
-    this.parametricLayers.set(id, elements);
+    this.parametricManager?.setParametricLines(id, lines, style);
   }
 
   public setParametricCircles(
@@ -187,32 +186,10 @@ export class LeafletMapEngine implements AirspaceMapEngine {
     circles: { center: [number, number]; radiusMeters: number }[],
     style: Record<string, any>,
   ): void {
-    if (!this.map) return;
-    this.removeParametricLayer(id);
-
-    const elements: (Circle | Polyline)[] = [];
-    for (const c of circles) {
-      const circ = new Circle(c.center as LatLngExpression, {
-        radius: c.radiusMeters,
-        color: style.color ?? "#0ea5e9",
-        fillColor: "transparent",
-        weight: style.weight ?? 1.5,
-        opacity: style.opacity ?? 0.5,
-        dashArray: style.dashArray ?? "3, 5",
-      }).addTo(this.map);
-      elements.push(circ);
-    }
-
-    this.parametricLayers.set(id, elements);
+    this.parametricManager?.setParametricCircles(id, circles, style);
   }
 
   public removeParametricLayer(id: string): void {
-    const items = this.parametricLayers.get(id);
-    if (items && this.map) {
-      for (const item of items) {
-        this.map.removeLayer(item);
-      }
-      this.parametricLayers.delete(id);
-    }
+    this.parametricManager?.removeParametricLayer(id);
   }
 }
