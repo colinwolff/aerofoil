@@ -39,6 +39,9 @@ with `tar1090`'s 2D capabilities, but to elevate them into first-class spatial 3
 1. **Spatial 3D Elevation of 2D Features (Chosen):**
    - *Aircraft Inspector:* Glassmorphic HUD telemetry card with live climb/descent sparklines.
    - *Map Labels:* LOD-aware billboard badges beside aircraft icons in both 2D and 3D.
+   - *3D Aircraft Models:* Replace flat 2D sprite/DOM icons with instanced low-poly 3D models (Jet, Heavy,
+     Turboprop, Helicopter, Light GA) dynamically oriented in WebGL by true heading, climb/pitch, and
+     roll angle, preventing icon distortion at oblique 3D viewing angles ($60^\circ$–$85^\circ$).
    - *3D Extruded Airspace:* Render Class B/C/D and SUA airspace polygons as semi-transparent 3D
      polygonal columns matching their aeronautical floor and ceiling altitudes (MSL).
    - *Chase Cam:* 3D camera follow mode smoothly tracking selected aircraft from behind.
