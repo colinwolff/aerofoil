@@ -45,6 +45,7 @@ export class AntennaCoverageLayer {
   private visible: boolean = false;
   private dirty: boolean = false;
   private rxAltitudeFt: number = 50;
+  private lastRenderMs: number = 0;
 
   constructor(
     private engine: AirspaceMapEngine,
@@ -96,8 +97,12 @@ export class AntennaCoverageLayer {
     }
 
     if (this.visible && this.dirty) {
-      this.renderContour();
-      this.dirty = false;
+      const now = Date.now();
+      if (now - this.lastRenderMs >= 500) {
+        this.lastRenderMs = now;
+        this.renderContour();
+        this.dirty = false;
+      }
     }
   }
 

@@ -23,11 +23,16 @@ const LABELS_LAYER_ID = "surveillance-dome-labels";
 export function generateDomeRibbonsGeoJson(centerLat: number, centerLon: number, tiers: DomeTier[]): any {
   const features = tiers.map((tier) => {
     const radiusMeters = tier.radiusNm * METERS_PER_NM;
-    const ringCoords: [number, number][] = [];
+    const outerCoords: [number, number][] = [];
+    const innerCoords: [number, number][] = [];
+    const innerR = Math.max(100, radiusMeters - 120);
+    const outerR = radiusMeters + 120;
 
     for (let bearing = 0; bearing <= 360; bearing += 5) {
-      const [lat, lon] = destinationPoint(centerLat, centerLon, bearing, radiusMeters);
-      ringCoords.push([lon, lat]);
+      const [oLat, oLon] = destinationPoint(centerLat, centerLon, bearing, outerR);
+      const [iLat, iLon] = destinationPoint(centerLat, centerLon, 360 - bearing, innerR);
+      outerCoords.push([oLon, oLat]);
+      innerCoords.push([iLon, iLat]);
     }
 
     const altitudeM = tier.flightLevel * 100 * 0.3048;
@@ -42,7 +47,7 @@ export function generateDomeRibbonsGeoJson(centerLat: number, centerLon: number,
       },
       geometry: {
         type: "Polygon" as const,
-        coordinates: [ringCoords],
+        coordinates: [outerCoords, innerCoords],
       },
     };
   });
@@ -134,6 +139,7 @@ export class SurveillanceDome3dManager {
         source: LABELS_SOURCE_ID,
         layout: {
           "text-field": ["get", "label"],
+          "text-font": ["Open Sans Regular"],
           "text-size": 11,
           "text-anchor": "center",
           "text-allow-overlap": false,
