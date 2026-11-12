@@ -62,6 +62,7 @@ crates, in the imperative, one line each, with the `storypole` task key in paren
 
 ### Fixed
 
+- Fix MapLibre 3D aircraft model visibility by correcting projection matrix multiplication, establishing dynamic zoom-adaptive model scaling, adding directional normal lighting, and triggering WebGL repaints (`AF-76`).
 - Expose `CARTO_API_KEY` from `.env` in Vite, authenticate CARTO Dark Matter and CARTO Voyager tiles with `?key=` and visible `carto.com/attributions`, and add 3D mountain jump presets and sky/hillshade enhancements (`AF-67`).
 - Configure MapLibre GL v6 WebWorker URL for Vite, fix undefined raster paint validation error, separate DEM terrain/hillshade sources, and replace `isStyleLoaded()` race with a deterministic `whenReady` queue (`AF-66`).
 - Fix MapLibre 3D DEM terrain black screen by adopting CORS-enabled Mapterhorn Terrarium tiles, resilient error fallback, and proper WebGL raster layer z-ordering (`AF-65`).

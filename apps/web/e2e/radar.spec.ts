@@ -138,4 +138,43 @@ test.describe("Airspace Radar E2E Suite", () => {
     await expect(popup).toContainText("Spd: 450 kt");
     await expect(popup).toContainText("Squawk: 4201");
   });
+
+  test("renders 3D aircraft models and hides flat 2D icons in 3D viewport mode", async ({ page }) => {
+    await page.goto("/");
+    await page.waitForFunction(() => !!(window as any).radarManager);
+
+    await page.locator("#btn-engine-3d").click();
+    await expect(page.locator("#btn-engine-3d")).toHaveClass(/active/);
+    await expect(page.locator("#map-3d")).not.toHaveClass(/hidden/);
+
+    await page.evaluate(() => {
+      const w = window as any;
+      w.radarManager.updateTarget({
+        address: "4840D6",
+        callsign: "KLM1023",
+        altitude: 32000,
+        ground_speed: 450,
+        heading: 240,
+        squawk: "4201",
+        lat: 52.3,
+        lon: 4.76,
+        source: "ModeS1090",
+        reception: "Direct",
+      });
+    });
+
+    const hasTarget3d = await page.evaluate(() => {
+      const w = window as any;
+      const target = w.radarManager?.engine?.modelLayer3d?.getTarget("4840D6");
+      return !!target && target.altMeters > 9000 && target.heading === 240;
+    });
+    expect(hasTarget3d).toBe(true);
+
+    const svgIcon = page.locator("#map-3d .plane-marker-wrapper > svg").first();
+    await expect(svgIcon).toBeHidden();
+
+    const label = page.locator("#map-3d .plane-label").first();
+    await expect(label).toBeVisible();
+    await expect(label).toContainText("KLM1023");
+  });
 });

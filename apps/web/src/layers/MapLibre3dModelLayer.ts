@@ -2,7 +2,7 @@
 
 import { MercatorCoordinate, type CustomLayerInterface, type Map as MapLibreMap } from "maplibre-gl";
 import type { AirframeCategory } from "../icons/AircraftIconMatrix";
-import { getMeshForCategory, type AircraftMesh } from "./AircraftMeshCatalog";
+import { getMeshForCategory } from "./AircraftMeshCatalog";
 
 export interface Target3dState {
   address: string;
@@ -16,15 +16,26 @@ export interface Target3dState {
   color: [number, number, number, number];
 }
 
+interface MeshGpuBuffer {
+  vbo: WebGLBuffer;
+  ibo: WebGLBuffer;
+  count: number;
+}
+
 export class MapLibre3dModelLayer implements CustomLayerInterface {
   public readonly id = "aircraft-3d-models-layer";
   public readonly type = "custom" as const;
   public readonly renderingMode = "3d" as const;
 
   private targets: Map<string, Target3dState> = new Map();
+  private map: MapLibreMap | null = null;
   private program: WebGLProgram | null = null;
-  private uMatrixLocation: WebGLUniformLocation | null = null;
-  private uColorLocation: WebGLUniformLocation | null = null;
+  private uMatrixLoc: WebGLUniformLocation | null = null;
+  private uNormalMatrixLoc: WebGLUniformLocation | null = null;
+  private uColorLoc: WebGLUniformLocation | null = null;
+  private posAttr: number = -1;
+  private normalAttr: number = -1;
+  private buffers: Map<AirframeCategory, MeshGpuBuffer> = new Map();
 
   public updateTarget(
     address: string,
@@ -53,118 +64,126 @@ export class MapLibre3dModelLayer implements CustomLayerInterface {
     return Array.from(this.targets.values());
   }
 
-  public onAdd(_map: MapLibreMap, gl: WebGLRenderingContext | WebGL2RenderingContext): void {
+  public onAdd(map: MapLibreMap, gl: WebGLRenderingContext | WebGL2RenderingContext): void {
     if (!gl) return;
-    const vsSource = `
-      attribute vec3 a_pos;
-      uniform mat4 u_matrix;
+    this.map = map;
+    const vsSource = `attribute vec3 a_pos; attribute vec3 a_normal; uniform mat4 u_matrix; uniform mat3 u_normal_matrix; varying float v_light;
       void main() {
+        vec3 norm = normalize(u_normal_matrix * a_normal);
+        v_light = 0.45 + 0.55 * max(dot(norm, normalize(vec3(0.2, -0.4, 0.9))), 0.0);
         gl_Position = u_matrix * vec4(a_pos, 1.0);
-      }
-    `;
-    const fsSource = `
-      precision mediump float;
-      uniform vec4 u_color;
-      void main() {
-        gl_FragColor = u_color;
-      }
-    `;
+      }`;
+    const fsSource = `precision mediump float; uniform vec4 u_color; varying float v_light;
+      void main() { gl_FragColor = vec4(u_color.rgb * v_light, u_color.a); }`;
 
-    const vs = gl.createShader(gl.VERTEX_SHADER);
-    const fs = gl.createShader(gl.FRAGMENT_SHADER);
+    const vs = gl.createShader(gl.VERTEX_SHADER); const fs = gl.createShader(gl.FRAGMENT_SHADER);
     if (!vs || !fs) return;
-
-    gl.shaderSource(vs, vsSource);
-    gl.compileShader(vs);
-    gl.shaderSource(fs, fsSource);
-    gl.compileShader(fs);
+    gl.shaderSource(vs, vsSource); gl.compileShader(vs);
+    gl.shaderSource(fs, fsSource); gl.compileShader(fs);
 
     this.program = gl.createProgram();
     if (!this.program) return;
-    gl.attachShader(this.program, vs);
-    gl.attachShader(this.program, fs);
-    gl.linkProgram(this.program);
+    gl.attachShader(this.program, vs); gl.attachShader(this.program, fs); gl.linkProgram(this.program);
 
-    this.uMatrixLocation = gl.getUniformLocation(this.program, "u_matrix");
-    this.uColorLocation = gl.getUniformLocation(this.program, "u_color");
+    this.uMatrixLoc = gl.getUniformLocation(this.program, "u_matrix");
+    this.uNormalMatrixLoc = gl.getUniformLocation(this.program, "u_normal_matrix");
+    this.uColorLoc = gl.getUniformLocation(this.program, "u_color");
+    this.posAttr = gl.getAttribLocation(this.program, "a_pos");
+    this.normalAttr = gl.getAttribLocation(this.program, "a_normal");
   }
 
   public render(gl: WebGLRenderingContext | WebGL2RenderingContext, matrix: number[]): void {
     if (!gl || !this.program || this.targets.size === 0) return;
 
     gl.useProgram(this.program);
+    gl.enable(gl.DEPTH_TEST);
+    gl.depthFunc(gl.LEQUAL);
+    gl.disable(gl.CULL_FACE);
+    gl.enable(gl.BLEND);
+    gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+
+    gl.enableVertexAttribArray(this.posAttr);
+    gl.enableVertexAttribArray(this.normalAttr);
+
+    const zoom = this.map ? this.map.getZoom() : 10;
 
     for (const target of this.targets.values()) {
       const coord = MercatorCoordinate.fromLngLat([target.lon, target.lat], target.altMeters);
-      const scale = coord.meterInMercatorCoordinateUnits();
+      const meterScale = coord.meterInMercatorCoordinateUnits();
+      const minScale = 26.0 / (32.0 * 256.0 * Math.pow(2, zoom));
+      const scale = Math.max(meterScale, minScale);
 
-      const modelMatrix = this.computeModelMatrix(matrix, coord.x, coord.y, coord.z, scale, target.heading, target.pitch, target.roll);
-      gl.uniformMatrix4fv(this.uMatrixLocation, false, modelMatrix);
-      gl.uniform4fv(this.uColorLocation, target.color);
+      const { modelMatrix, normalMatrix } = this.computeTransforms(
+        matrix, coord.x, coord.y, coord.z, scale, target.heading, target.pitch, target.roll,
+      );
 
-      const mesh = getMeshForCategory(target.category);
-      this.drawMesh(gl, mesh);
+      gl.uniformMatrix4fv(this.uMatrixLoc, false, modelMatrix);
+      if (this.uNormalMatrixLoc) gl.uniformMatrix3fv(this.uNormalMatrixLoc, false, normalMatrix);
+      gl.uniform4fv(this.uColorLoc, target.color);
+
+      const buf = this.getBuffer(gl, target.category);
+      if (!buf) continue;
+
+      gl.bindBuffer(gl.ARRAY_BUFFER, buf.vbo);
+      gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buf.ibo);
+      gl.vertexAttribPointer(this.posAttr, 3, gl.FLOAT, false, 24, 0);
+      gl.vertexAttribPointer(this.normalAttr, 3, gl.FLOAT, false, 24, 12);
+
+      gl.drawElements(gl.TRIANGLES, buf.count, gl.UNSIGNED_SHORT, 0);
     }
+
+    gl.disableVertexAttribArray(this.posAttr);
+    gl.disableVertexAttribArray(this.normalAttr);
   }
 
   public computeModelMatrix(
-    projMatrix: number[],
-    x: number,
-    y: number,
-    z: number,
-    scale: number,
-    headingDeg: number,
-    _pitchDeg: number,
-    _rollDeg: number,
+    p: number[], x: number, y: number, z: number, scale: number, hdg: number, pitch: number = 0, roll: number = 0,
   ): Float32Array {
-    const rad = (headingDeg * Math.PI) / 180;
-    const cos = Math.cos(rad);
-    const sin = Math.sin(rad);
-
-    // 4x4 matrix initialized with Mercator translation & scale rotation
-    const m = new Float32Array(16);
-    // Standard column-major transformation combined with projection matrix
-    m[0] = projMatrix[0] * cos * scale - projMatrix[1] * sin * scale;
-    m[1] = projMatrix[0] * sin * scale + projMatrix[1] * cos * scale;
-    m[2] = projMatrix[2] * scale;
-    m[3] = 0;
-
-    m[4] = projMatrix[4] * cos * scale - projMatrix[5] * sin * scale;
-    m[5] = projMatrix[4] * sin * scale + projMatrix[5] * cos * scale;
-    m[6] = projMatrix[6] * scale;
-    m[7] = 0;
-
-    m[8] = projMatrix[8] * scale;
-    m[9] = projMatrix[9] * scale;
-    m[10] = projMatrix[10] * scale;
-    m[11] = 0;
-
-    m[12] = projMatrix[0] * x + projMatrix[4] * y + projMatrix[8] * z + projMatrix[12];
-    m[13] = projMatrix[1] * x + projMatrix[5] * y + projMatrix[9] * z + projMatrix[13];
-    m[14] = projMatrix[2] * x + projMatrix[6] * y + projMatrix[10] * z + projMatrix[14];
-    m[15] = projMatrix[3] * x + projMatrix[7] * y + projMatrix[11] * z + projMatrix[15];
-
-    return m;
+    return this.computeTransforms(p, x, y, z, scale, hdg, pitch, roll).modelMatrix;
   }
 
-  private drawMesh(gl: WebGLRenderingContext | WebGL2RenderingContext, mesh: AircraftMesh): void {
-    const vbo = gl.createBuffer();
-    const ibo = gl.createBuffer();
-    if (!vbo || !ibo) return;
+  private computeTransforms(
+    p: number[], x: number, y: number, z: number, s: number, hdg: number, pitch: number = 0, roll: number = 0,
+  ): { modelMatrix: Float32Array; normalMatrix: Float32Array } {
+    const psi = (hdg * Math.PI) / 180, theta = (pitch * Math.PI) / 180, phi = (roll * Math.PI) / 180;
+    const cp = Math.cos(psi), sp = Math.sin(psi);
+    const ct = Math.cos(theta), st = Math.sin(theta);
+    const cr = Math.cos(phi), sr = Math.sin(phi);
 
-    gl.bindBuffer(gl.ARRAY_BUFFER, vbo);
-    gl.bufferData(gl.ARRAY_BUFFER, mesh.vertices, gl.STREAM_DRAW);
+    const Fpx = sp * ct, Fpy = -cp * ct, Fpz = st;
+    const Upx = -sp * st, Upy = cp * st, Upz = ct;
+    const Sppx = cp * cr - Upx * sr, Sppy = sp * cr - Upy * sr, Sppz = -Upz * sr;
+    const Uppx = cp * sr + Upx * cr, Uppy = sp * sr + Upy * cr, Uppz = Upz * cr;
 
-    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, ibo);
-    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, mesh.indices, gl.STREAM_DRAW);
+    const l0 = Sppx * s, l1 = Sppy * s, l2 = Sppz * s;
+    const l4 = Fpx * s,  l5 = Fpy * s,  l6 = Fpz * s;
+    const l8 = Uppx * s, l9 = Uppy * s, l10 = Uppz * s;
 
-    const posAttr = gl.getAttribLocation(this.program!, "a_pos");
-    gl.enableVertexAttribArray(posAttr);
-    gl.vertexAttribPointer(posAttr, 3, gl.FLOAT, false, 24, 0);
+    const m = new Float32Array(16);
+    for (let i = 0; i < 4; i++) {
+      const p0 = p[i], p1 = p[i + 4], p2 = p[i + 8], p3 = p[i + 12];
+      m[i]      = p0 * l0 + p1 * l1 + p2 * l2;
+      m[i + 4]  = p0 * l4 + p1 * l5 + p2 * l6;
+      m[i + 8]  = p0 * l8 + p1 * l9 + p2 * l10;
+      m[i + 12] = p0 * x  + p1 * y  + p2 * z  + p3;
+    }
+    const norm = new Float32Array([Sppx, Sppy, Sppz, Fpx, Fpy, Fpz, Uppx, Uppy, Uppz]);
+    return { modelMatrix: m, normalMatrix: norm };
+  }
 
-    gl.drawElements(gl.TRIANGLES, mesh.indices.length, gl.UNSIGNED_SHORT, 0);
-
-    gl.deleteBuffer(vbo);
-    gl.deleteBuffer(ibo);
+  private getBuffer(gl: WebGLRenderingContext | WebGL2RenderingContext, cat: AirframeCategory): MeshGpuBuffer | null {
+    let buf = this.buffers.get(cat);
+    if (!buf) {
+      const mesh = getMeshForCategory(cat);
+      const vbo = gl.createBuffer(); const ibo = gl.createBuffer();
+      if (!vbo || !ibo) return null;
+      gl.bindBuffer(gl.ARRAY_BUFFER, vbo);
+      gl.bufferData(gl.ARRAY_BUFFER, mesh.vertices, gl.STATIC_DRAW);
+      gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, ibo);
+      gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, mesh.indices, gl.STATIC_DRAW);
+      buf = { vbo, ibo, count: mesh.indices.length };
+      this.buffers.set(cat, buf);
+    }
+    return buf;
   }
 }

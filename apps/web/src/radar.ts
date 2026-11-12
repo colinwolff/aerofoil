@@ -129,8 +129,12 @@ export class AirspaceRadarManager {
     this.engine.updateTargetMarker?.(key, lat, lon, markerHtml, popupHtml);
     const altMeters = (target.altitude ?? 0) * 0.3048;
     const vRate = (target as any).vertical_rate ?? (target as any).vertical_rate_fpm ?? 0;
+    const alt = target.altitude ?? 0;
+    const col: [number, number, number, number] = isEmergency
+      ? [0.94, 0.27, 0.27, 1.0]
+      : alt < 10000 ? [0.06, 0.72, 0.51, 1.0] : alt < 25000 ? [0.02, 0.71, 0.83, 1.0] : alt < 35000 ? [0.92, 0.70, 0.03, 1.0] : [0.66, 0.33, 0.97, 1.0];
     if (typeof (this.engine as any).updateTargetTrajectory === "function") {
-      (this.engine as any).updateTargetTrajectory(key, lon, lat, altMeters, vRate, heading, (target as any).pitch ?? 0, (target as any).roll ?? 0, category);
+      (this.engine as any).updateTargetTrajectory(key, lon, lat, altMeters, vRate, heading, (target as any).pitch ?? 0, (target as any).roll ?? 0, category, col);
     } else {
       (this.engine as any).trajectoryManager?.addCoordinate?.(key, lon, lat, altMeters, vRate);
     }

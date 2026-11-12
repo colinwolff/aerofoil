@@ -86,4 +86,17 @@ describe("MapLibre3dModelLayer Custom WebGL Layer", () => {
     expect(modelMatrix[14]).toBeCloseTo(0.01);
     expect(modelMatrix[15]).toBeCloseTo(1.0);
   });
+
+  test("applies pitch and roll to model transformation matrix", () => {
+    const layer = new MapLibre3dModelLayer();
+    const identityProj = [1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1];
+
+    // Climb pitch 30 deg, right roll 45 deg, heading North (0 deg)
+    const matrix = layer.computeModelMatrix(identityProj, 0.5, 0.5, 0.05, 0.001, 0, 30, 45);
+    expect(matrix.length).toBe(16);
+    // Forward vector (column 1) must have positive Z component (climb)
+    expect(matrix[6]).toBeGreaterThan(0);
+    // Starboard vector (column 0) must have negative Z component (right wing down)
+    expect(matrix[2]).toBeLessThan(0);
+  });
 });

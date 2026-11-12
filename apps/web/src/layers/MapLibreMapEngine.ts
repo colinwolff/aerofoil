@@ -163,7 +163,7 @@ export class MapLibreMapEngine implements AirspaceMapEngine {
     const key = address.toUpperCase();
     let marker = this.markers.get(key);
     if (!marker) {
-      const el = document.createElement("div"); el.className = "custom-plane-icon"; el.innerHTML = iconHtml;
+      const el = document.createElement("div"); el.className = "custom-plane-icon maplibre-3d-marker"; el.innerHTML = iconHtml;
       const popup = new Popup({ offset: 16 }).setHTML(popupHtml);
       marker = new Marker({ element: el }).setLngLat([lon, lat]).setPopup(popup).addTo(this.map);
       this.markers.set(key, marker);
@@ -172,11 +172,11 @@ export class MapLibreMapEngine implements AirspaceMapEngine {
     }
   }
 
-  public updateTargetTrajectory(address: string, lon: number, lat: number, alt: number, vRate: number = 0, hdg: number = 0, p: number = 0, r: number = 0, cat: any = "Jet"): void {
+  public updateTargetTrajectory(address: string, lon: number, lat: number, alt: number, vRate: number = 0, hdg: number = 0, p: number = 0, r: number = 0, cat: any = "Jet", col?: [number, number, number, number]): void {
     this.trajectoryManager.addCoordinate(address, lon, lat, alt, vRate);
     this.stemsManager.updateTarget(address, lon, lat, alt);
-    this.modelLayer3d.updateTarget(address, lon, lat, alt, hdg, p, r, cat);
-    if (this.styleReady && this.map) { this.trajectoryManager.update(this.map); this.stemsManager.update(this.map); }
+    this.modelLayer3d.updateTarget(address, lon, lat, alt, hdg, p, r, cat, col);
+    if (this.styleReady && this.map) { this.trajectoryManager.update(this.map); this.stemsManager.update(this.map); this.map.triggerRepaint(); }
   }
 
   public removeTargetMarker(address: string): void {
@@ -184,7 +184,7 @@ export class MapLibreMapEngine implements AirspaceMapEngine {
     const marker = this.markers.get(key);
     if (marker) { marker.remove(); this.markers.delete(key); }
     this.trajectoryManager.removeTarget(key); this.stemsManager.removeTarget(key); this.modelLayer3d.removeTarget(key);
-    if (this.styleReady && this.map) { this.trajectoryManager.update(this.map); this.stemsManager.update(this.map); }
+    if (this.styleReady && this.map) { this.trajectoryManager.update(this.map); this.stemsManager.update(this.map); this.map.triggerRepaint(); }
   }
 
   public setVectorLayer(id: string, geoJsonData: any, _styleFn: (feature: any) => Record<string, any>): void { this.vectorManager.setVectorLayer(id, geoJsonData); }
