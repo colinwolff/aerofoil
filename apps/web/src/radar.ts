@@ -124,6 +124,17 @@ export class AirspaceRadarManager {
   }
 
   public updateTarget(target: TargetWire): void {
+    this.applyTargetUpdate(target);
+    this.tableRenderer.schedule(this.targets, this.filterCriteria, this.selectedIcaos, (id, m) => this.selectTarget(id, m));
+  }
+
+  public updateTargetBatch(batch: TargetWire[]): void {
+    if (batch.length === 0) return;
+    for (const target of batch) this.applyTargetUpdate(target);
+    this.tableRenderer.schedule(this.targets, this.filterCriteria, this.selectedIcaos, (id, m) => this.selectTarget(id, m));
+  }
+
+  private applyTargetUpdate(target: TargetWire): void {
     const key = target.address.toUpperCase();
     this.targets.set(key, target);
 
@@ -144,7 +155,6 @@ export class AirspaceRadarManager {
       this.renderTargetMarker(key, target, true);
       this.chaseCamera?.onTargetUpdate?.(target);
     }
-    this.tableRenderer.schedule(this.targets, this.filterCriteria, this.selectedIcaos, (id, m) => this.selectTarget(id, m));
   }
 
   private renderTargetMarker(key: string, target: TargetWire, recordTraj: boolean = true): void {

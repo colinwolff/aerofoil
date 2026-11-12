@@ -50,7 +50,13 @@ export class AerofoilClient {
         ws.onmessage = (event) => {
           try {
             const data = JSON.parse(event.data);
-            if (data && (data.schema === "aerofoil.target" || data.address)) {
+            if (Array.isArray(data)) {
+              for (const item of data) {
+                if (item && (item.schema === "aerofoil.target" || item.address)) {
+                  onTarget(item as TargetWire);
+                }
+              }
+            } else if (data && (data.schema === "aerofoil.target" || data.address)) {
               onTarget(data as TargetWire);
             }
           } catch {

@@ -4,6 +4,7 @@
 import type { TargetWire } from "@aerofoil-rs/sdk";
 import { classifyAirframe, getAltitudeColor } from "../icons/AircraftIconMatrix";
 import { isEmergencySquawk } from "../radar";
+import { buildInspectorCardHtml, computeInspectorFields, patchInspectorFields } from "./InspectorDom";
 
 export interface AltitudePoint {
   time_ms: number;
@@ -30,6 +31,9 @@ export class AircraftInspector {
   private container: HTMLElement | null = null;
   private currentTarget: TargetWire | null = null;
   private altitudeHistory: AltitudePoint[] = [];
+  private renderedIcao: string | null = null;
+  private lastRenderMs: number = 0;
+  private throttleTimer: ReturnType<typeof setTimeout> | null = null;
   private onCenterCallback: ((lat: number, lon: number) => void) | null = null;
   private onChaseCallback: ((icao: string) => void) | null = null;
   private onCloseCallback: (() => void) | null = null;
@@ -58,15 +62,31 @@ export class AircraftInspector {
   }
 
   public selectTarget(target: TargetWire, history: AltitudePoint[] = []): void {
+    const key = target.address.toUpperCase();
+    const switching = this.renderedIcao !== key || !this.isVisible();
     this.currentTarget = target;
     this.altitudeHistory = history;
-    this.render();
     this.container?.classList.remove("hidden");
+
+    const now = Date.now();
+    if (switching || now - this.lastRenderMs >= 500) {
+      if (this.throttleTimer) { clearTimeout(this.throttleTimer); this.throttleTimer = null; }
+      this.lastRenderMs = now;
+      this.render();
+    } else if (!this.throttleTimer) {
+      this.throttleTimer = setTimeout(() => {
+        this.throttleTimer = null;
+        this.lastRenderMs = Date.now();
+        if (this.currentTarget && this.isVisible()) this.render();
+      }, 500 - (now - this.lastRenderMs));
+    }
   }
 
   public close(): void {
+    if (this.throttleTimer) { clearTimeout(this.throttleTimer); this.throttleTimer = null; }
     const hadTarget = this.currentTarget !== null;
     this.currentTarget = null;
+    this.renderedIcao = null;
     this.container?.classList.add("hidden");
     if (hadTarget) this.onCloseCallback?.();
   }
@@ -122,69 +142,33 @@ export class AircraftInspector {
   public render(): void {
     if (!this.container || !this.currentTarget) return;
     const t = this.currentTarget;
-    const cs = t.callsign ?? t.address;
+    const key = t.address.toUpperCase();
     const spd = t.ground_speed_knots ?? t.ground_speed;
-    const cat = classifyAirframe(t.callsign, t.altitude, spd);
-    const operator = this.resolveOperator(t.callsign);
-    const isEmg = isEmergencySquawk(t.squawk);
+    const fields = computeInspectorFields(
+      t,
+      classifyAirframe(t.callsign, t.altitude, spd),
+      this.resolveOperator(t.callsign),
+      isEmergencySquawk(t.squawk),
+      this.renderSparkline(this.altitudeHistory),
+    );
 
-    const mach = spd != null && t.altitude != null
-      ? (spd / 573.8).toFixed(2)
-      : "--";
+    if (this.renderedIcao === key && patchInspectorFields(this.container, fields)) {
+      return;
+    }
 
-    const vRate = (t as any).vertical_rate ?? (t as any).vertical_rate_fpm ?? 0;
-    const vRateSign = vRate > 0 ? "+" : "";
-    const vRateColor = vRate > 100 ? "text-emerald-400" : vRate < -100 ? "text-amber-400" : "text-slate-400";
-
-    const isMlat = t.reception === "Mlat";
-    const provBadge = isMlat
-      ? '<span class="badge bg-purple-700 text-white font-bold text-[10px] px-1.5 py-0.5 rounded">MLAT</span>'
-      : `<span class="badge bg-sky-700 text-white font-bold text-[10px] px-1.5 py-0.5 rounded">${t.source}</span>`;
-
-    this.container.innerHTML = `
-      <div class="inspector-card glass-panel">
-        <div class="inspector-header flex justify-between items-center border-b border-slate-700/60 pb-2">
-          <div class="flex items-center gap-2">
-            <span class="text-base font-bold text-sky-400 font-mono">${cs}</span>
-            <span class="text-xs text-slate-400 bg-slate-800 px-1.5 py-0.5 rounded">${cat}</span>
-          </div>
-          <button type="button" id="inspector-close-btn" class="modal-close-btn" title="Close Inspector">&times;</button>
-        </div>
-
-        <div class="text-[11px] text-slate-300 font-medium mt-1.5 mb-2">${operator}</div>
-
-        ${this.renderSparkline(this.altitudeHistory)}
-
-        <div class="grid grid-cols-2 gap-x-3 gap-y-1.5 text-xs font-mono">
-          <div><span class="text-slate-500">ICAO:</span> <span class="text-slate-200">${t.address.toUpperCase()}</span></div>
-          <div><span class="text-slate-500">Squawk:</span> <span class="${isEmg ? "text-red-400 font-bold animate-pulse" : "text-slate-200"}">${t.squawk ?? "--"}</span></div>
-          <div><span class="text-slate-500">Alt:</span> <span class="text-slate-200">${t.altitude ? `${t.altitude.toLocaleString()} ft` : "--"}</span></div>
-          <div><span class="text-slate-500">V.Rate:</span> <span class="${vRateColor}">${vRate !== 0 ? `${vRateSign}${vRate} fpm` : "0 fpm"}</span></div>
-          <div><span class="text-slate-500">GS:</span> <span class="text-slate-200">${spd ? `${spd} kt` : "--"}</span></div>
-          <div><span class="text-slate-500">Mach:</span> <span class="text-slate-200">${mach !== "--" ? `M${mach}` : "--"}</span></div>
-          <div><span class="text-slate-500">Track:</span> <span class="text-slate-200">${t.heading != null ? `${Math.round(t.heading)}°` : "--"}</span></div>
-          <div><span class="text-slate-500">Source:</span> ${provBadge}</div>
-        </div>
-
-        <div class="flex gap-2 mt-3 pt-2 border-t border-slate-800/80">
-          <button type="button" id="inspector-center-btn" class="btn-tag flex-1 py-1 text-center" title="Center map on aircraft">⌖ Center</button>
-          <button type="button" id="inspector-chase-btn" class="btn-tag flex-1 py-1 text-center text-sky-400 font-bold" title="3D chase camera">🎥 Chase 3D</button>
-          <button type="button" id="inspector-dismiss-btn" class="btn-tag py-1 px-2 text-center text-slate-400">✕</button>
-        </div>
-      </div>
-    `;
+    this.renderedIcao = key;
+    this.container.innerHTML = buildInspectorCardHtml(fields);
 
     document.getElementById("inspector-close-btn")?.addEventListener("click", () => this.close());
     document.getElementById("inspector-dismiss-btn")?.addEventListener("click", () => this.close());
     document.getElementById("inspector-chase-btn")?.addEventListener("click", () => {
-      this.onChaseCallback?.(t.address);
+      if (this.currentTarget) this.onChaseCallback?.(this.currentTarget.address);
     });
     document.getElementById("inspector-center-btn")?.addEventListener("click", () => {
-      const lat = t.latitude ?? t.lat;
-      const lon = t.longitude ?? t.lon;
-      if (lat != null && lon != null) {
-        this.onCenterCallback?.(lat, lon);
-      }
+      const cur = this.currentTarget;
+      const lat = cur?.latitude ?? cur?.lat;
+      const lon = cur?.longitude ?? cur?.lon;
+      if (lat != null && lon != null) this.onCenterCallback?.(lat, lon);
     });
   }
 }

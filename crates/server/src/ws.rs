@@ -31,6 +31,7 @@ pub fn handle_ws_client(
 
     let mut min_alt: Option<i32> = None;
     let mut last_sent: HashMap<u64, u64> = HashMap::new();
+    let mut batch: Vec<TargetWireJson> = Vec::with_capacity(64);
     let _ = ws
         .get_mut()
         .set_read_timeout(Some(Duration::from_millis(50)));
@@ -59,6 +60,7 @@ pub fn handle_ws_client(
             _ => {}
         }
 
+        batch.clear();
         let targets = tracker.snapshot();
         for target in &targets {
             if let Some(min) = min_alt {
@@ -76,15 +78,14 @@ pub fn handle_ws_client(
                 continue;
             }
             last_sent.insert(key, target.last_seen_ms);
+            batch.push(TargetWireJson::from_target(target));
+        }
 
-            let wire = TargetWireJson::from_target(target);
-            let Ok(json) = serde_json::to_string(&wire) else {
-                continue;
-            };
-
-            if ws.send(Message::Text(json.into())).is_err() {
-                return Ok(());
-            }
+        if !batch.is_empty()
+            && let Ok(json) = serde_json::to_string(&batch)
+            && ws.send(Message::Text(json.into())).is_err()
+        {
+            return Ok(());
         }
 
         thread::sleep(Duration::from_millis(100));

@@ -132,7 +132,7 @@ when its crates compile, its tests pass and the tiered gates in `AGENTS.md` §3.
 - [x] Zero-DOM 3D/2D target rendering, precompiled filter regex, and CSS label LOD toggle (`AF-93`).
 - [x] WebGL2 instanced 3D aircraft rendering, terrain elevation cache, and dirty-flagged line VBOs (`AF-94`).
 - [x] 60 FPS client-side kinematic dead-reckoning and frame-synced Chase Camera (`AF-95`).
-- [ ] Coalesced batch WebSocket frames, keyed TelemetryTableRenderer DOM updates, and throttled AircraftInspector (`AF-96`).
+- [x] Coalesced batch WebSocket frames, keyed TelemetryTableRenderer DOM updates, and throttled AircraftInspector (`AF-96`).
 - [ ] Hide redundant 2D draped vector lines in 3D, optimize AntennaCoverageLayer, and gzip HTTP static assets (`AF-97`).
 
 **Exit criteria:** Complete clean-room feature parity with `tar1090` without GPL code contamination; full 3D spatial airspace extrusion, instanced 3D aircraft models, elevated 3D surveillance dome rings, and chase camera verified in MapLibre GL; deep linking and regex filtering verified in test suites.
