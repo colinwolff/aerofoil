@@ -2,6 +2,7 @@
 
 import type { TargetWire } from "@aerofoil-rs/sdk";
 import type { AirspaceMapEngine } from "./layers/AirspaceMapEngine";
+import type { AircraftInspector, AltitudePoint } from "./components/AircraftInspector";
 import { classifyAirframe, renderAircraftSvg } from "./icons/AircraftIconMatrix";
 
 export function isEmergencySquawk(squawk?: string): boolean {
@@ -23,6 +24,9 @@ export function createPlaneSvg(heading: number, emergency: boolean): string {
 export class AirspaceRadarManager {
   private targets: Map<string, TargetWire> = new Map();
   private antennaLayer: any = null;
+  private inspector: AircraftInspector | null = null;
+  private selectedIcao: string | null = null;
+  private altitudeHistory: Map<string, AltitudePoint[]> = new Map();
 
   constructor(private engine: AirspaceMapEngine | any = null) {}
 
@@ -30,9 +34,38 @@ export class AirspaceRadarManager {
     this.antennaLayer = layer;
   }
 
+  public setInspector(inspector: AircraftInspector): void {
+    this.inspector = inspector;
+  }
+
+  public selectTarget(icao: string): void {
+    const key = icao.toUpperCase();
+    this.selectedIcao = key;
+    const target = this.targets.get(key);
+    if (target && this.inspector) {
+      this.inspector.selectTarget(target, this.altitudeHistory.get(key) ?? []);
+    }
+    this.renderTable();
+  }
+
+  public getSelectedIcao(): string | null {
+    return this.selectedIcao;
+  }
+
   public updateTarget(target: TargetWire): void {
     const key = target.address.toUpperCase();
     this.targets.set(key, target);
+
+    if (target.altitude != null) {
+      const history = this.altitudeHistory.get(key) ?? [];
+      history.push({ time_ms: Date.now(), altitude_ft: target.altitude });
+      if (history.length > 30) history.shift();
+      this.altitudeHistory.set(key, history);
+    }
+
+    if (this.selectedIcao === key && this.inspector?.isVisible()) {
+      this.inspector.selectTarget(target, this.altitudeHistory.get(key) ?? []);
+    }
 
     const lat = target.latitude ?? target.lat;
     const lon = target.longitude ?? target.lon;
@@ -89,6 +122,15 @@ export class AirspaceRadarManager {
 
     if (!tbody) return;
 
+    if (!tbody.hasAttribute("data-bound")) {
+      tbody.setAttribute("data-bound", "true");
+      tbody.addEventListener("click", (e) => {
+        const tr = (e.target as HTMLElement).closest("tr");
+        const addr = tr?.getAttribute("data-address");
+        if (addr) this.selectTarget(addr);
+      });
+    }
+
     if (this.targets.size === 0) {
       tbody.innerHTML = '<tr class="empty-row"><td colspan="7">Awaiting surveillance broadcasts...</td></tr>';
       return;
@@ -98,13 +140,14 @@ export class AirspaceRadarManager {
       .sort((a, b) => b.last_seen_ms - a.last_seen_ms)
       .map((t) => {
         const isEmg = isEmergencySquawk(t.squawk);
-        const rowCls = isEmg ? "emergency" : "";
+        const isSel = this.selectedIcao === t.address.toUpperCase();
+        const rowCls = [isEmg ? "emergency" : "", isSel ? "selected" : ""].filter(Boolean).join(" ");
         const spd = t.ground_speed_knots ?? t.ground_speed ?? "--";
         const hdg = t.heading_degrees ?? t.heading ?? "--";
         const isMlat = t.reception === "Mlat";
         const srcDisplay = isMlat ? `${t.source} <span class="badge bg-purple-700 text-white font-bold text-[10px] px-1 py-0.2 rounded">MLAT</span>` : t.source;
         return `
-          <tr class="${rowCls}">
+          <tr class="${rowCls}" data-address="${t.address}">
             <td>${t.address}</td>
             <td>${t.callsign ?? "--"}</td>
             <td>${t.altitude != null ? `${t.altitude} ft` : "--"}</td>

@@ -16,6 +16,7 @@ import { MapConfigModal } from "./components/MapConfigModal";
 import { SidebarSplitter } from "./components/SidebarSplitter";
 import { EngineToggleManager } from "./components/EngineToggleManager";
 import { ThemeManager } from "./components/ThemeManager";
+import { AircraftInspector } from "./components/AircraftInspector";
 import { applyBasemap, bindToolbar } from "./components/ToolbarBinder";
 import { AirspaceRadarManager } from "./radar";
 
@@ -88,6 +89,13 @@ async function initApp(): Promise<void> {
       toggleMgr.getActiveEngine().setView(newCfg.receiverLat, newCfg.receiverLon);
       applyBasemap(toggleMgr.getActiveEngine(), basemapMgr, attributionCtrl, newCfg);
     });
+
+    const inspector = new AircraftInspector();
+    inspector.init("aircraft-inspector-container");
+    inspector.setOnCenter((lat, lon) => {
+      toggleMgr.getActiveEngine().setView(lat, lon, 11);
+    });
+    radarManager.setInspector(inspector);
 
     bindToolbar(drawer, configModal, splitter, toggleMgr);
   } else {

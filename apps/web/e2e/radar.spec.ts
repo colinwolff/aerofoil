@@ -118,6 +118,14 @@ test.describe("Airspace Radar E2E Suite", () => {
     await expect(row).toContainText("4840D6");
     await expect(row).toContainText("KLM1023");
 
+    // Click table row to open Aircraft Inspector HUD card
+    await row.click();
+    const inspector = page.locator("#aircraft-inspector-container");
+    await expect(inspector).toBeVisible();
+    await expect(inspector.locator("text=KLM Royal Dutch Airlines")).toBeVisible();
+    await expect(inspector.locator("text=4840D6")).toBeVisible();
+    await expect(inspector.locator("text=450 kt")).toBeVisible();
+
     // Click marker on map and verify popup contents
     const marker = page.locator(".leaflet-marker-icon").first();
     await expect(marker).toBeVisible();
