@@ -13,6 +13,17 @@ export class MapLibreVectorManager {
     private whenReady: (cb: () => void) => void = (cb) => cb(),
   ) {}
 
+  public setClickArbitration(
+    isClickBlocked?: (pt: { x: number; y: number }) => boolean,
+    onAirspaceOpen?: () => void,
+  ): void {
+    this.volumeManager.setClickArbitration(isClickBlocked, onAirspaceOpen);
+  }
+
+  public closePopups(): void {
+    this.volumeManager.closePopup();
+  }
+
   public setVectorLayer(id: string, geoJsonData: any): void {
     const run = () => {
       const map = this.mapGetter();

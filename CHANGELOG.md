@@ -68,6 +68,7 @@ crates, in the imperative, one line each, with the `storypole` task key in paren
 
 ### Fixed
 
+- Render 3D volumetric fill-extrusions after `aircraft-3d-models-layer` with translucent opacity so aircraft inside or behind airport airspaces remain visible, prioritize 3D/2D aircraft clicks over enclosing airspace popups, and wire map target clicks to `AirspaceRadarManager.selectTarget` (`AF-98`).
 - Fix MapLibre 3D subdomain array normalization when `subdomains` is a string (`"abcd"`) and restore `LayerDrawer` vector layer re-toggling by replacing `import type` with a value import for `VectorOverlayManager`.
 - Fix `aerofoil-server` TCP ingest `O_NONBLOCK` busy-spin loop (`set_nonblocking(false)`), replace hardcoded `1_000_000` timestamps with monotonic wall-clock ms, emit delta-only WebSocket/SSE target updates, and add CORS and `Cache-Control` HTTP headers (`AF-92`).
 - Fix tile caching and reduce network request storms by deduplicating 3D DEM sources, capping Mapterhorn DEM `maxzoom` to 12, preserving tile `SourceCache` across 2D/3D and theme toggles, expanding `{s}` subdomains in 3D, lazy-loading/bounding RainViewer frames, throttling ChaseCamera `easeTo`, and fixing 404 dome glyph fontstacks (`AF-91`).

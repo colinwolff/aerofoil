@@ -54,6 +54,7 @@ export interface AirspaceMapEngine {
     popupHtml: string,
   ): void;
   updateTargetVisual?(update: TargetVisualUpdate): void;
+  setOnTargetClick?(callback: (address: string, multi: boolean) => void): void;
   removeTargetMarker(address: string): void;
   updateTargetTrajectory?(
     address: string,

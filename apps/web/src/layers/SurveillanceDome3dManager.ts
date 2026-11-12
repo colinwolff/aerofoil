@@ -1,6 +1,7 @@
 //! SurveillanceDome3dManager — Renders elevated 3D range rings, surveillance dome tiers, and floating labels in MapLibre GL.
 
 import type { Map as MapLibreMap } from "maplibre-gl";
+import { MODEL_LAYER_ID, beforeVolumetricLayerId, ensureModelsBeforeExtrusions } from "./MapLibreLayerOrder";
 import { destinationPoint } from "./DynamicRingsLayer";
 
 export interface DomeTier {
@@ -115,7 +116,10 @@ export class SurveillanceDome3dManager {
     const ribbonData = generateDomeRibbonsGeoJson(this.centerLat, this.centerLon, this.tiers);
     const labelData = generateDomeLabelsGeoJson(this.centerLat, this.centerLon, this.tiers);
 
-    const resolvedBefore = beforeLayerId ?? (map.getLayer("aircraft-3d-models-layer") ? "aircraft-3d-models-layer" : undefined);
+    const resolvedBefore =
+      beforeLayerId && beforeLayerId !== MODEL_LAYER_ID
+        ? beforeLayerId
+        : beforeVolumetricLayerId(map);
     map.addSource(SOURCE_ID, { type: "geojson", data: ribbonData });
     map.addLayer(
       {
@@ -126,11 +130,12 @@ export class SurveillanceDome3dManager {
           "fill-extrusion-color": ["get", "color"],
           "fill-extrusion-base": ["get", "floor_m"],
           "fill-extrusion-height": ["get", "ceiling_m"],
-          "fill-extrusion-opacity": 0.35,
+          "fill-extrusion-opacity": 0.18,
         },
       },
       resolvedBefore,
     );
+    ensureModelsBeforeExtrusions(map);
 
     map.addSource(LABELS_SOURCE_ID, { type: "geojson", data: labelData });
     map.addLayer(

@@ -11,6 +11,8 @@ import { MapLibreAltitudeStems } from "./MapLibreAltitudeStems";
 import { MapLibreVectorManager } from "./MapLibreVectorManager";
 import { MapLibre3dModelLayer } from "./MapLibre3dModelLayer";
 import { MapLibreHudOverlay } from "./MapLibreHudOverlay";
+import { ensureModelsBeforeExtrusions, firstExtrusionLayerId } from "./MapLibreLayerOrder";
+import { applyMapLibreRasterLayer, defaultMapLibreStyle, updateBaseRasterTheme } from "./MapLibreRasterHelper";
 
 export class MapLibreMapEngine implements AirspaceMapEngine {
   private map: MapLibreMap | null = null;
@@ -47,16 +49,16 @@ export class MapLibreMapEngine implements AirspaceMapEngine {
       pitch: 60,
       maxPitch: 85,
       maxTileCacheSize: 256,
-      style: {
-        version: 8,
-        glyphs: "https://demotiles.maplibre.org/font/{fontstack}/{range}.pbf",
-        sources: {},
-        layers: [{ id: "background", type: "background", paint: { "background-color": "#090d16" } }],
-      },
+      style: defaultMapLibreStyle(),
     });
 
     this.map.addControl(new NavigationControl({ visualizePitch: true }), "top-right");
     this.hudOverlay.attach(this.map);
+    this.hudOverlay.setOnTargetPopupOpen(() => this.vectorManager.closePopups());
+    this.vectorManager.setClickArbitration(
+      (pt) => this.hudOverlay.hasTargetAt(pt),
+      () => this.hudOverlay.closePopup(),
+    );
 
     this.map.on("load", () => {
       if (!this.map) return;
@@ -67,7 +69,10 @@ export class MapLibreMapEngine implements AirspaceMapEngine {
       const dem = MapLibreTerrainHelper.resolveDemUrl(this.terrainOpts.provider, this.terrainOpts.customUrl, this.terrainOpts.maptilerKey);
       MapLibreTerrainHelper.enableTerrain(this.map, dem.url, this.terrainOpts.exaggeration ?? 1.5, dem.encoding, dem.tileSize, this.beforeLayerId());
       while (this.readyQueue.length > 0) this.readyQueue.shift()?.();
-      if (!this.map.getLayer(this.modelLayer3d.id)) this.map.addLayer(this.modelLayer3d);
+      if (!this.map.getLayer(this.modelLayer3d.id)) {
+        this.map.addLayer(this.modelLayer3d, firstExtrusionLayerId(this.map));
+      }
+      ensureModelsBeforeExtrusions(this.map, this.modelLayer3d.id);
     });
 
     this.map.on("error", (e: any) => {
@@ -89,6 +94,7 @@ export class MapLibreMapEngine implements AirspaceMapEngine {
   public getBearing(): number { return this.map ? this.map.getBearing() : 0; }
   public setBearing(b: number): void { this.map?.setBearing(b); }
   public onViewChange(cb: () => void): void { if (!this.viewChangeCallbacks.includes(cb)) this.viewChangeCallbacks.push(cb); }
+  public setOnTargetClick(cb: (address: string, multi: boolean) => void): void { this.hudOverlay.setOnTargetSelect(cb); }
 
   private scheduleRepaint(): void {
     if (!this.styleReady || !this.map || this.repaintQueued) return;
@@ -122,34 +128,16 @@ export class MapLibreMapEngine implements AirspaceMapEngine {
   }
 
   private addRaster(srcId: string, lyrId: string, url: string, attr: string, opt?: AirspaceLayerOptions, opacity?: number, isDark?: boolean): void {
-    const load = () => {
+    this.whenReady(() => {
       if (!this.map) return;
       if (lyrId === this.baseLayerId && this.currentBaseUrl === url && this.map.getLayer(lyrId)) {
-        this.map.setPaintProperty(lyrId, "raster-brightness-max", isDark ? 0.45 : 1);
-        this.map.setPaintProperty(lyrId, "raster-saturation", isDark ? -0.6 : 0);
-        this.map.setPaintProperty(lyrId, "raster-contrast", isDark ? 0.25 : 0);
+        updateBaseRasterTheme(this.map, lyrId, isDark);
         return;
       }
       if (lyrId === this.baseLayerId) this.currentBaseUrl = url;
-      if (this.map.getLayer(lyrId)) this.map.removeLayer(lyrId);
-      if (this.map.getSource(srcId)) this.map.removeSource(srcId);
-      const rawSubs = opt?.subdomains;
-      const subs = Array.isArray(rawSubs) && rawSubs.length > 0
-        ? rawSubs
-        : typeof rawSubs === "string" && rawSubs.length > 0
-          ? rawSubs.split("")
-          : ["a", "b", "c"];
-      const tiles = url.includes("{s}") ? subs.map((s) => url.replace("{r}", "").replace("{s}", s)) : [url.replace("{r}", "")];
-      this.map.addSource(srcId, {
-        type: "raster", tiles, tileSize: 256, attribution: attr,
-        minzoom: opt?.minZoom ?? 0, maxzoom: opt?.maxNativeZoom ?? opt?.maxZoom ?? 19,
-      });
       const beforeId = lyrId === this.baseLayerId && this.map.getLayer("raster-dem-hillshade") ? "raster-dem-hillshade" : this.beforeLayerId();
-      const paint: Record<string, number> = { "raster-opacity": opacity ?? 1 };
-      if (isDark) { paint["raster-brightness-max"] = 0.45; paint["raster-saturation"] = -0.6; paint["raster-contrast"] = 0.25; }
-      this.map.addLayer({ id: lyrId, type: "raster", source: srcId, paint }, beforeId);
-    };
-    this.whenReady(load);
+      applyMapLibreRasterLayer({ map: this.map, srcId, lyrId, url, attr, opt, opacity, isDark, beforeId });
+    });
   }
 
   public setBaseTileLayer(id: string, url: string, attribution: string, options?: AirspaceLayerOptions): void {
@@ -177,23 +165,12 @@ export class MapLibreMapEngine implements AirspaceMapEngine {
   public updateTargetMarker(address: string, lat: number, lon: number, _iconHtml: string, popupHtml: string): void {
     if (!this.map) return;
     const key = address.toUpperCase();
-    const t3d = this.modelLayer3d.getTarget(key);
-    this.hudOverlay.upsertTarget({
-      address: key, lat, lon, altMeters: t3d?.altMeters ?? 0,
-      callsign: key, telemetryText: "", isSelected: false, isEmergency: false,
-      showLabel: false, popupHtml,
-    });
+    const altMeters = this.modelLayer3d.getTarget(key)?.altMeters ?? 0;
+    this.hudOverlay.upsertTarget({ address: key, lat, lon, altMeters, callsign: key, telemetryText: "", isSelected: false, isEmergency: false, showLabel: false, popupHtml });
   }
 
   public updateTargetVisual(u: TargetVisualUpdate): void {
-    if (!this.map) return;
-    this.hudOverlay.upsertTarget({
-      address: u.address, lat: u.lat, lon: u.lon, altMeters: u.altMeters, heading: u.heading,
-      groundSpeedKts: u.groundSpeedKts, verticalRateFpm: u.verticalRateFpm,
-      callsign: u.callsign, telemetryText: u.telemetryText,
-      isSelected: u.isSelected, isEmergency: u.isEmergency,
-      showLabel: u.showLabel, popupHtml: u.popupHtml,
-    });
+    if (this.map) this.hudOverlay.upsertTarget(u);
   }
 
   public updateTargetTrajectory(address: string, lon: number, lat: number, alt: number, vRate: number = 0, hdg: number = 0, p: number = 0, r: number = 0, cat: any = "Jet", col?: [number, number, number, number], speedKts: number = 0): void {

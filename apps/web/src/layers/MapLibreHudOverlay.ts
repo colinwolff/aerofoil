@@ -2,19 +2,10 @@
 
 import { MercatorCoordinate, Popup, type Map as MapLibreMap } from "maplibre-gl";
 import { getCachedTerrainElevation } from "./MapLibreTerrainElevCache";
-import { computeFixError, deadReckonInto, type KinematicState } from "./KinematicDeadReckoning";
+import { computeFixError, deadReckonInto } from "./KinematicDeadReckoning";
+import { paintHudLabelPills, type HudLabelEntry, type HudTargetMeta } from "./MapLibreHudDraw";
 
-export interface HudTargetMeta extends KinematicState {
-  address: string;
-  callsign: string;
-  telemetryText: string;
-  isSelected: boolean;
-  isEmergency: boolean;
-  showLabel: boolean;
-  popupHtml: string;
-  screenX?: number;
-  screenY?: number;
-}
+export type { HudTargetMeta };
 
 export type HudUpsertInput = Omit<HudTargetMeta, "heading"> & { heading?: number };
 
@@ -24,6 +15,8 @@ export class MapLibreHudOverlay {
   private ctx: CanvasRenderingContext2D | null = null;
   private targets: Map<string, HudTargetMeta> = new Map();
   private sharedPopup: Popup | null = null;
+  private onTargetSelect?: (address: string, multi: boolean) => void;
+  private onTargetPopupOpen?: () => void;
   private renderedLabels: string[] = [];
   private posScratch = { lon: 0, lat: 0, altMeters: 0 };
 
@@ -39,7 +32,10 @@ export class MapLibreHudOverlay {
     container.appendChild(canvas);
     this.canvas = canvas;
     this.ctx = canvas.getContext("2d");
-    map.on("click", (e: any) => this.handleMapClick(e?.point));
+    map.on("click", (e: any) => {
+      const ev = e?.originalEvent as { shiftKey?: boolean; ctrlKey?: boolean; metaKey?: boolean } | undefined;
+      this.handleMapClick(e?.point, Boolean(ev?.shiftKey || ev?.ctrlKey || ev?.metaKey));
+    });
   }
 
   public upsertTarget(meta: HudUpsertInput, nowMs: number = performance.now()): void {
@@ -84,7 +80,7 @@ export class MapLibreHudOverlay {
     const cssH = canvas?.clientHeight || this.map.getCanvas?.()?.clientHeight || 0;
     if (cssW <= 0 || cssH <= 0) return;
 
-    const labeled: (HudTargetMeta & { sx: number; sy: number; prio: number })[] = [];
+    const labeled: HudLabelEntry[] = [];
 
     for (const t of this.targets.values()) {
       deadReckonInto(t, now, this.posScratch);
@@ -110,67 +106,58 @@ export class MapLibreHudOverlay {
 
     this.renderedLabels = [];
     if (!canvas || !ctx) return;
-
-    const dpr = typeof window !== "undefined" ? (window.devicePixelRatio || 1) : 1;
-    const reqW = Math.round(cssW * dpr), reqH = Math.round(cssH * dpr);
-    if (canvas.width !== reqW || canvas.height !== reqH) { canvas.width = reqW; canvas.height = reqH; }
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    ctx.clearRect(0, 0, cssW, cssH);
-
-    if (labeled.length === 0) return;
-    labeled.sort((a, b) => b.prio - a.prio);
-    const occupied: { x: number; y: number }[] = [];
-
-    for (const item of labeled) {
-      const bx = Math.round(item.sx + 14), by = Math.round(item.sy - 14);
-      if (!item.isSelected && !item.isEmergency && occupied.some((o) => Math.abs(o.x - bx) < 76 && Math.abs(o.y - by) < 28)) {
-        continue;
-      }
-      occupied.push({ x: bx, y: by });
-      this.renderedLabels.push(item.callsign);
-
-      ctx.font = "700 10px ui-monospace, SFMono-Regular, Menlo, monospace";
-      const w1 = ctx.measureText(item.callsign).width;
-      ctx.font = "400 9px ui-monospace, SFMono-Regular, Menlo, monospace";
-      const w2 = item.telemetryText ? ctx.measureText(item.telemetryText).width : 0;
-      const bw = Math.ceil(Math.max(w1, w2)) + 10, bh = item.telemetryText ? 26 : 15;
-
-      ctx.fillStyle = item.isEmergency ? "rgba(185, 28, 28, 0.92)" : item.isSelected ? "rgba(14, 116, 144, 0.92)" : "rgba(15, 23, 42, 0.88)";
-      ctx.strokeStyle = item.isEmergency ? "#ef4444" : item.isSelected ? "#38bdf8" : "rgba(56, 189, 248, 0.4)";
-      ctx.lineWidth = 1;
-      ctx.beginPath();
-      if (ctx.roundRect) ctx.roundRect(bx, by, bw, bh, 4); else ctx.rect(bx, by, bw, bh);
-      ctx.fill();
-      ctx.stroke();
-
-      ctx.font = "700 10px ui-monospace, SFMono-Regular, Menlo, monospace";
-      ctx.fillStyle = item.isSelected ? "#ffffff" : "#38bdf8";
-      ctx.fillText(item.callsign, bx + 5, by + 11);
-
-      if (item.telemetryText) {
-        ctx.font = "400 9px ui-monospace, SFMono-Regular, Menlo, monospace";
-        ctx.fillStyle = "#cbd5e1";
-        ctx.fillText(item.telemetryText, bx + 5, by + 22);
-      }
-    }
+    this.renderedLabels = paintHudLabelPills(ctx, canvas, cssW, cssH, labeled);
   }
 
   private clearCanvas(): void {
     if (this.canvas && this.ctx) this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
   }
 
-  private handleMapClick(pt?: { x: number; y: number }): void {
-    if (!this.map || !pt) return;
-    let best: HudTargetMeta | null = null;
-    let bestDist = 26;
-    for (const t of this.targets.values()) {
+  public setOnTargetSelect(cb?: (address: string, multi: boolean) => void): void {
+    this.onTargetSelect = cb;
+  }
+
+  public setOnTargetPopupOpen(cb?: () => void): void {
+    this.onTargetPopupOpen = cb;
+  }
+
+  public findTargetAt(pt?: { x: number; y: number }, radius = 28): { address: string; target: HudTargetMeta } | null {
+    if (!pt) return null;
+    let bestAddr: string | null = null;
+    let bestTarget: HudTargetMeta | null = null;
+    let bestDist = radius;
+    for (const [address, t] of this.targets.entries()) {
       if (t.screenX == null || t.screenY == null) continue;
       const d = Math.hypot(t.screenX - pt.x, t.screenY - pt.y);
-      if (d < bestDist) { bestDist = d; best = t; }
+      if (d < bestDist) {
+        bestDist = d;
+        bestAddr = address;
+        bestTarget = t;
+      }
     }
-    if (!best) return;
-    if (!this.sharedPopup) this.sharedPopup = new Popup({ offset: 14 });
-    deadReckonInto(best, performance.now(), this.posScratch);
-    this.sharedPopup.setLngLat([this.posScratch.lon, this.posScratch.lat]).setHTML(best.popupHtml).addTo(this.map);
+    return bestAddr && bestTarget ? { address: bestAddr, target: bestTarget } : null;
+  }
+
+  public hasTargetAt(pt?: { x: number; y: number }): boolean {
+    return this.findTargetAt(pt) !== null;
+  }
+
+  public closePopup(): void {
+    const p = this.sharedPopup as unknown as { remove?: () => void } | null;
+    if (typeof p?.remove === "function") p.remove();
+  }
+
+  private handleMapClick(pt?: { x: number; y: number }, multi = false): void {
+    if (!this.map || !pt) return;
+    const hit = this.findTargetAt(pt);
+    if (!hit) {
+      this.closePopup();
+      return;
+    }
+    this.onTargetPopupOpen?.();
+    if (!this.sharedPopup) this.sharedPopup = new Popup({ offset: 14, closeOnClick: false });
+    deadReckonInto(hit.target, performance.now(), this.posScratch);
+    this.sharedPopup.setLngLat([this.posScratch.lon, this.posScratch.lat]).setHTML(hit.target.popupHtml).addTo(this.map);
+    this.onTargetSelect?.(hit.address, multi);
   }
 }
