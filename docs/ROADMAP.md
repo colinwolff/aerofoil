@@ -122,6 +122,9 @@ when its crates compile, its tests pass and the tiered gates in `AGENTS.md` §3.
 - [x] Smooth 3D chase camera tracking and follow mode: camera locks behind selected aircraft along its kinematic velocity vector with interpolated pitch/heading tracking (`AF-75`).
 - [x] Instanced 3D aircraft models with true pitch, roll, and heading orientation in MapLibre GL: replace flat 2D icons in 3D mode with low-poly 3D models (Jet, Heavy, Turboprop, Heli, Light GA) oriented dynamically in WebGL (`AF-76`).
 - [x] Elevated 3D range rings and volumetric surveillance dome: render elevated concentric 3D range rings and dome tiers (e.g., FL100, FL200, FL300) with elevated distance and altitude labels using MapLibre 3D symbol elevation (`AF-77`).
+- [ ] 3D mode performance & WebGL pipeline optimization: throttle telemetry table DOM updates, eliminate view-change feedback loops, cache marker HTML, and convert 3D dome disks into hollow rings (`AF-86`).
+- [ ] Toggleable aircraft map labels & single-aircraft telemetry list highlighting: add toolbar toggle and hotkey (`K`) for callsign/FL labels, stabilize table row click selection during live streaming, and highlight selected targets in 2D and 3D (`AF-87`).
+- [ ] Interactive airspace section selection & popup labels in 2D and 3D: restore 2D airspace polygon click popups and add interactive 3D airspace volume click popups in MapLibre GL (`AF-88`).
 
 **Exit criteria:** Complete clean-room feature parity with `tar1090` without GPL code contamination; full 3D spatial airspace extrusion, instanced 3D aircraft models, elevated 3D surveillance dome rings, and chase camera verified in MapLibre GL; deep linking and regex filtering verified in test suites.
 
