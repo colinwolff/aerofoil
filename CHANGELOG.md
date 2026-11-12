@@ -13,6 +13,7 @@ crates, in the imperative, one line each, with the `storypole` task key in paren
 
 ### Added
 
+- Add LOD-aware aircraft callsign and flight level map labels with collision decluttering in apps/web (`AF-70`).
 - Add glassmorphic aircraft avionics inspector pane with telemetry expansion and dynamic 3D altitude profile sparkline in apps/web (`AF-69`).
 - Add raw RF IQ baseband sample recording sink and replay demodulator engine in aerofoil-sdr and aerofoil-replay (`AF-85`).
 - Add RTL-SDR rtl_tcp streaming client and 1090 MHz PPM bit-slicing demodulator in aerofoil-sdr (`AF-84`).

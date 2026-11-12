@@ -3,7 +3,8 @@
 import type { TargetWire } from "@aerofoil-rs/sdk";
 import type { AirspaceMapEngine } from "./layers/AirspaceMapEngine";
 import type { AircraftInspector, AltitudePoint } from "./components/AircraftInspector";
-import { classifyAirframe, renderAircraftSvg } from "./icons/AircraftIconMatrix";
+import { AircraftLabelsManager } from "./layers/AircraftLabelsManager";
+import { classifyAirframe } from "./icons/AircraftIconMatrix";
 
 export function isEmergencySquawk(squawk?: string): boolean {
   if (!squawk) return false;
@@ -27,6 +28,7 @@ export class AirspaceRadarManager {
   private inspector: AircraftInspector | null = null;
   private selectedIcao: string | null = null;
   private altitudeHistory: Map<string, AltitudePoint[]> = new Map();
+  private labelsMgr = new AircraftLabelsManager();
 
   constructor(private engine: AirspaceMapEngine | any = null) {}
 
@@ -42,8 +44,11 @@ export class AirspaceRadarManager {
     const key = icao.toUpperCase();
     this.selectedIcao = key;
     const target = this.targets.get(key);
-    if (target && this.inspector) {
-      this.inspector.selectTarget(target, this.altitudeHistory.get(key) ?? []);
+    if (target) {
+      if (this.inspector) {
+        this.inspector.selectTarget(target, this.altitudeHistory.get(key) ?? []);
+      }
+      this.updateTarget(target);
     }
     this.renderTable();
   }
@@ -80,13 +85,18 @@ export class AirspaceRadarManager {
         const speed = target.ground_speed_knots ?? target.ground_speed;
         const category = classifyAirframe(target.callsign, target.altitude, speed);
 
-        const iconHtml = renderAircraftSvg(category, heading, target.altitude, isEmergency);
+        const isSelected = this.selectedIcao === key;
+        const zoom = typeof this.engine.getZoom === "function" ? this.engine.getZoom() : 8;
+        const showLabel = this.labelsMgr.shouldShowLabel(zoom, isSelected, isEmergency);
+        const labelHtml = this.labelsMgr.formatLabel(target, isSelected, isEmergency, !showLabel);
+        const markerHtml = this.labelsMgr.buildMarkerHtml(category, heading, target.altitude, isEmergency, labelHtml);
+
         const isMlat = target.reception === "Mlat";
         const mlatBadge = isMlat ? ' <span class="badge bg-purple-700 text-white font-bold text-[10px] px-1 py-0.2 rounded">MLAT</span>' : '';
         const popupHtml = `<b>${target.callsign ?? target.address}</b>${mlatBadge}<br/>Type: ${category}<br/>Alt: ${target.altitude ?? "--"} ft<br/>Spd: ${speed ?? "--"} kt<br/>Hdg: ${Math.round(heading)}°<br/>Squawk: ${target.squawk ?? "--"}`;
 
         if (typeof this.engine.updateTargetMarker === "function") {
-          this.engine.updateTargetMarker(key, lat, lon, iconHtml, popupHtml);
+          this.engine.updateTargetMarker(key, lat, lon, markerHtml, popupHtml);
         }
         const altMeters = (target.altitude ?? 0) * 0.3048;
         const vRate = (target as any).vertical_rate ?? (target as any).vertical_rate_fpm ?? 0;
@@ -103,6 +113,13 @@ export class AirspaceRadarManager {
 
   public setEngine(engine: AirspaceMapEngine): void {
     this.engine = engine;
+    if (typeof this.engine.onViewChange === "function") {
+      this.engine.onViewChange(() => {
+        for (const target of this.targets.values()) {
+          this.updateTarget(target);
+        }
+      });
+    }
     for (const target of this.targets.values()) {
       this.updateTarget(target);
     }
