@@ -24,16 +24,22 @@ const LAYER_ID = "trajectories-layer";
 export class MapLibreTrajectoryManager {
   private trajectories: Map<string, TargetTrajectory> = new Map();
   private dirty: boolean = false;
+  private version: number = 0;
   private rafId: number | null = null;
   private lastFlushTime: number = 0;
   private readonly minFlushIntervalMs = 100; // <= 10 Hz throttle
   private trailsMode: TrailsMode = "selected";
   private selectedIcaos: Set<string> = new Set();
 
+  public getVersion(): number {
+    return this.version;
+  }
+
   public setTrailsMode(mode: TrailsMode): void {
     if (this.trailsMode !== mode) {
       this.trailsMode = mode;
       this.dirty = true;
+      this.version++;
     }
   }
 
@@ -44,6 +50,7 @@ export class MapLibreTrajectoryManager {
   public setSelectedIcaos(icaos: Set<string>): void {
     this.selectedIcaos = new Set(icaos);
     this.dirty = true;
+    this.version++;
   }
 
   public toggleAllTrails(): boolean {
@@ -83,18 +90,22 @@ export class MapLibreTrajectoryManager {
     }
 
     this.dirty = true;
+    this.version++;
   }
 
   public removeTarget(address: string): void {
     const key = address.toUpperCase();
     if (this.trajectories.delete(key)) {
       this.dirty = true;
+      this.version++;
     }
   }
 
   public clear(): void {
+    if (this.trajectories.size === 0) return;
     this.trajectories.clear();
     this.dirty = true;
+    this.version++;
   }
 
   public getVisibleTrajectories(): TargetTrajectory[] {

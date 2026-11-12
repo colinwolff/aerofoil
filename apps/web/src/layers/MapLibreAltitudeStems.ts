@@ -18,26 +18,41 @@ const SHADOWS_LAYER = "altitude-shadows-layer";
 export class MapLibreAltitudeStems {
   private targets: Map<string, StemTarget> = new Map();
   private dirty: boolean = false;
+  private version: number = 0;
   private rafId: number | null = null;
   private lastFlushTime: number = 0;
   private readonly minFlushIntervalMs = 100; // <= 10 Hz throttle
 
+  public getVersion(): number {
+    return this.version;
+  }
+
   public updateTarget(address: string, lon: number, lat: number, altMeters: number): void {
     const key = address.toUpperCase();
+    const prev = this.targets.get(key);
+    if (prev && prev.lon === lon && prev.lat === lat && prev.altMeters === altMeters) return;
     this.targets.set(key, { address: key, lon, lat, altMeters });
     this.dirty = true;
+    this.version++;
   }
 
   public removeTarget(address: string): void {
     const key = address.toUpperCase();
     if (this.targets.delete(key)) {
       this.dirty = true;
+      this.version++;
     }
   }
 
   public clear(): void {
+    if (this.targets.size === 0) return;
     this.targets.clear();
     this.dirty = true;
+    this.version++;
+  }
+
+  public getTargetValues(): IterableIterator<StemTarget> {
+    return this.targets.values();
   }
 
   public getStems(): StemTarget[] {

@@ -2,6 +2,7 @@
 //! Eliminates persistent MapLibre DOM Marker instances and per-frame terrain raycasts.
 
 import { MercatorCoordinate, Popup, type Map as MapLibreMap } from "maplibre-gl";
+import { getCachedTerrainElevation } from "./MapLibreTerrainElevCache";
 
 export interface HudTargetMeta {
   address: string;
@@ -78,11 +79,11 @@ export class MapLibreHudOverlay {
     const cssH = canvas?.clientHeight || this.map.getCanvas?.()?.clientHeight || 0;
     if (cssW <= 0 || cssH <= 0) return;
 
-    const hasTerrain = Boolean(this.map.getTerrain?.());
+    const now = performance.now();
     const labeled: (HudTargetMeta & { sx: number; sy: number; prio: number })[] = [];
 
     for (const t of this.targets.values()) {
-      const groundElev = hasTerrain && t.altMeters < 5000 ? (this.map.queryTerrainElevation([t.lon, t.lat]) ?? 0) : 0;
+      const groundElev = t.altMeters < 5000 ? getCachedTerrainElevation(this.map, t.lon, t.lat, now) : 0;
       const alt = Math.max(t.altMeters, groundElev + 15);
       const c = MercatorCoordinate.fromLngLat([t.lon, t.lat], alt);
       const cw = matrix[3] * c.x + matrix[7] * c.y + matrix[11] * c.z + matrix[15];
