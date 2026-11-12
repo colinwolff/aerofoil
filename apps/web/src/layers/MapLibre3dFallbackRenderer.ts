@@ -6,6 +6,7 @@ import { getMeshForCategory } from "./AircraftMeshCatalog";
 import { computeAircraftTransforms } from "./MapLibre3dMath";
 import type { Target3dState } from "./MapLibre3dInstancedRenderer";
 import { getCachedTerrainElevation } from "./MapLibreTerrainElevCache";
+import { deadReckonInto, isActivelyExtrapolating } from "./KinematicDeadReckoning";
 
 interface MeshGpuBuffer {
   vbo: WebGLBuffer | null;
@@ -23,6 +24,7 @@ export class MapLibre3dFallbackRenderer {
   private buffers: Map<AirframeCategory, MeshGpuBuffer> = new Map();
   private matScratch = new Float32Array(16);
   private normScratch = new Float32Array(9);
+  private posScratch = { lon: 0, lat: 0, altMeters: 0 };
 
   public onAdd(gl: WebGLRenderingContext | WebGL2RenderingContext): void {
     const vsSrc = `attribute vec3 a_pos; attribute vec3 a_normal; uniform mat4 u_matrix; uniform mat3 u_normalMatrix; varying float v_light;
@@ -57,29 +59,35 @@ export class MapLibre3dFallbackRenderer {
     map: MapLibreMap | null,
     targets: IterableIterator<Target3dState>,
     zoom: number,
-  ): void {
-    if (!this.program) return;
+    nowMs: number = performance.now(),
+  ): boolean {
+    if (!this.program) return false;
     const gl2 = gl as WebGL2RenderingContext;
     if (typeof gl2.bindVertexArray === "function") gl2.bindVertexArray(null);
 
     gl.useProgram(this.program);
-    gl.enable(gl.DEPTH_TEST);
-    gl.depthFunc(gl.LEQUAL);
+    gl.enable(gl.DEPTH_TEST); gl.depthFunc(gl.LEQUAL);
     gl.disable(gl.CULL_FACE);
-    gl.enable(gl.BLEND);
-    gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+    gl.enable(gl.BLEND); gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
     gl.enableVertexAttribArray(this.posAttr);
     gl.enableVertexAttribArray(this.normalAttr);
 
     const minScale = 26.0 / (32.0 * 256.0 * Math.pow(2, zoom));
-    const now = performance.now();
+    let animating = false;
 
     for (const target of targets) {
       const buf = this.getBuffer(gl, target.category);
       if (!buf || !buf.vbo || !buf.ibo) continue;
+      if (!animating && isActivelyExtrapolating(target, nowMs)) animating = true;
 
-      const groundElev = target.altMeters < 5000 ? getCachedTerrainElevation(map, target.lon, target.lat, now) : 0;
-      const coord = MercatorCoordinate.fromLngLat([target.lon, target.lat], Math.max(target.altMeters, groundElev + 15));
+      deadReckonInto(target, nowMs, this.posScratch);
+      const groundElev = this.posScratch.altMeters < 5000
+        ? getCachedTerrainElevation(map, this.posScratch.lon, this.posScratch.lat, nowMs)
+        : 0;
+      const coord = MercatorCoordinate.fromLngLat(
+        [this.posScratch.lon, this.posScratch.lat],
+        Math.max(this.posScratch.altMeters, groundElev + 15),
+      );
       const scale = Math.max(coord.meterInMercatorCoordinateUnits(), minScale);
       computeAircraftTransforms(
         matrix, coord.x, coord.y, coord.z, scale, target.heading, target.pitch, target.roll,
@@ -98,6 +106,7 @@ export class MapLibre3dFallbackRenderer {
 
     gl.disableVertexAttribArray(this.posAttr);
     gl.disableVertexAttribArray(this.normalAttr);
+    return animating;
   }
 
   private getBuffer(gl: WebGLRenderingContext | WebGL2RenderingContext, cat: AirframeCategory): MeshGpuBuffer | null {

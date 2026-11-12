@@ -1,25 +1,21 @@
-//! MapLibre3dInstancedRenderer — WebGL2 instanced aircraft mesh renderer.
-//! Batches hundreds of 3D aircraft targets into <= 5 drawElementsInstanced calls per frame.
+//! MapLibre3dInstancedRenderer — WebGL2 instanced aircraft mesh renderer with 60 FPS dead-reckoning.
 
 import { MercatorCoordinate, type Map as MapLibreMap } from "maplibre-gl";
 import type { AirframeCategory } from "../icons/AircraftIconMatrix";
 import { getMeshForCategory } from "./AircraftMeshCatalog";
 import { writeLocalAircraftMatrix } from "./MapLibre3dMath";
 import { getCachedTerrainElevation } from "./MapLibreTerrainElevCache";
+import { deadReckonInto, isActivelyExtrapolating, type KinematicState } from "./KinematicDeadReckoning";
 
-export interface Target3dState {
+export interface Target3dState extends KinematicState {
   address: string;
-  lon: number;
-  lat: number;
-  altMeters: number;
-  heading: number;
   pitch: number;
   roll: number;
   category: AirframeCategory;
   color: [number, number, number, number];
 }
 
-const INSTANCE_FLOATS = 20; // 16 (mat4 model) + 4 (vec4 color)
+const INSTANCE_FLOATS = 20;
 const INSTANCE_STRIDE = INSTANCE_FLOATS * 4;
 
 interface InstancedBucket {
@@ -36,6 +32,7 @@ export class MapLibre3dInstancedRenderer {
   private program: WebGLProgram | null = null;
   private uVpLoc: WebGLUniformLocation | null = null;
   private vpScratch = new Float32Array(16);
+  private posScratch = { lon: 0, lat: 0, altMeters: 0 };
   private attrs = { pos: -1, norm: -1, m: [-1, -1, -1, -1], color: -1 };
   private buckets: Map<AirframeCategory, InstancedBucket> = new Map();
 
@@ -69,9 +66,7 @@ export class MapLibre3dInstancedRenderer {
 
     this.program = gl.createProgram();
     if (!this.program) return;
-    gl.attachShader(this.program, vs);
-    gl.attachShader(this.program, fs);
-    gl.linkProgram(this.program);
+    gl.attachShader(this.program, vs); gl.attachShader(this.program, fs); gl.linkProgram(this.program);
 
     this.uVpLoc = gl.getUniformLocation(this.program, "u_vp");
     this.attrs.pos = gl.getAttribLocation(this.program, "a_pos");
@@ -86,49 +81,52 @@ export class MapLibre3dInstancedRenderer {
     map: MapLibreMap | null,
     targets: IterableIterator<Target3dState>,
     zoom: number,
-  ): void {
-    if (!this.program) return;
+    nowMs: number = performance.now(),
+  ): boolean {
+    if (!this.program) return false;
     for (const b of this.buckets.values()) b.items.length = 0;
 
     let anyActive = false;
+    let animating = false;
     for (const t of targets) {
       let b = this.buckets.get(t.category);
       if (!b) b = this.createBucket(gl, t.category);
       b.items.push(t);
       anyActive = true;
+      if (!animating && isActivelyExtrapolating(t, nowMs)) animating = true;
     }
-    if (!anyActive) return;
+    if (!anyActive) return false;
 
     for (let i = 0; i < 16; i++) this.vpScratch[i] = matrix[i];
     const minScale = 26.0 / (32.0 * 256.0 * Math.pow(2, zoom));
-    const now = performance.now();
 
     gl.useProgram(this.program);
-    gl.enable(gl.DEPTH_TEST);
-    gl.depthFunc(gl.LEQUAL);
+    gl.enable(gl.DEPTH_TEST); gl.depthFunc(gl.LEQUAL);
     gl.disable(gl.CULL_FACE);
-    gl.enable(gl.BLEND);
-    gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+    gl.enable(gl.BLEND); gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
     gl.uniformMatrix4fv(this.uVpLoc, false, this.vpScratch);
 
     for (const b of this.buckets.values()) {
       const n = b.items.length;
       if (n === 0 || !b.vao || !b.instanceVbo) continue;
-
       const req = n * INSTANCE_FLOATS;
       if (b.scratch.length < req) b.scratch = new Float32Array(req * 2);
 
       for (let i = 0; i < n; i++) {
         const t = b.items[i];
-        const ground = t.altMeters < 5000 ? getCachedTerrainElevation(map, t.lon, t.lat, now) : 0;
-        const coord = MercatorCoordinate.fromLngLat([t.lon, t.lat], Math.max(t.altMeters, ground + 15));
+        deadReckonInto(t, nowMs, this.posScratch);
+        const ground = this.posScratch.altMeters < 5000
+          ? getCachedTerrainElevation(map, this.posScratch.lon, this.posScratch.lat, nowMs)
+          : 0;
+        const coord = MercatorCoordinate.fromLngLat(
+          [this.posScratch.lon, this.posScratch.lat],
+          Math.max(this.posScratch.altMeters, ground + 15),
+        );
         const scale = Math.max(coord.meterInMercatorCoordinateUnits(), minScale);
         const off = i * INSTANCE_FLOATS;
         writeLocalAircraftMatrix(b.scratch, off, coord.x, coord.y, coord.z, scale, t.heading, t.pitch, t.roll);
-        b.scratch[off + 16] = t.color[0];
-        b.scratch[off + 17] = t.color[1];
-        b.scratch[off + 18] = t.color[2];
-        b.scratch[off + 19] = t.color[3];
+        b.scratch[off + 16] = t.color[0]; b.scratch[off + 17] = t.color[1];
+        b.scratch[off + 18] = t.color[2]; b.scratch[off + 19] = t.color[3];
       }
 
       gl.bindVertexArray(b.vao);
@@ -138,6 +136,7 @@ export class MapLibre3dInstancedRenderer {
     }
 
     gl.bindVertexArray(null);
+    return animating;
   }
 
   private createBucket(gl: WebGL2RenderingContext, cat: AirframeCategory): InstancedBucket {
@@ -181,10 +180,8 @@ export class MapLibre3dInstancedRenderer {
     gl.bindVertexArray(null);
 
     const bucket: InstancedBucket = {
-      vao, vbo, ibo, instanceVbo,
-      count: mesh.indices.length,
-      scratch: new Float32Array(32 * INSTANCE_FLOATS),
-      items: [],
+      vao, vbo, ibo, instanceVbo, count: mesh.indices.length,
+      scratch: new Float32Array(32 * INSTANCE_FLOATS), items: [],
     };
     this.buckets.set(cat, bucket);
     return bucket;

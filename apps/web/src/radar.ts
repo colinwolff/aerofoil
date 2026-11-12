@@ -167,13 +167,17 @@ export class AirspaceRadarManager {
     const mlatBadge = isMlat ? ' <span class="badge bg-purple-700 text-white font-bold text-[10px] px-1 py-0.2 rounded">MLAT</span>' : "";
     const popupHtml = `<b>${target.callsign ?? target.address}</b>${mlatBadge}<br/>Type: ${category}<br/>Alt: ${target.altitude ?? "--"} ft<br/>Spd: ${speed ?? "--"} kt<br/>Hdg: ${Math.round(heading)}°<br/>Squawk: ${target.squawk ?? "--"}`;
 
+    const alt = target.altitude ?? 0;
+    const altMeters = alt * 0.3048;
+    const vRate = (target as any).vertical_rate ?? (target as any).vertical_rate_fpm ?? 0;
+
     if (typeof this.engine.updateTargetVisual === "function") {
       const altStr = target.altitude != null ? `FL${Math.round(target.altitude / 100).toString().padStart(3, "0")}` : "---";
-      const vr = (target as any).vertical_rate_fpm ?? (target as any).vertical_rate ?? 0;
-      const trend = vr > 250 ? "↑" : vr < -250 ? "↓" : "";
+      const trend = vRate > 250 ? "↑" : vRate < -250 ? "↓" : "";
       const spdStr = speed != null ? `${Math.round(speed)}k` : "";
       this.engine.updateTargetVisual({
-        address: key, lat, lon, altitudeFt: target.altitude, heading, category,
+        address: key, lat, lon, altMeters, altitudeFt: target.altitude, heading, category,
+        groundSpeedKts: speed, verticalRateFpm: vRate,
         callsign: target.callsign?.trim() || key, telemetryText: `${altStr}${trend} ${spdStr}`.trim(),
         isSelected, isEmergency, showLabel, popupHtml,
       });
@@ -183,16 +187,13 @@ export class AirspaceRadarManager {
       this.engine.updateTargetMarker?.(key, lat, lon, markerHtml, popupHtml);
     }
     if (!recordTraj) return;
-    const alt = target.altitude ?? 0;
-    const altMeters = alt * 0.3048;
-    const vRate = (target as any).vertical_rate ?? (target as any).vertical_rate_fpm ?? 0;
     const col: [number, number, number, number] = isEmergency
       ? [0.94, 0.27, 0.27, 1.0]
       : isSelected
         ? [0.22, 0.74, 0.97, 1.0]
         : alt < 10000 ? [0.06, 0.72, 0.51, 1.0] : alt < 25000 ? [0.02, 0.71, 0.83, 1.0] : alt < 35000 ? [0.92, 0.70, 0.03, 1.0] : [0.66, 0.33, 0.97, 1.0];
     if (typeof (this.engine as any).updateTargetTrajectory === "function") {
-      (this.engine as any).updateTargetTrajectory(key, lon, lat, altMeters, vRate, heading, (target as any).pitch ?? 0, (target as any).roll ?? 0, category, col);
+      (this.engine as any).updateTargetTrajectory(key, lon, lat, altMeters, vRate, heading, (target as any).pitch ?? 0, (target as any).roll ?? 0, category, col, speed ?? 0);
     } else {
       (this.engine as any).trajectoryManager?.addCoordinate?.(key, lon, lat, altMeters, vRate);
     }

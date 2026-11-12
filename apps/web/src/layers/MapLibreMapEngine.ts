@@ -188,17 +188,18 @@ export class MapLibreMapEngine implements AirspaceMapEngine {
   public updateTargetVisual(u: TargetVisualUpdate): void {
     if (!this.map) return;
     this.hudOverlay.upsertTarget({
-      address: u.address, lat: u.lat, lon: u.lon, altMeters: u.altMeters,
+      address: u.address, lat: u.lat, lon: u.lon, altMeters: u.altMeters, heading: u.heading,
+      groundSpeedKts: u.groundSpeedKts, verticalRateFpm: u.verticalRateFpm,
       callsign: u.callsign, telemetryText: u.telemetryText,
       isSelected: u.isSelected, isEmergency: u.isEmergency,
       showLabel: u.showLabel, popupHtml: u.popupHtml,
     });
   }
 
-  public updateTargetTrajectory(address: string, lon: number, lat: number, alt: number, vRate: number = 0, hdg: number = 0, p: number = 0, r: number = 0, cat: any = "Jet", col?: [number, number, number, number]): void {
+  public updateTargetTrajectory(address: string, lon: number, lat: number, alt: number, vRate: number = 0, hdg: number = 0, p: number = 0, r: number = 0, cat: any = "Jet", col?: [number, number, number, number], speedKts: number = 0): void {
     this.trajectoryManager.addCoordinate(address, lon, lat, alt, vRate);
     this.stemsManager.updateTarget(address, lon, lat, alt);
-    this.modelLayer3d.updateTarget(address, lon, lat, alt, hdg, p, r, cat, col);
+    this.modelLayer3d.updateTarget(address, lon, lat, alt, hdg, p, r, cat, col, speedKts, vRate);
     if (this.styleReady && this.map) this.scheduleRepaint();
   }
 

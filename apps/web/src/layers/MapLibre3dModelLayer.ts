@@ -6,6 +6,7 @@ import { MapLibre3dLinesRenderer } from "./MapLibre3dLinesRenderer";
 import { computeAircraftTransforms, extractProjectionMatrix } from "./MapLibre3dMath";
 import { MapLibre3dInstancedRenderer, type Target3dState } from "./MapLibre3dInstancedRenderer";
 import { MapLibre3dFallbackRenderer } from "./MapLibre3dFallbackRenderer";
+import { computeFixError } from "./KinematicDeadReckoning";
 import type { MapLibreAltitudeStems } from "./MapLibreAltitudeStems";
 import type { MapLibreTrajectoryManager } from "./MapLibreTrajectoryManager";
 import type { MapLibreHudOverlay } from "./MapLibreHudOverlay";
@@ -45,9 +46,16 @@ export class MapLibre3dModelLayer implements CustomLayerInterface {
     roll: number = 0,
     category: AirframeCategory = "Jet",
     color: [number, number, number, number] = [0.22, 0.74, 0.97, 1.0],
+    groundSpeedKts: number = 0,
+    verticalRateFpm: number = 0,
+    nowMs: number = performance.now(),
   ): void {
     const key = address.toUpperCase();
-    this.targets.set(key, { address: key, lon, lat, altMeters, heading, pitch, roll, category, color });
+    const err = computeFixError(this.targets.get(key), lon, lat, altMeters, nowMs);
+    this.targets.set(key, {
+      address: key, lon, lat, altMeters, heading, pitch, roll, category, color,
+      groundSpeedKts, verticalRateFpm, updatedAtMs: nowMs, ...err,
+    });
   }
 
   public removeTarget(address: string): void {
@@ -80,18 +88,27 @@ export class MapLibre3dModelLayer implements CustomLayerInterface {
     const matrix = MapLibre3dModelLayer.extractProjectionMatrix(options);
     if (!gl || !matrix) return;
 
-    this.linesRenderer.render(gl, matrix, this.map, this.stemsSource, this.trajectorySource);
+    const now = performance.now();
+    this.linesRenderer.render(gl, matrix, this.map, this.stemsSource, this.trajectorySource, this.targets, now);
 
+    let animating = false;
     if (this.targets.size > 0) {
       const zoom = typeof this.map?.getZoom === "function" ? this.map.getZoom() : 8;
       if (this.instanced) {
-        this.instanced.render(gl as WebGL2RenderingContext, matrix, this.map, this.targets.values(), zoom);
-      } else {
-        this.fallback?.render(gl, matrix, this.map, this.targets.values(), zoom);
+        animating = this.instanced.render(gl as WebGL2RenderingContext, matrix, this.map, this.targets.values(), zoom, now);
+      } else if (this.fallback) {
+        animating = this.fallback.render(gl, matrix, this.map, this.targets.values(), zoom, now);
       }
     }
 
-    this.hudOverlay?.draw(matrix);
+    this.hudOverlay?.draw(matrix, now);
+
+    if (animating && typeof (this.map as any)?.triggerRepaint === "function") {
+      const container = (this.map as any)?.getContainer?.();
+      if (!container || !container.classList?.contains("hidden")) {
+        (this.map as any).triggerRepaint();
+      }
+    }
   }
 
   public static extractProjectionMatrix(input: unknown): ArrayLike<number> | null {
