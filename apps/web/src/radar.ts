@@ -130,7 +130,7 @@ export class AirspaceRadarManager {
     const altMeters = (target.altitude ?? 0) * 0.3048;
     const vRate = (target as any).vertical_rate ?? (target as any).vertical_rate_fpm ?? 0;
     if (typeof (this.engine as any).updateTargetTrajectory === "function") {
-      (this.engine as any).updateTargetTrajectory(key, lon, lat, altMeters, vRate);
+      (this.engine as any).updateTargetTrajectory(key, lon, lat, altMeters, vRate, heading, (target as any).pitch ?? 0, (target as any).roll ?? 0, category);
     } else {
       (this.engine as any).trajectoryManager?.addCoordinate?.(key, lon, lat, altMeters, vRate);
     }

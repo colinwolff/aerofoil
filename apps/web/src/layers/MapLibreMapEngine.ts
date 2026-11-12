@@ -9,6 +9,7 @@ import { MapLibreTerrainHelper, type TerrainOptions } from "./MapLibreTerrainHel
 import { MapLibreTrajectoryManager } from "./MapLibreTrajectoryManager";
 import { MapLibreAltitudeStems } from "./MapLibreAltitudeStems";
 import { MapLibreVectorManager } from "./MapLibreVectorManager";
+import { MapLibre3dModelLayer } from "./MapLibre3dModelLayer";
 
 export class MapLibreMapEngine implements AirspaceMapEngine {
   private map: MapLibreMap | null = null;
@@ -22,6 +23,7 @@ export class MapLibreMapEngine implements AirspaceMapEngine {
   private terrainOpts: TerrainOptions = {};
   public readonly trajectoryManager = new MapLibreTrajectoryManager();
   public readonly stemsManager = new MapLibreAltitudeStems();
+  public readonly modelLayer3d = new MapLibre3dModelLayer();
   private vectorManager = new MapLibreVectorManager(() => this.map, (cb) => this.whenReady(cb));
 
   public setTerrainOptions(opts: TerrainOptions): void { this.terrainOpts = opts; }
@@ -55,6 +57,7 @@ export class MapLibreMapEngine implements AirspaceMapEngine {
       this.styleReady = true;
       (this.map as any).setSky?.({ "sky-color": "#06090e", "horizon-color": "#1e293b", "fog-color": "#090d16", "sky-horizon-blend": 0.5 });
       this.stemsManager.setupLayers(this.map); this.trajectoryManager.setupLayers(this.map);
+      if (!this.map.getLayer(this.modelLayer3d.id)) this.map.addLayer(this.modelLayer3d);
       const dem = MapLibreTerrainHelper.resolveDemUrl(this.terrainOpts.provider, this.terrainOpts.customUrl, this.terrainOpts.maptilerKey);
       MapLibreTerrainHelper.enableTerrain(this.map, dem.url, this.terrainOpts.exaggeration ?? 1.5, dem.encoding, dem.tileSize, this.beforeLayerId());
       while (this.readyQueue.length > 0) this.readyQueue.shift()?.();
@@ -92,25 +95,21 @@ export class MapLibreMapEngine implements AirspaceMapEngine {
       if (enabled) {
         const dem = MapLibreTerrainHelper.resolveDemUrl(this.terrainOpts.provider, this.terrainOpts.customUrl, this.terrainOpts.maptilerKey);
         MapLibreTerrainHelper.enableTerrain(this.map, dem.url, this.terrainOpts.exaggeration ?? 1.5, dem.encoding, dem.tileSize, this.beforeLayerId());
-      } else {
-        MapLibreTerrainHelper.disableTerrain(this.map);
-      }
+      } else MapLibreTerrainHelper.disableTerrain(this.map);
     });
   }
 
-  public setTerrainExaggeration(exaggeration: number): void {
-    this.terrainOpts.exaggeration = exaggeration;
-    this.whenReady(() => { if (this.map) MapLibreTerrainHelper.setExaggeration(this.map, exaggeration); });
+  public setTerrainExaggeration(ex: number): void {
+    this.terrainOpts.exaggeration = ex;
+    this.whenReady(() => { if (this.map) MapLibreTerrainHelper.setExaggeration(this.map, ex); });
   }
 
-  public setHillshadingEnabled(enabled: boolean): void {
-    this.whenReady(() => { if (this.map) MapLibreTerrainHelper.setHillshading(this.map, enabled); });
+  public setHillshadingEnabled(en: boolean): void {
+    this.whenReady(() => { if (this.map) MapLibreTerrainHelper.setHillshading(this.map, en); });
   }
 
   private beforeLayerId(): string | undefined {
-    return this.map?.getLayer("altitude-shadows-layer")
-      ? "altitude-shadows-layer"
-      : (this.map?.getLayer("trajectories-layer") ? "trajectories-layer" : undefined);
+    return this.map?.getLayer("altitude-shadows-layer") ? "altitude-shadows-layer" : (this.map?.getLayer("trajectories-layer") ? "trajectories-layer" : undefined);
   }
 
   private addRaster(srcId: string, lyrId: string, url: string, attr: string, opt?: AirspaceLayerOptions, opacity?: number, isDark?: boolean): void {
@@ -173,9 +172,10 @@ export class MapLibreMapEngine implements AirspaceMapEngine {
     }
   }
 
-  public updateTargetTrajectory(address: string, lon: number, lat: number, altMeters: number, vRate: number = 0): void {
-    this.trajectoryManager.addCoordinate(address, lon, lat, altMeters, vRate);
-    this.stemsManager.updateTarget(address, lon, lat, altMeters);
+  public updateTargetTrajectory(address: string, lon: number, lat: number, alt: number, vRate: number = 0, hdg: number = 0, p: number = 0, r: number = 0, cat: any = "Jet"): void {
+    this.trajectoryManager.addCoordinate(address, lon, lat, alt, vRate);
+    this.stemsManager.updateTarget(address, lon, lat, alt);
+    this.modelLayer3d.updateTarget(address, lon, lat, alt, hdg, p, r, cat);
     if (this.styleReady && this.map) { this.trajectoryManager.update(this.map); this.stemsManager.update(this.map); }
   }
 
@@ -183,7 +183,7 @@ export class MapLibreMapEngine implements AirspaceMapEngine {
     const key = address.toUpperCase();
     const marker = this.markers.get(key);
     if (marker) { marker.remove(); this.markers.delete(key); }
-    this.trajectoryManager.removeTarget(key); this.stemsManager.removeTarget(key);
+    this.trajectoryManager.removeTarget(key); this.stemsManager.removeTarget(key); this.modelLayer3d.removeTarget(key);
     if (this.styleReady && this.map) { this.trajectoryManager.update(this.map); this.stemsManager.update(this.map); }
   }
 
