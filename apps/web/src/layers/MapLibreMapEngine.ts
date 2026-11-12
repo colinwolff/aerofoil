@@ -2,20 +2,20 @@
 //! WebGL/GPU accelerated with 85-degree pitch, DEM terrain elevation, and 3D flight ribbons.
 
 /// <reference types="vite/client" />
-import { Map as MapLibreMap, Marker, Popup, NavigationControl, setWorkerUrl } from "maplibre-gl";
+import { Map as MapLibreMap, NavigationControl, setWorkerUrl } from "maplibre-gl";
 import maplibreWorkerUrl from "maplibre-gl/dist/maplibre-gl-worker.mjs?url";
-import type { AirspaceLayerOptions, AirspaceMapEngine } from "./AirspaceMapEngine";
+import type { AirspaceLayerOptions, AirspaceMapEngine, TargetVisualUpdate } from "./AirspaceMapEngine";
 import { MapLibreTerrainHelper, type TerrainOptions } from "./MapLibreTerrainHelper";
 import { MapLibreTrajectoryManager } from "./MapLibreTrajectoryManager";
 import { MapLibreAltitudeStems } from "./MapLibreAltitudeStems";
 import { MapLibreVectorManager } from "./MapLibreVectorManager";
 import { MapLibre3dModelLayer } from "./MapLibre3dModelLayer";
+import { MapLibreHudOverlay } from "./MapLibreHudOverlay";
 
 export class MapLibreMapEngine implements AirspaceMapEngine {
   private map: MapLibreMap | null = null;
   private styleReady: boolean = false;
   private readyQueue: (() => void)[] = [];
-  private markers: Map<string, Marker> = new Map();
   private baseSourceId: string = "aerofoil-base-source";
   private baseLayerId: string = "aerofoil-base-layer";
   private currentBaseUrl: string | null = null;
@@ -26,6 +26,7 @@ export class MapLibreMapEngine implements AirspaceMapEngine {
   public readonly trajectoryManager = new MapLibreTrajectoryManager();
   public readonly stemsManager = new MapLibreAltitudeStems();
   public readonly modelLayer3d = new MapLibre3dModelLayer();
+  public readonly hudOverlay = new MapLibreHudOverlay();
   private vectorManager = new MapLibreVectorManager(() => this.map, (cb) => this.whenReady(cb));
 
   public setTerrainOptions(opts: TerrainOptions): void { this.terrainOpts = opts; }
@@ -55,12 +56,14 @@ export class MapLibreMapEngine implements AirspaceMapEngine {
     });
 
     this.map.addControl(new NavigationControl({ visualizePitch: true }), "top-right");
+    this.hudOverlay.attach(this.map);
 
     this.map.on("load", () => {
       if (!this.map) return;
       this.styleReady = true;
       (this.map as any).setSky?.({ "sky-color": "#06090e", "horizon-color": "#1e293b", "fog-color": "#090d16", "sky-horizon-blend": 0.5 });
       this.modelLayer3d.setLineSources(this.stemsManager, this.trajectoryManager);
+      this.modelLayer3d.setHudOverlay(this.hudOverlay);
       const dem = MapLibreTerrainHelper.resolveDemUrl(this.terrainOpts.provider, this.terrainOpts.customUrl, this.terrainOpts.maptilerKey);
       MapLibreTerrainHelper.enableTerrain(this.map, dem.url, this.terrainOpts.exaggeration ?? 1.5, dem.encoding, dem.tileSize, this.beforeLayerId());
       while (this.readyQueue.length > 0) this.readyQueue.shift()?.();
@@ -171,26 +174,25 @@ export class MapLibreMapEngine implements AirspaceMapEngine {
     if (this.map?.getLayer(lyrId)) this.map.setPaintProperty(lyrId, "raster-opacity", opacity);
   }
 
-  public updateTargetMarker(address: string, lat: number, lon: number, iconHtml: string, popupHtml: string): void {
+  public updateTargetMarker(address: string, lat: number, lon: number, _iconHtml: string, popupHtml: string): void {
     if (!this.map) return;
     const key = address.toUpperCase();
-    const now = performance.now();
-    let marker = this.markers.get(key) as any;
-    if (!marker) {
-      const el = document.createElement("div") as any; el.className = "custom-plane-icon maplibre-3d-marker"; el.innerHTML = iconHtml; el.__cachedHtml = iconHtml;
-      const popup = new Popup({ offset: 16 }).setHTML(popupHtml);
-      marker = new Marker({ element: el }).setLngLat([lon, lat]).setPopup(popup).addTo(this.map);
-      marker.__cachedPopup = popupHtml; marker.__cachedLat = lat; marker.__cachedLon = lon; marker.__lastPosAt = now;
-      this.markers.set(key, marker);
-    } else {
-      if ((marker.__cachedLat !== lat || marker.__cachedLon !== lon) && now - (marker.__lastPosAt ?? 0) >= 200) {
-        marker.setLngLat([lon, lat]);
-        marker.__cachedLat = lat; marker.__cachedLon = lon; marker.__lastPosAt = now;
-      }
-      const el = marker.getElement() as any;
-      if (el.__cachedHtml !== iconHtml) { el.innerHTML = iconHtml; el.__cachedHtml = iconHtml; }
-      if (marker.__cachedPopup !== popupHtml) { marker.getPopup()?.setHTML(popupHtml); marker.__cachedPopup = popupHtml; }
-    }
+    const t3d = this.modelLayer3d.getTarget(key);
+    this.hudOverlay.upsertTarget({
+      address: key, lat, lon, altMeters: t3d?.altMeters ?? 0,
+      callsign: key, telemetryText: "", isSelected: false, isEmergency: false,
+      showLabel: false, popupHtml,
+    });
+  }
+
+  public updateTargetVisual(u: TargetVisualUpdate): void {
+    if (!this.map) return;
+    this.hudOverlay.upsertTarget({
+      address: u.address, lat: u.lat, lon: u.lon, altMeters: u.altMeters,
+      callsign: u.callsign, telemetryText: u.telemetryText,
+      isSelected: u.isSelected, isEmergency: u.isEmergency,
+      showLabel: u.showLabel, popupHtml: u.popupHtml,
+    });
   }
 
   public updateTargetTrajectory(address: string, lon: number, lat: number, alt: number, vRate: number = 0, hdg: number = 0, p: number = 0, r: number = 0, cat: any = "Jet", col?: [number, number, number, number]): void {
@@ -202,8 +204,7 @@ export class MapLibreMapEngine implements AirspaceMapEngine {
 
   public removeTargetMarker(address: string): void {
     const key = address.toUpperCase();
-    const marker = this.markers.get(key);
-    if (marker) { marker.remove(); this.markers.delete(key); }
+    this.hudOverlay.removeTarget(key);
     this.trajectoryManager.removeTarget(key); this.stemsManager.removeTarget(key); this.modelLayer3d.removeTarget(key);
     if (this.styleReady && this.map) this.scheduleRepaint();
   }

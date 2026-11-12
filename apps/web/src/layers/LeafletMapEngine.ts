@@ -8,9 +8,10 @@ import {
   TileLayer,
   type LatLngExpression,
 } from "leaflet";
-import type { AirspaceLayerOptions, AirspaceMapEngine } from "./AirspaceMapEngine";
+import type { AirspaceLayerOptions, AirspaceMapEngine, TargetVisualUpdate } from "./AirspaceMapEngine";
 import { setupLeafletPanes, PANE_BASEMAP, PANE_AIRSPACE } from "./LeafletPanes";
 import { LeafletParametricManager } from "./LeafletParametricManager";
+import { upsertLeafletMarkerFast } from "./LeafletMarkerDom";
 
 export class LeafletMapEngine implements AirspaceMapEngine {
   private map: LeafletMap | null = null;
@@ -139,6 +140,11 @@ export class LeafletMapEngine implements AirspaceMapEngine {
         marker.__cachedPopup = popupHtml;
       }
     }
+  }
+
+  public updateTargetVisual(update: TargetVisualUpdate): void {
+    if (!this.map) return;
+    upsertLeafletMarkerFast(this.map as any, this.targetMarkers, update);
   }
 
   public removeTargetMarker(address: string): void {

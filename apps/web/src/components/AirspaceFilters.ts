@@ -41,17 +41,29 @@ export function isFilterActive(c: AirspaceFilterCriteria): boolean {
   );
 }
 
+let cachedQueryStr: string | null = null;
+let cachedRegex: RegExp | null = null;
+let cachedLower: string = "";
+
+function compileQueryMatcher(q: string): { regex: RegExp | null; lower: string } {
+  if (cachedQueryStr === q) return { regex: cachedRegex, lower: cachedLower };
+  cachedQueryStr = q;
+  cachedLower = q.toLowerCase();
+  try {
+    cachedRegex = new RegExp(q, "i");
+  } catch {
+    cachedRegex = null;
+  }
+  return { regex: cachedRegex, lower: cachedLower };
+}
+
 export function matchesFilter(target: TargetWire, c: AirspaceFilterCriteria): boolean {
-  if (c.query.trim()) {
-    const q = c.query.trim();
-    let matched = false;
-    try {
-      const rx = new RegExp(q, "i");
-      matched = rx.test(target.callsign ?? "") || rx.test(target.address);
-    } catch {
-      const lower = q.toLowerCase();
-      matched = (target.callsign?.toLowerCase().includes(lower) ?? false) || target.address.toLowerCase().includes(lower);
-    }
+  const q = c.query.trim();
+  if (q) {
+    const { regex, lower } = compileQueryMatcher(q);
+    const matched = regex
+      ? regex.test(target.callsign ?? "") || regex.test(target.address)
+      : (target.callsign?.toLowerCase().includes(lower) ?? false) || target.address.toLowerCase().includes(lower);
     if (!matched) return false;
   }
 

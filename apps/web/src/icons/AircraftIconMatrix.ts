@@ -15,6 +15,8 @@ export type AircraftCategory =
   | "GroundVehicle"
   | "Unknown";
 
+export type AirframeCategory = AircraftCategory;
+
 export function getAltitudeColor(altitudeFt?: number, emergency: boolean = false): string {
   if (emergency) {
     return "#ef4444"; // Red alert glow
@@ -124,6 +126,10 @@ const SVG_PATHS: Record<AircraftCategory, string> = {
   Unknown:
     '<path d="M16 3l11 23-11-6-11 6z"/>',
 };
+
+export function getSvgPathForCategory(category: AircraftCategory): string {
+  return SVG_PATHS[category] || SVG_PATHS.Unknown;
+}
 
 export function renderAircraftSvg(
   category: AircraftCategory,

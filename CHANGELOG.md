@@ -57,6 +57,7 @@ crates, in the imperative, one line each, with the `storypole` task key in paren
 
 ### Changed
 
+- Replace 3D MapLibre DOM markers with zero-DOM canvas HUD overlay (`MapLibreHudOverlay`), mutate 2D Leaflet marker SVGs and labels in place (`LeafletMarkerDom`), precompile search filter regexes, and gate `onViewChanged` sweeps on LOD threshold crossings (`AF-93`).
 - Promote web radar from `examples/web-radar` to first-class workspace application `apps/web` (`@aerofoil-rs/web-radar`) (`AF-51`).
 - Upgrade workspace Cargo dependencies, bump frontend packages to Vite v8, TypeScript v7, and Leaflet 2.0 beta (`AF-48`).
 - Align architectural decision records with chalkline MADR schema and monotonic date ordering (`AF-47`).

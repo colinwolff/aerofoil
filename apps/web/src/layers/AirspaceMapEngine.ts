@@ -14,6 +14,22 @@ export interface AirspaceLayerOptions {
   tms?: boolean;
 }
 
+export interface TargetVisualUpdate {
+  address: string;
+  lat: number;
+  lon: number;
+  altMeters: number;
+  category: string;
+  heading: number;
+  altitudeFt?: number;
+  isEmergency: boolean;
+  isSelected: boolean;
+  showLabel: boolean;
+  callsign: string;
+  telemetryText: string;
+  popupHtml: string;
+}
+
 export interface AirspaceMapEngine {
   init(containerId: string, centerLat: number, centerLon: number, zoom: number): void;
   setView(lat: number, lon: number, zoom?: number): void;
@@ -35,6 +51,7 @@ export interface AirspaceMapEngine {
     iconHtml: string,
     popupHtml: string,
   ): void;
+  updateTargetVisual?(update: TargetVisualUpdate): void;
   removeTargetMarker(address: string): void;
   updateTargetTrajectory?(
     address: string,

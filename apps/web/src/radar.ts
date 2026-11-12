@@ -30,11 +30,21 @@ export class AirspaceRadarManager {
   private allTrailsActive: boolean = false;
   private filterCriteria: AirspaceFilterCriteria = DEFAULT_FILTER_CRITERIA;
   private chaseCamera: any = null;
+  private lastLodVisible: boolean | null = null;
   private readonly onViewChanged = () => {
+    const zoom = typeof this.engine?.getZoom === "function" ? this.engine.getZoom() : 8;
+    const lodVisible = this.labelsMgr.shouldShowLabel(zoom, false, false);
+    if (this.lastLodVisible === lodVisible) return;
+    this.refreshAllMarkers();
+  };
+
+  private refreshAllMarkers(): void {
+    const zoom = typeof this.engine?.getZoom === "function" ? this.engine.getZoom() : 8;
+    this.lastLodVisible = this.labelsMgr.shouldShowLabel(zoom, false, false);
     for (const [key, target] of this.targets.entries()) {
       if (matchesFilter(target, this.filterCriteria)) this.renderTargetMarker(key, target, false);
     }
-  };
+  }
 
   constructor(private engine: AirspaceMapEngine | any = null) {}
 
@@ -69,7 +79,7 @@ export class AirspaceRadarManager {
   public isAllTrailsActive(): boolean { return this.allTrailsActive; }
   public toggleAllLabels(): boolean {
     const enabled = this.labelsMgr.toggleLabels();
-    this.onViewChanged();
+    this.refreshAllMarkers();
     return enabled;
   }
   public isLabelsEnabled(): boolean { return this.labelsMgr.isLabelsEnabled(); }
@@ -153,14 +163,25 @@ export class AirspaceRadarManager {
     const isSelected = this.selectedIcaos.has(key);
     const zoom = typeof this.engine.getZoom === "function" ? this.engine.getZoom() : 8;
     const showLabel = this.labelsMgr.shouldShowLabel(zoom, isSelected, isEmergency);
-    const labelHtml = this.labelsMgr.formatLabel(target, isSelected, isEmergency, !showLabel);
-    const markerHtml = this.labelsMgr.buildMarkerHtml(category, heading, target.altitude, isEmergency, labelHtml, isSelected);
-
     const isMlat = target.reception === "Mlat";
     const mlatBadge = isMlat ? ' <span class="badge bg-purple-700 text-white font-bold text-[10px] px-1 py-0.2 rounded">MLAT</span>' : "";
     const popupHtml = `<b>${target.callsign ?? target.address}</b>${mlatBadge}<br/>Type: ${category}<br/>Alt: ${target.altitude ?? "--"} ft<br/>Spd: ${speed ?? "--"} kt<br/>Hdg: ${Math.round(heading)}°<br/>Squawk: ${target.squawk ?? "--"}`;
 
-    this.engine.updateTargetMarker?.(key, lat, lon, markerHtml, popupHtml);
+    if (typeof this.engine.updateTargetVisual === "function") {
+      const altStr = target.altitude != null ? `FL${Math.round(target.altitude / 100).toString().padStart(3, "0")}` : "---";
+      const vr = (target as any).vertical_rate_fpm ?? (target as any).vertical_rate ?? 0;
+      const trend = vr > 250 ? "↑" : vr < -250 ? "↓" : "";
+      const spdStr = speed != null ? `${Math.round(speed)}k` : "";
+      this.engine.updateTargetVisual({
+        address: key, lat, lon, altitudeFt: target.altitude, heading, category,
+        callsign: target.callsign?.trim() || key, telemetryText: `${altStr}${trend} ${spdStr}`.trim(),
+        isSelected, isEmergency, showLabel, popupHtml,
+      });
+    } else {
+      const labelHtml = this.labelsMgr.formatLabel(target, isSelected, isEmergency, !showLabel);
+      const markerHtml = this.labelsMgr.buildMarkerHtml(category, heading, target.altitude, isEmergency, labelHtml, isSelected);
+      this.engine.updateTargetMarker?.(key, lat, lon, markerHtml, popupHtml);
+    }
     if (!recordTraj) return;
     const alt = target.altitude ?? 0;
     const altMeters = alt * 0.3048;
@@ -179,6 +200,8 @@ export class AirspaceRadarManager {
 
   public setEngine(engine: AirspaceMapEngine): void {
     this.engine = engine;
+    const zoom = typeof engine.getZoom === "function" ? engine.getZoom() : 8;
+    this.lastLodVisible = this.labelsMgr.shouldShowLabel(zoom, false, false);
     this.engine.onViewChange?.(this.onViewChanged);
     for (const [key, target] of this.targets.entries()) {
       if (matchesFilter(target, this.filterCriteria)) this.renderTargetMarker(key, target, true);
