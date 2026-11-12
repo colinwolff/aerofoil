@@ -1,6 +1,6 @@
 //! AirspaceVolume3dManager — Renders 3D extruded polygonal airspace volumes in MapLibre GL.
 
-import type { Map as MapLibreMap, Popup } from "maplibre-gl";
+import { Popup, type Map as MapLibreMap } from "maplibre-gl";
 
 export interface AirspaceVolumeProps {
   name?: string;
@@ -56,9 +56,45 @@ export function toVolumetricGeoJson(geoJsonData: any): any {
   return { type: "FeatureCollection", features };
 }
 
+export function formatAirspacePopupHtml(props: AirspaceVolumeProps): string {
+  const title = props.name || "Airspace Sector";
+  let details = "";
+  if (props.class) details += `<b>Class ${props.class} Airspace</b><br/>`;
+  if (props.type) details += `<b>${props.type} Airspace</b><br/>`;
+  if (props.lower_alt != null && props.upper_alt != null) {
+    details += `Alt: ${props.lower_alt} - ${props.upper_alt} ft`;
+  }
+  return `<b>${title}</b>${details ? `<br/>${details}` : ""}`;
+}
+
 export class AirspaceVolume3dManager {
   private activeVolumeLayers: Set<string> = new Set();
   private popup: Popup | null = null;
+
+  public getActivePopup(): Popup | null {
+    return this.popup;
+  }
+
+  public bindLayerPopup(map: MapLibreMap, layerId: string): void {
+    const m = map as any;
+    if (typeof m.on !== "function") return;
+    m.on("click", layerId, (e: any) => {
+      const feat = e.features?.[0];
+      if (!feat || !e.lngLat) return;
+      const html = formatAirspacePopupHtml(feat.properties || {});
+      this.popup?.remove();
+      this.popup = new Popup({ closeButton: true, maxWidth: "260px" })
+        .setLngLat(e.lngLat)
+        .setHTML(html)
+        .addTo(map);
+    });
+    m.on("mouseenter", layerId, () => {
+      if (typeof m.getCanvas === "function") m.getCanvas().style.cursor = "pointer";
+    });
+    m.on("mouseleave", layerId, () => {
+      if (typeof m.getCanvas === "function") m.getCanvas().style.cursor = "";
+    });
+  }
 
   public setupVolume(map: MapLibreMap, id: string, geoJsonData: any, beforeLayerId?: string): void {
     this.removeVolume(map, id);
@@ -101,6 +137,8 @@ export class AirspaceVolume3dManager {
       beforeLayerId,
     );
 
+    this.bindLayerPopup(map, fillId);
+    this.bindLayerPopup(map, lineId);
     this.activeVolumeLayers.add(id);
   }
 

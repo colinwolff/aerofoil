@@ -119,18 +119,18 @@ export class LeafletMapEngine implements AirspaceMapEngine {
       const icon = new DivIcon({ html: iconHtml, className: "custom-plane-icon", iconSize: [32, 32], iconAnchor: [16, 16] });
       marker = new Marker([lat, lon] as LatLngExpression, { icon }).addTo(this.map);
       marker.bindPopup(popupHtml);
-      marker._html = iconHtml;
-      marker._popup = popupHtml;
+      marker.__cachedHtml = iconHtml;
+      marker.__cachedPopup = popupHtml;
       this.targetMarkers.set(key, marker);
     } else {
       marker.setLatLng([lat, lon] as LatLngExpression);
-      if (marker._html !== iconHtml) {
+      if (marker.__cachedHtml !== iconHtml) {
         marker.setIcon(new DivIcon({ html: iconHtml, className: "custom-plane-icon", iconSize: [32, 32], iconAnchor: [16, 16] }));
-        marker._html = iconHtml;
+        marker.__cachedHtml = iconHtml;
       }
-      if (marker._popup !== popupHtml) {
+      if (marker.__cachedPopup !== popupHtml) {
         marker.setPopupContent(popupHtml);
-        marker._popup = popupHtml;
+        marker.__cachedPopup = popupHtml;
       }
     }
   }
