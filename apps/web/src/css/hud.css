@@ -92,6 +92,9 @@
 .plane-marker-wrapper {
   position: relative; width: 32px; height: 32px; overflow: visible !important;
 }
+.plane-marker-wrapper.selected-plane > svg {
+  filter: drop-shadow(0 0 8px rgba(56, 189, 248, 0.95)) drop-shadow(0 0 2px #ffffff) !important;
+}
 #map-3d .plane-marker-wrapper > svg,
 .maplibre-3d-marker .plane-marker-wrapper > svg {
   display: none !important;

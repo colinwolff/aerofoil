@@ -57,11 +57,20 @@ export class TelemetryTableRenderer {
 
     if (!tbody.hasAttribute("data-bound")) {
       tbody.setAttribute("data-bound", "true");
-      tbody.addEventListener("click", (e) => {
+      let lastMousedownMs = 0;
+      const handleSelect = (e: Event) => {
+        const now = Date.now();
+        if (e.type === "click" && now - lastMousedownMs < 350) return;
         const tr = (e.target as HTMLElement).closest("tr");
         const addr = tr?.getAttribute("data-address");
-        if (addr) onSelect(addr, (e as MouseEvent).shiftKey || (e as MouseEvent).ctrlKey || (e as MouseEvent).metaKey);
-      });
+        if (addr) {
+          if (e.type === "mousedown") lastMousedownMs = now;
+          const me = e as MouseEvent;
+          onSelect(addr, me.shiftKey || me.ctrlKey || me.metaKey);
+        }
+      };
+      tbody.addEventListener("mousedown", handleSelect);
+      tbody.addEventListener("click", handleSelect);
     }
 
     if (visible.length === 0) {

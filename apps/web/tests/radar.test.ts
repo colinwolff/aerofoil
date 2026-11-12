@@ -90,6 +90,62 @@ describe("AirspaceRadarManager", () => {
     manager.updateTarget(mlatTarget);
     expect(capturedPopup).toContain("MLAT");
   });
+
+  test("toggles all labels and highlights a single selected aircraft", () => {
+    const markers = new Map<string, string>();
+    const mockEngine = {
+      getZoom: () => 9,
+      updateTargetMarker: (key: string, _lat: number, _lon: number, icon: string) => {
+        markers.set(key, icon);
+      },
+    };
+    const manager = new AirspaceRadarManager(mockEngine);
+    const t1: TargetWire = {
+      address: "4840D6",
+      callsign: "KLM1023",
+      altitude: 32000,
+      lat: 52.3,
+      lon: 4.8,
+      source: "ModeS1090",
+      last_seen_ms: 1000,
+    } as any;
+    const t2: TargetWire = {
+      address: "A12345",
+      callsign: "UAL400",
+      altitude: 28000,
+      lat: 52.4,
+      lon: 4.9,
+      source: "ModeS1090",
+      last_seen_ms: 2000,
+    } as any;
+
+    manager.updateTarget(t1);
+    manager.updateTarget(t2);
+    expect(markers.get("4840D6")).toContain("plane-label");
+    expect(markers.get("A12345")).toContain("plane-label");
+
+    // Disable all labels globally
+    expect(manager.toggleAllLabels()).toBe(false);
+    expect(markers.get("4840D6")).not.toContain("plane-label");
+    expect(markers.get("A12345")).not.toContain("plane-label");
+
+    // Selecting 1 plane highlights it and shows its label even when global labels are off
+    manager.selectTarget("4840D6", false);
+    expect(manager.getSelectedIcao()).toBe("4840D6");
+    expect(markers.get("4840D6")).toContain("selected-plane");
+    expect(markers.get("4840D6")).toContain("plane-label selected");
+    expect(markers.get("A12345")).not.toContain("plane-label");
+
+    // Switching single selection to second plane unhighlights the first
+    manager.selectTarget("A12345", false);
+    expect(manager.getSelectedIcao()).toBe("A12345");
+    expect(markers.get("4840D6")).not.toContain("selected-plane");
+    expect(markers.get("A12345")).toContain("selected-plane");
+
+    manager.clearSelection();
+    expect(manager.getSelectedIcao()).toBeNull();
+    expect(markers.get("A12345")).not.toContain("selected-plane");
+  });
 });
 
 describe("ThemeManager", () => {
