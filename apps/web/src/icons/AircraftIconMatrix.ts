@@ -134,8 +134,9 @@ export function renderAircraftSvg(
   const color = getAltitudeColor(altitudeFt, emergency);
   const path = SVG_PATHS[category] || SVG_PATHS.Unknown;
   const pulseClass = emergency ? "class=\"emergency-pulse\"" : "";
+  const roundedHeading = Math.round(headingDeg);
 
-  return `<svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" style="transform: rotate(${headingDeg}deg); filter: drop-shadow(0 2px 4px rgba(0,0,0,0.6));">
+  return `<svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" style="transform: rotate(${roundedHeading}deg); filter: drop-shadow(0 2px 4px rgba(0,0,0,0.6));">
     <g fill="${color}" stroke="#0b1120" stroke-width="0.75" ${pulseClass}>
       ${path}
     </g>

@@ -97,6 +97,17 @@ export class MapLibreTrajectoryManager {
     this.dirty = true;
   }
 
+  public getVisibleTrajectories(): TargetTrajectory[] {
+    if (this.trailsMode === "none") return [];
+    const out: TargetTrajectory[] = [];
+    for (const traj of this.trajectories.values()) {
+      if (traj.points.length < 2) continue;
+      if (this.trailsMode === "selected" && !this.selectedIcaos.has(traj.address)) continue;
+      out.push(traj);
+    }
+    return out;
+  }
+
   public setupLayers(map: MapLibreMap): void {
     if (map.getSource(SOURCE_ID)) return;
 

@@ -1,6 +1,8 @@
 import { describe, expect, test } from "bun:test";
 import { getMeshForCategory } from "../src/layers/AircraftMeshCatalog";
 import { MapLibre3dModelLayer } from "../src/layers/MapLibre3dModelLayer";
+import { MapLibreAltitudeStems } from "../src/layers/MapLibreAltitudeStems";
+import { MapLibreTrajectoryManager } from "../src/layers/MapLibreTrajectoryManager";
 import type { AirframeCategory } from "../src/icons/AircraftIconMatrix";
 
 describe("AircraftMeshCatalog Low-Poly Archetypes", () => {
@@ -167,5 +169,43 @@ describe("MapLibre3dModelLayer Custom WebGL Layer", () => {
     expect(drawCalls).toBe(1);
     expect(uploadedMatrices.length).toBe(1);
     expect(Array.from(uploadedMatrices[0]).every((n) => Number.isFinite(n))).toBe(true);
+  });
+
+  test("renders 3D stems and trajectories natively via WebGL LINES without GeoJSON setData", () => {
+    const layer = new MapLibre3dModelLayer();
+    const stems = new MapLibreAltitudeStems();
+    const trajs = new MapLibreTrajectoryManager();
+    layer.setLineSources(stems, trajs);
+
+    stems.updateTarget("A1234F", -122.3, 47.5, 3048);
+    trajs.setTrailsMode("all");
+    trajs.addCoordinate("A1234F", -122.3, 47.5, 3000, 600);
+    trajs.addCoordinate("A1234F", -122.31, 47.51, 3048, 600);
+
+    let lineVertexCount = 0;
+    const fakeGl = {
+      VERTEX_SHADER: 1, FRAGMENT_SHADER: 2, ARRAY_BUFFER: 3, ELEMENT_ARRAY_BUFFER: 4,
+      STATIC_DRAW: 5, DYNAMIC_DRAW: 6, DEPTH_TEST: 7, LEQUAL: 8, CULL_FACE: 9, BLEND: 10,
+      SRC_ALPHA: 11, ONE_MINUS_SRC_ALPHA: 12, FLOAT: 13, TRIANGLES: 14, LINES: 15, UNSIGNED_SHORT: 16,
+      createShader: () => ({}), shaderSource: () => {}, compileShader: () => {},
+      createProgram: () => ({}), attachShader: () => {}, linkProgram: () => {},
+      getUniformLocation: (_p: any, name: string) => name,
+      getAttribLocation: (_p: any, name: string) => (name === "a_pos" ? 0 : 1),
+      bindVertexArray: () => {}, useProgram: () => {}, enable: () => {}, depthFunc: () => {},
+      disable: () => {}, blendFunc: () => {}, enableVertexAttribArray: () => {}, disableVertexAttribArray: () => {},
+      createBuffer: () => ({}), bindBuffer: () => {}, bufferData: () => {}, vertexAttribPointer: () => {},
+      uniformMatrix4fv: () => {}, uniformMatrix3fv: () => {}, uniform4fv: () => {},
+      drawElements: () => {},
+      drawArrays: (_mode: number, _first: number, count: number) => { lineVertexCount = count; },
+    } as any;
+
+    const fakeMap = { getZoom: () => 10, getTerrain: () => null } as any;
+    layer.onAdd(fakeMap, fakeGl);
+    layer.render(fakeGl, {
+      defaultProjectionData: { mainMatrix: new Float64Array([1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1]) },
+    } as any);
+
+    // 1 stem (2 vertices) + 1 trajectory segment (2 vertices) = 4 vertices
+    expect(lineVertexCount).toBe(4);
   });
 });

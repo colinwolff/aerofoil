@@ -40,6 +40,10 @@ export class MapLibreAltitudeStems {
     this.dirty = true;
   }
 
+  public getStems(): StemTarget[] {
+    return Array.from(this.targets.values());
+  }
+
   public setupLayers(map: MapLibreMap): void {
     if (map.getSource(STEMS_SOURCE)) return;
 

@@ -58,12 +58,11 @@ export class MapLibreMapEngine implements AirspaceMapEngine {
       if (!this.map) return;
       this.styleReady = true;
       (this.map as any).setSky?.({ "sky-color": "#06090e", "horizon-color": "#1e293b", "fog-color": "#090d16", "sky-horizon-blend": 0.5 });
-      this.stemsManager.setupLayers(this.map); this.trajectoryManager.setupLayers(this.map);
+      this.modelLayer3d.setLineSources(this.stemsManager, this.trajectoryManager);
       const dem = MapLibreTerrainHelper.resolveDemUrl(this.terrainOpts.provider, this.terrainOpts.customUrl, this.terrainOpts.maptilerKey);
       MapLibreTerrainHelper.enableTerrain(this.map, dem.url, this.terrainOpts.exaggeration ?? 1.5, dem.encoding, dem.tileSize, this.beforeLayerId());
       while (this.readyQueue.length > 0) this.readyQueue.shift()?.();
       if (!this.map.getLayer(this.modelLayer3d.id)) this.map.addLayer(this.modelLayer3d);
-      this.trajectoryManager.update(this.map); this.stemsManager.update(this.map);
     });
 
     this.map.on("error", (e: any) => {
@@ -160,15 +159,19 @@ export class MapLibreMapEngine implements AirspaceMapEngine {
   public updateTargetMarker(address: string, lat: number, lon: number, iconHtml: string, popupHtml: string): void {
     if (!this.map) return;
     const key = address.toUpperCase();
+    const now = performance.now();
     let marker = this.markers.get(key) as any;
     if (!marker) {
       const el = document.createElement("div") as any; el.className = "custom-plane-icon maplibre-3d-marker"; el.innerHTML = iconHtml; el.__cachedHtml = iconHtml;
       const popup = new Popup({ offset: 16 }).setHTML(popupHtml);
       marker = new Marker({ element: el }).setLngLat([lon, lat]).setPopup(popup).addTo(this.map);
-      marker.__cachedPopup = popupHtml;
+      marker.__cachedPopup = popupHtml; marker.__cachedLat = lat; marker.__cachedLon = lon; marker.__lastPosAt = now;
       this.markers.set(key, marker);
     } else {
-      marker.setLngLat([lon, lat]);
+      if ((marker.__cachedLat !== lat || marker.__cachedLon !== lon) && now - (marker.__lastPosAt ?? 0) >= 200) {
+        marker.setLngLat([lon, lat]);
+        marker.__cachedLat = lat; marker.__cachedLon = lon; marker.__lastPosAt = now;
+      }
       const el = marker.getElement() as any;
       if (el.__cachedHtml !== iconHtml) { el.innerHTML = iconHtml; el.__cachedHtml = iconHtml; }
       if (marker.__cachedPopup !== popupHtml) { marker.getPopup()?.setHTML(popupHtml); marker.__cachedPopup = popupHtml; }
@@ -179,7 +182,7 @@ export class MapLibreMapEngine implements AirspaceMapEngine {
     this.trajectoryManager.addCoordinate(address, lon, lat, alt, vRate);
     this.stemsManager.updateTarget(address, lon, lat, alt);
     this.modelLayer3d.updateTarget(address, lon, lat, alt, hdg, p, r, cat, col);
-    if (this.styleReady && this.map) { this.trajectoryManager.update(this.map); this.stemsManager.update(this.map); this.scheduleRepaint(); }
+    if (this.styleReady && this.map) this.scheduleRepaint();
   }
 
   public removeTargetMarker(address: string): void {
@@ -187,7 +190,7 @@ export class MapLibreMapEngine implements AirspaceMapEngine {
     const marker = this.markers.get(key);
     if (marker) { marker.remove(); this.markers.delete(key); }
     this.trajectoryManager.removeTarget(key); this.stemsManager.removeTarget(key); this.modelLayer3d.removeTarget(key);
-    if (this.styleReady && this.map) { this.trajectoryManager.update(this.map); this.stemsManager.update(this.map); this.scheduleRepaint(); }
+    if (this.styleReady && this.map) this.scheduleRepaint();
   }
 
   public setVectorLayer(id: string, geoJsonData: any, _styleFn: (feature: any) => Record<string, any>): void { this.vectorManager.setVectorLayer(id, geoJsonData); }
