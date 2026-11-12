@@ -18,6 +18,7 @@ export class MapLibreMapEngine implements AirspaceMapEngine {
   private markers: Map<string, Marker> = new Map();
   private baseSourceId: string = "aerofoil-base-source";
   private baseLayerId: string = "aerofoil-base-layer";
+  private currentBaseUrl: string | null = null;
   private overlayIds: Set<string> = new Set();
   private viewChangeCallbacks: (() => void)[] = [];
   private repaintQueued: boolean = false;
@@ -44,6 +45,7 @@ export class MapLibreMapEngine implements AirspaceMapEngine {
       zoom,
       pitch: 60,
       maxPitch: 85,
+      maxTileCacheSize: 256,
       style: {
         version: 8,
         glyphs: "https://demotiles.maplibre.org/font/{fontstack}/{range}.pbf",
@@ -119,11 +121,19 @@ export class MapLibreMapEngine implements AirspaceMapEngine {
   private addRaster(srcId: string, lyrId: string, url: string, attr: string, opt?: AirspaceLayerOptions, opacity?: number, isDark?: boolean): void {
     const load = () => {
       if (!this.map) return;
+      if (lyrId === this.baseLayerId && this.currentBaseUrl === url && this.map.getLayer(lyrId)) {
+        this.map.setPaintProperty(lyrId, "raster-brightness-max", isDark ? 0.45 : 1);
+        this.map.setPaintProperty(lyrId, "raster-saturation", isDark ? -0.6 : 0);
+        this.map.setPaintProperty(lyrId, "raster-contrast", isDark ? 0.25 : 0);
+        return;
+      }
+      if (lyrId === this.baseLayerId) this.currentBaseUrl = url;
       if (this.map.getLayer(lyrId)) this.map.removeLayer(lyrId);
       if (this.map.getSource(srcId)) this.map.removeSource(srcId);
-      const tileUrl = url.replace("{r}", "").replace("{s}", opt?.subdomains?.[0] || "a");
+      const subs = opt?.subdomains && opt.subdomains.length > 0 ? opt.subdomains : ["a", "b", "c"];
+      const tiles = url.includes("{s}") ? subs.map((s) => url.replace("{r}", "").replace("{s}", s)) : [url.replace("{r}", "")];
       this.map.addSource(srcId, {
-        type: "raster", tiles: [tileUrl], tileSize: 256, attribution: attr,
+        type: "raster", tiles, tileSize: 256, attribution: attr,
         minzoom: opt?.minZoom ?? 0, maxzoom: opt?.maxNativeZoom ?? opt?.maxZoom ?? 19,
       });
       const beforeId = lyrId === this.baseLayerId && this.map.getLayer("raster-dem-hillshade") ? "raster-dem-hillshade" : this.beforeLayerId();

@@ -7,7 +7,6 @@ export const DEFAULT_TERRARIUM_DEM =
   "https://tiles.mapterhorn.com/{z}/{x}/{y}.webp";
 
 const TERRAIN_SOURCE_ID = "raster-dem-terrain";
-const HILLSHADE_SOURCE_ID = "raster-dem-hillshade-src";
 const HILLSHADE_LAYER_ID = "raster-dem-hillshade";
 
 export interface TerrainOptions {
@@ -63,10 +62,9 @@ export class MapLibreTerrainHelper {
       tiles: [demUrl],
       encoding,
       tileSize,
-      maxzoom: 15,
+      maxzoom: demUrl.includes("mapterhorn.com") ? 12 : 14,
     };
     if (!map.getSource(TERRAIN_SOURCE_ID)) map.addSource(TERRAIN_SOURCE_ID, demSpec);
-    if (!map.getSource(HILLSHADE_SOURCE_ID)) map.addSource(HILLSHADE_SOURCE_ID, { ...demSpec });
 
     try {
       (map as any).setTerrain({
@@ -79,7 +77,7 @@ export class MapLibreTerrainHelper {
           {
             id: HILLSHADE_LAYER_ID,
             type: "hillshade",
-            source: HILLSHADE_SOURCE_ID,
+            source: TERRAIN_SOURCE_ID,
             paint: {
               "hillshade-shadow-color": "#000000",
               "hillshade-highlight-color": "#ffffff",

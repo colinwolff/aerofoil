@@ -146,9 +146,10 @@ describe("MapLibreTerrainHelper", () => {
 
     MapLibreTerrainHelper.enableTerrain(fakeMap, DEFAULT_TERRARIUM_DEM, 1.5, "terrarium", 512);
     expect(fakeMap.getSource("raster-dem-terrain")).toBeDefined();
-    expect(fakeMap.getSource("raster-dem-hillshade-src")).toBeDefined();
+    expect(fakeMap.getSource("raster-dem-hillshade-src")).toBeUndefined();
     expect(fakeMap.getSource("raster-dem-terrain").tileSize).toBe(512);
-    expect(fakeMap.getLayer("raster-dem-hillshade").source).toBe("raster-dem-hillshade-src");
+    expect(fakeMap.getSource("raster-dem-terrain").maxzoom).toBe(12);
+    expect(fakeMap.getLayer("raster-dem-hillshade").source).toBe("raster-dem-terrain");
     expect(terrainConfig).toEqual({ source: "raster-dem-terrain", exaggeration: 1.5 });
 
     MapLibreTerrainHelper.setExaggeration(fakeMap, 2.0);

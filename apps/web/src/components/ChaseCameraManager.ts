@@ -9,6 +9,7 @@ export class ChaseCameraManager {
   private mode: CameraFollowMode = "off";
   private targetIcao: string | null = null;
   private lastHeading: number = 0;
+  private lastChaseAt: number = 0;
   private onModeChangeCallbacks: ((mode: CameraFollowMode, icao: string | null) => void)[] = [];
 
   constructor(private toggleMgr: EngineToggleManager) {
@@ -68,6 +69,10 @@ export class ChaseCameraManager {
     const lon = target.longitude ?? target.lon;
     if (lat == null || lon == null) return;
 
+    const now = typeof performance !== "undefined" ? performance.now() : Date.now();
+    if (now - this.lastChaseAt < 400) return;
+    this.lastChaseAt = now;
+
     const engine = this.toggleMgr.getActiveEngine();
     const heading = target.heading_degrees ?? target.heading ?? this.lastHeading;
     this.lastHeading = heading;
@@ -82,7 +87,7 @@ export class ChaseCameraManager {
           bearing: heading,
           pitch: 72,
           zoom: Math.max(13, engine.getZoom()),
-          duration: 850,
+          duration: 380,
           essential: true,
         });
       } else {

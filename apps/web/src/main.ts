@@ -68,7 +68,6 @@ async function initApp(): Promise<void> {
     attributionCtrl.register({ id: "airspace", name: "FAA Airspace Boundaries", html: "FAA AeroNav (17 U.S.C. § 105)", license: "US Public Domain" });
 
     const weatherLayer = new WeatherRadarLayer(engine);
-    weatherLayer.init();
 
     const antennaCoverage = new AntennaCoverageLayer(engine, config.receiverLat, config.receiverLon);
     radarManager.setAntennaLayer(antennaCoverage);

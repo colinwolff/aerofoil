@@ -140,7 +140,7 @@ export class SurveillanceDome3dManager {
         source: LABELS_SOURCE_ID,
         layout: {
           "text-field": ["get", "label"],
-          "text-font": ["Open Sans Regular"],
+          "text-font": ["Open Sans Semibold"],
           "text-size": 11,
           "text-anchor": "center",
           "text-allow-overlap": false,

@@ -127,7 +127,7 @@ when its crates compile, its tests pass and the tiered gates in `AGENTS.md` §3.
 - [x] Interactive airspace section selection & popup labels in 2D and 3D: restore 2D airspace polygon click popups and add interactive 3D airspace volume click popups in MapLibre GL (`AF-88`).
 - [x] Fix MapLibre GL v6 `CustomLayerInterface.render` matrix input, WebGL2 VAO state, and layer z-order for 3D aircraft models (`AF-89`).
 - [x] Eliminate 3D terrain drape tile invalidation (`4 FPS` to `60 FPS`) and throttle 3D DOM marker updates (`AF-90`).
-- [ ] Fix tile caching, duplicate DEM sources, source cache eviction on mode/theme toggle, and tile request storms (`AF-91`).
+- [x] Fix tile caching, duplicate DEM sources, source cache eviction on mode/theme toggle, and tile request storms (`AF-91`).
 - [ ] Fix `aerofoil-server` TCP ingest `O_NONBLOCK` busy-spin loop, WebSocket broadcast flood, and missing CORS/`Cache-Control` headers (`AF-92`).
 
 **Exit criteria:** Complete clean-room feature parity with `tar1090` without GPL code contamination; full 3D spatial airspace extrusion, instanced 3D aircraft models, elevated 3D surveillance dome rings, and chase camera verified in MapLibre GL; deep linking and regex filtering verified in test suites.

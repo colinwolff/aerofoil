@@ -16,6 +16,7 @@ export class LeafletMapEngine implements AirspaceMapEngine {
   private map: LeafletMap | null = null;
   private baseLayer: TileLayer | null = null;
   private overlayTiles: Map<string, TileLayer> = new Map();
+  private currentBaseUrl: string | null = null;
   private targetMarkers: Map<string, Marker> = new Map();
   private vectorLayers: Map<string, GeoJSON> = new Map();
   private parametricManager: LeafletParametricManager | null = null;
@@ -70,11 +71,16 @@ export class LeafletMapEngine implements AirspaceMapEngine {
       opacity: opts?.opacity ?? (defaultPane === PANE_BASEMAP ? 1.0 : 0.7),
       pane: opts?.pane ?? defaultPane,
       tms: opts?.tms ?? false,
+      keepBuffer: 4,
+      updateWhenZooming: false,
+      updateWhenIdle: true,
     });
   }
 
   public setBaseTileLayer(id: string, url: string, attribution: string, options?: AirspaceLayerOptions): void {
     if (!this.map) return;
+    if (this.currentBaseUrl === url && this.baseLayer) return;
+    this.currentBaseUrl = url;
     if (this.baseLayer) {
       this.map.removeLayer(this.baseLayer);
       this.baseLayer = null;

@@ -26,37 +26,44 @@ export class WeatherRadarLayer {
   private isVisible: boolean = false;
   private cachedLayerIds: Set<string> = new Set();
   private activeLayerId: string | null = null;
+  private initPromise: Promise<boolean> | null = null;
   private onFrameChangedCallbacks: ((frame: RadarFrame, index: number, total: number) => void)[] = [];
 
   constructor(private engine: AirspaceMapEngine) {}
 
   public async init(): Promise<boolean> {
-    try {
-      const resp = await fetch("https://api.rainviewer.com/public/weather-maps.json");
-      if (!resp.ok) return false;
-      const data: RainViewerApiResponse = await resp.json();
-      this.host = data.host || "https://tilecache.rainviewer.com";
+    if (this.initPromise) return this.initPromise;
+    this.initPromise = (async () => {
+      try {
+        const resp = await fetch("https://api.rainviewer.com/public/weather-maps.json");
+        if (!resp.ok) return false;
+        const data: RainViewerApiResponse = await resp.json();
+        this.host = data.host || "https://tilecache.rainviewer.com";
 
-      const past = data.radar?.past || [];
-      const nowcast = data.radar?.nowcast || [];
-      this.frames = [...past, ...nowcast];
+        const past = data.radar?.past || [];
+        const nowcast = data.radar?.nowcast || [];
+        this.frames = [...past, ...nowcast];
 
-      if (this.frames.length > 0) {
-        this.currentFrameIndex = past.length > 0 ? past.length - 1 : 0;
-        this.notifyFrameChanged();
-        if (this.isVisible) this.renderCurrentFrame();
-        return true;
+        if (this.frames.length > 0) {
+          this.currentFrameIndex = past.length > 0 ? past.length - 1 : 0;
+          this.notifyFrameChanged();
+          if (this.isVisible) this.renderCurrentFrame();
+          return true;
+        }
+        return false;
+      } catch {
+        return false;
       }
-      return false;
-    } catch {
-      return false;
-    }
+    })();
+    return this.initPromise;
   }
 
   public setVisible(visible: boolean): void {
     this.isVisible = visible;
     if (visible) {
-      if (this.currentFrameIndex >= 0 && this.currentFrameIndex < this.frames.length) {
+      if (this.frames.length === 0) {
+        void this.init();
+      } else if (this.currentFrameIndex >= 0 && this.currentFrameIndex < this.frames.length) {
         this.renderCurrentFrame();
       }
     } else {
@@ -155,6 +162,17 @@ export class WeatherRadarLayer {
     if (this.frames.length <= 1) return;
     const nextIdx = (this.currentFrameIndex + 1) % this.frames.length;
     const prevIdx = (this.currentFrameIndex - 1 + this.frames.length) % this.frames.length;
+    const keep = new Set<string>([
+      `rainviewer_${this.frames[this.currentFrameIndex].time}`,
+      `rainviewer_${this.frames[nextIdx].time}`,
+      `rainviewer_${this.frames[prevIdx].time}`,
+    ]);
+    for (const id of Array.from(this.cachedLayerIds)) {
+      if (!keep.has(id)) {
+        this.engine.removeTileLayer(id);
+        this.cachedLayerIds.delete(id);
+      }
+    }
     for (const idx of [nextIdx, prevIdx]) {
       this.mountFrame(this.frames[idx], 0);
     }
