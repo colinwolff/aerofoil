@@ -82,6 +82,8 @@ export class MapLibreMapEngine implements AirspaceMapEngine {
   public getZoom(): number { return this.map ? this.map.getZoom() : 8; }
   public getPitch(): number { return this.map ? this.map.getPitch() : 0; }
   public setPitch(pitch: number): void { this.map?.setPitch(Math.min(85, Math.max(0, pitch))); }
+  public getBearing(): number { return this.map ? this.map.getBearing() : 0; }
+  public setBearing(b: number): void { this.map?.setBearing(b); }
   public onViewChange(callback: () => void): void { this.viewChangeCallbacks.push(callback); }
 
   public setTerrainEnabled(enabled: boolean): void {

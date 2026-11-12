@@ -18,6 +18,7 @@ import { EngineToggleManager } from "./components/EngineToggleManager";
 import { ThemeManager } from "./components/ThemeManager";
 import { AircraftInspector } from "./components/AircraftInspector";
 import { AirspaceFilterBar } from "./components/AirspaceFilterBar";
+import { UrlStateManager } from "./components/UrlStateManager";
 import { applyBasemap, bindToolbar } from "./components/ToolbarBinder";
 import { AirspaceRadarManager } from "./radar";
 
@@ -100,6 +101,9 @@ async function initApp(): Promise<void> {
 
     const filterBar = new AirspaceFilterBar();
     filterBar.onFilterChange((c) => radarManager.setFilterCriteria(c));
+
+    const urlState = new UrlStateManager(toggleMgr, radarManager, filterBar);
+    urlState.init();
 
     bindToolbar(drawer, configModal, splitter, toggleMgr, radarManager);
   } else {
