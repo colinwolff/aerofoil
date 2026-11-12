@@ -2,9 +2,11 @@
 
 import type { Map as MapLibreMap } from "maplibre-gl";
 import { AirspaceVolume3dManager } from "./AirspaceVolume3dManager";
+import { SurveillanceDome3dManager } from "./SurveillanceDome3dManager";
 
 export class MapLibreVectorManager {
   private volumeManager = new AirspaceVolume3dManager();
+  private surveillanceDome = new SurveillanceDome3dManager();
 
   constructor(
     private mapGetter: () => MapLibreMap | null,
@@ -105,11 +107,25 @@ export class MapLibreVectorManager {
       lines.push(ring);
     }
     this.setParametricLines(id, lines, style);
+
+    if (id === "range_rings" && circles.length > 0) {
+      this.surveillanceDome.setCenter(circles[0].center[0], circles[0].center[1]);
+      const tiers = circles.map((c, idx) => ({
+        flightLevel: (idx + 1) * 100,
+        radiusNm: Math.round(c.radiusMeters / 1852),
+      }));
+      this.surveillanceDome.setTiers(tiers);
+      this.whenReady(() => {
+        const map = this.mapGetter();
+        if (map) this.surveillanceDome.setupDome(map);
+      });
+    }
   }
 
   public removeParametricLayer(id: string): void {
     const map = this.mapGetter();
     if (!map) return;
+    if (id === "range_rings") this.surveillanceDome.removeDome(map);
     const srcId = `param-src-${id}`;
     const lyrId = `param-lyr-${id}`;
     if (map.getLayer(lyrId)) map.removeLayer(lyrId);
