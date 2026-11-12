@@ -68,9 +68,49 @@
       </div>
       <div id="sidebar-splitter" class="splitter-gutter" title="Drag to resize, double-click to collapse"></div>
       <aside id="table-container">
-        <div class="sidebar-header flex justify-between items-center mb-2 pb-1 border-b border-slate-800">
+        <div class="sidebar-header flex justify-between items-center mb-1 pb-1 border-b border-slate-800">
           <h2>Live Airspace Telemetry</h2>
           <button type="button" id="btn-collapse-sidebar" class="collapse-icon-btn" title="Collapse sidebar">»</button>
+        </div>
+        <div id="filter-bar" class="filter-bar-container px-2 py-1.5 mb-2 border-b border-slate-800 bg-slate-900/60 rounded flex flex-col gap-1.5">
+          <div class="flex items-center gap-1.5">
+            <div class="relative flex-1">
+              <input type="text" id="filter-search-input" class="w-full bg-slate-950/80 border border-slate-700 rounded px-2 py-1 text-xs text-slate-100 placeholder-slate-500 font-mono focus:outline-none focus:border-sky-500" placeholder="Filter / Regex (^UAL|DAL)" />
+              <button type="button" id="btn-clear-search" class="absolute right-1.5 top-1 text-slate-500 hover:text-slate-200 text-xs hidden" title="Clear search">✕</button>
+            </div>
+            <button type="button" id="btn-toggle-filters" class="toolbar-btn text-xs px-2 py-1" title="Altitude, speed, and provenance filters">
+              <span>⚙</span> Filter ▾
+            </button>
+          </div>
+          <div id="filter-drawer" class="filter-drawer-panel hidden bg-slate-950/90 border border-slate-800 rounded p-2 text-xs flex flex-col gap-2">
+            <div class="flex items-center justify-between text-slate-300">
+              <span class="font-bold text-sky-400">Altitude Filter:</span>
+              <span id="filter-alt-label" class="font-mono text-[11px] text-slate-400">FL0 – FL600</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <input type="range" id="filter-alt-min" min="0" max="600" step="10" value="0" class="w-full accent-sky-400 h-1 bg-slate-800 rounded" title="Min Altitude (FL)" />
+              <input type="range" id="filter-alt-max" min="0" max="600" step="10" value="600" class="w-full accent-sky-400 h-1 bg-slate-800 rounded" title="Max Altitude (FL)" />
+            </div>
+            <div class="flex items-center justify-between text-slate-300">
+              <span class="font-bold text-sky-400">Speed Filter:</span>
+              <span id="filter-spd-label" class="font-mono text-[11px] text-slate-400">0 – 1200 kt</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <input type="range" id="filter-spd-min" min="0" max="1000" step="25" value="0" class="w-full accent-sky-400 h-1 bg-slate-800 rounded" title="Min Ground Speed (kt)" />
+              <input type="range" id="filter-spd-max" min="0" max="1200" step="25" value="1200" class="w-full accent-sky-400 h-1 bg-slate-800 rounded" title="Max Ground Speed (kt)" />
+            </div>
+            <div class="flex items-center justify-between pt-1 border-t border-slate-800 text-[11px]">
+              <span class="font-bold text-slate-400">Sources:</span>
+              <div class="flex items-center gap-3 text-slate-300">
+                <label class="flex items-center gap-1 cursor-pointer"><input type="checkbox" id="filter-src-adsb" checked class="accent-sky-400" /> 1090ES</label>
+                <label class="flex items-center gap-1 cursor-pointer"><input type="checkbox" id="filter-src-uat" checked class="accent-sky-400" /> UAT</label>
+                <label class="flex items-center gap-1 cursor-pointer"><input type="checkbox" id="filter-src-mlat" checked class="accent-sky-400" /> MLAT</label>
+              </div>
+            </div>
+            <div class="flex justify-end pt-1">
+              <button type="button" id="btn-reset-filters" class="text-[10px] text-slate-400 hover:text-sky-400">Reset Filters</button>
+            </div>
+          </div>
         </div>
         <div class="table-scroll">
           <table id="telemetry-table">

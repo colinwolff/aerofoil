@@ -17,6 +17,7 @@ import { SidebarSplitter } from "./components/SidebarSplitter";
 import { EngineToggleManager } from "./components/EngineToggleManager";
 import { ThemeManager } from "./components/ThemeManager";
 import { AircraftInspector } from "./components/AircraftInspector";
+import { AirspaceFilterBar } from "./components/AirspaceFilterBar";
 import { applyBasemap, bindToolbar } from "./components/ToolbarBinder";
 import { AirspaceRadarManager } from "./radar";
 
@@ -96,6 +97,9 @@ async function initApp(): Promise<void> {
       toggleMgr.getActiveEngine().setView(lat, lon, 11);
     });
     radarManager.setInspector(inspector);
+
+    const filterBar = new AirspaceFilterBar();
+    filterBar.onFilterChange((c) => radarManager.setFilterCriteria(c));
 
     bindToolbar(drawer, configModal, splitter, toggleMgr, radarManager);
   } else {

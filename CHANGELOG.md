@@ -13,6 +13,7 @@ crates, in the imperative, one line each, with the `storypole` task key in paren
 
 ### Added
 
+- Add dynamic regex callsign search, altitude/speed bounds, and provenance filters in apps/web (`AF-72`).
 - Add persistent multi-aircraft track trails, multiselect inspection, and global hotkey T in apps/web (`AF-71`).
 
 - Add LOD-aware aircraft callsign and flight level map labels with collision decluttering in apps/web (`AF-70`).
