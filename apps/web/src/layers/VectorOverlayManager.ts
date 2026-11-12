@@ -15,7 +15,7 @@ export interface AirspaceFeatureProperties {
 
 export class VectorOverlayManager {
   private activeLayers: Set<string> = new Set();
-  private cachedLayers: Map<string, { geoJson: any; styleFn: any }> = new Map();
+  private cachedLayers: Map<string, { geoJson: any; styleFn: any; onEachFeatureFn?: (feature: any, layer: any) => void }> = new Map();
 
   constructor(private engine: AirspaceMapEngine) {}
 
@@ -26,7 +26,7 @@ export class VectorOverlayManager {
     this.engine = newEngine;
     for (const [layerId, item] of this.cachedLayers.entries()) {
       if (this.activeLayers.has(layerId)) {
-        this.engine.setVectorLayer(layerId, item.geoJson, item.styleFn);
+        this.engine.setVectorLayer(layerId, item.geoJson, item.styleFn, item.onEachFeatureFn);
       }
     }
   }
@@ -51,30 +51,23 @@ export class VectorOverlayManager {
 
       const geoJson: any = feature(topology, topology.objects[objectName]);
 
-      this.engine.setVectorLayer(
-        layerId,
-        geoJson,
-        styleFn,
-        (feat, layer) => {
-          const props: AirspaceFeatureProperties = feat.properties || {};
-          let title = props.name || "Airspace Sector";
-          let details = "";
-          if (props.class) {
-            details += `<b>Class ${props.class} Airspace</b><br/>`;
-          }
-          if (props.type) {
-            details += `<b>${props.type} Airspace</b><br/>`;
-          }
-          if (props.lower_alt != null && props.upper_alt != null) {
-            details += `Alt: ${props.lower_alt} - ${props.upper_alt} ft`;
-          }
-          if (layer.bindPopup) {
-            layer.bindPopup(`<b>${title}</b><br/>${details}`);
-          }
-        },
-      );
+      const onEachFeatureFn = (feat: any, layer: any) => {
+        const props: AirspaceFeatureProperties = feat.properties || {};
+        const title = props.name || "Airspace Sector";
+        let details = "";
+        if (props.class) details += `<b>Class ${props.class} Airspace</b><br/>`;
+        if (props.type) details += `<b>${props.type} Airspace</b><br/>`;
+        if (props.lower_alt != null && props.upper_alt != null) {
+          details += `Alt: ${props.lower_alt} - ${props.upper_alt} ft`;
+        }
+        if (layer.bindPopup) {
+          layer.bindPopup(`<b>${title}</b><br/>${details}`);
+        }
+      };
 
-      this.cachedLayers.set(layerId, { geoJson, styleFn });
+      this.engine.setVectorLayer(layerId, geoJson, styleFn, onEachFeatureFn);
+
+      this.cachedLayers.set(layerId, { geoJson, styleFn, onEachFeatureFn });
       this.activeLayers.add(layerId);
       return true;
     } catch (e) {

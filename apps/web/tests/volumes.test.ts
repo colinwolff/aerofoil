@@ -2,6 +2,7 @@ import { describe, expect, test } from "bun:test";
 import {
   resolveAirspaceColor,
   toVolumetricGeoJson,
+  formatAirspacePopupHtml,
   AirspaceVolume3dManager,
 } from "../src/layers/AirspaceVolume3dManager";
 
@@ -131,5 +132,41 @@ describe("AirspaceVolume3dManager Map Integration", () => {
     expect(removedLayers).toContain("vol-fill-classes");
     expect(removedLayers).toContain("vol-line-classes");
     expect(removedSources).toContain("vol-src-classes");
+  });
+
+  test("formats airspace popup HTML and registers 3D click listeners", () => {
+    const html = formatAirspacePopupHtml({
+      name: "Schiphol CTA",
+      class: "A",
+      lower_alt: 1500,
+      upper_alt: 19500,
+    });
+    expect(html).toContain("<b>Schiphol CTA</b>");
+    expect(html).toContain("<b>Class A Airspace</b>");
+    expect(html).toContain("Alt: 1500 - 19500 ft");
+
+    const boundClickLayers: string[] = [];
+    const mockMap = {
+      addSource: () => {},
+      addLayer: () => {},
+      getLayer: () => null,
+      getSource: () => null,
+      on: (event: string, layerId: string) => {
+        if (event === "click") boundClickLayers.push(layerId);
+      },
+    };
+    const mgr = new AirspaceVolume3dManager();
+    mgr.setupVolume(mockMap as any, "classes", {
+      type: "FeatureCollection",
+      features: [
+        {
+          type: "Feature",
+          properties: { name: "Schiphol CTA", class: "A", lower_alt: 1500, upper_alt: 19500 },
+          geometry: { type: "Polygon", coordinates: [[[4.7, 52.2], [4.9, 52.2], [4.9, 52.4], [4.7, 52.2]]] },
+        },
+      ],
+    });
+    expect(boundClickLayers).toContain("vol-fill-classes");
+    expect(boundClickLayers).toContain("vol-line-classes");
   });
 });

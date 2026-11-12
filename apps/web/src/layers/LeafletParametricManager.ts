@@ -18,6 +18,7 @@ export class LeafletParametricManager {
         weight: style.weight ?? 1,
         dashArray: style.dashArray ?? "4, 6",
         opacity: style.opacity ?? 0.4,
+        interactive: false,
         pane: style.pane ?? "antennaPane",
       }).addTo(this.map);
       elements.push(poly);
@@ -38,7 +39,8 @@ export class LeafletParametricManager {
       const circ = new Circle(c.center as LatLngExpression, {
         radius: c.radiusMeters,
         color: style.color ?? "#0ea5e9",
-        fillColor: "transparent",
+        fill: false,
+        interactive: false,
         weight: style.weight ?? 1.5,
         opacity: style.opacity ?? 0.5,
         dashArray: style.dashArray ?? "3, 5",

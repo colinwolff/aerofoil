@@ -26,9 +26,10 @@ export function setupLeafletPanes(map: LeafletMap): void {
   const airspace = map.createPane(PANE_AIRSPACE);
   airspace.style.zIndex = "350";
 
-  // Antenna distance rings & coverage contours (z-index 400)
+  // Antenna distance rings & coverage contours (z-index 400, non-interactive so airspace below remains clickable)
   const antenna = map.createPane(PANE_ANTENNA);
   antenna.style.zIndex = "400";
+  antenna.style.pointerEvents = "none";
 
   // Note: Default Leaflet markerPane is at z-index 600, guaranteeing aircraft float on top.
 }

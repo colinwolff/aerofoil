@@ -31,6 +31,7 @@ export class MapLibreVectorManager {
         },
         beforeId,
       );
+      this.volumeManager.bindLayerPopup(map, lyrId);
       this.volumeManager.setupVolume(map, id, geoJsonData, beforeId);
     };
 

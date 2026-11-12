@@ -160,16 +160,16 @@ export class MapLibreMapEngine implements AirspaceMapEngine {
     const key = address.toUpperCase();
     let marker = this.markers.get(key) as any;
     if (!marker) {
-      const el = document.createElement("div") as any; el.className = "custom-plane-icon maplibre-3d-marker"; el.innerHTML = iconHtml; el._html = iconHtml;
+      const el = document.createElement("div") as any; el.className = "custom-plane-icon maplibre-3d-marker"; el.innerHTML = iconHtml; el.__cachedHtml = iconHtml;
       const popup = new Popup({ offset: 16 }).setHTML(popupHtml);
       marker = new Marker({ element: el }).setLngLat([lon, lat]).setPopup(popup).addTo(this.map);
-      marker._popup = popupHtml;
+      marker.__cachedPopup = popupHtml;
       this.markers.set(key, marker);
     } else {
       marker.setLngLat([lon, lat]);
       const el = marker.getElement() as any;
-      if (el._html !== iconHtml) { el.innerHTML = iconHtml; el._html = iconHtml; }
-      if (marker._popup !== popupHtml) { marker.getPopup()?.setHTML(popupHtml); marker._popup = popupHtml; }
+      if (el.__cachedHtml !== iconHtml) { el.innerHTML = iconHtml; el.__cachedHtml = iconHtml; }
+      if (marker.__cachedPopup !== popupHtml) { marker.getPopup()?.setHTML(popupHtml); marker.__cachedPopup = popupHtml; }
     }
   }
 
