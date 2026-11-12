@@ -9,6 +9,7 @@ pub mod config;
 pub mod cpr;
 pub mod dispatch;
 pub mod egress;
+pub mod gzip;
 pub mod ingest;
 pub mod json;
 pub mod metrics;

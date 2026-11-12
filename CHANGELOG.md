@@ -58,6 +58,7 @@ crates, in the imperative, one line each, with the `storypole` task key in paren
 
 ### Changed
 
+- Skip redundant 2D terrain-draped vector line layers in 3D when volumetric airspace layers mount (`MapLibreVectorManager`), reuse GeoJSON sources via `setData`, throttle `AntennaCoverageLayer` contour redraws to 2s with a 0.25nm jitter filter, and serve compressible HTTP static assets with gzip content negotiation in `aerofoil-server` (`AF-97`).
 - Coalesce server WebSocket target broadcasts into single JSON array frames (`ws.rs`), batch frontend target ingestion per animation frame, switch `TelemetryTableRenderer` to keyed `<tr>` DOM updates (`500ms`), and patch `AircraftInspector` fields in place (`AF-96`).
 - Render 3D aircraft models using WebGL2 instanced VAOs (`drawElementsInstanced`, <= 5 draw calls/frame), cache DEM terrain elevation queries by spatial cell (`MapLibreTerrainElevCache`), and dirty-flag 3D line VBO uploads (`AF-94`).
 - Replace 3D MapLibre DOM markers with zero-DOM canvas HUD overlay (`MapLibreHudOverlay`), mutate 2D Leaflet marker SVGs and labels in place (`LeafletMarkerDom`), precompile search filter regexes, and gate `onViewChanged` sweeps on LOD threshold crossings (`AF-93`).

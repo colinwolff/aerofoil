@@ -40,8 +40,12 @@ export function calculateBearingAndDistance(
   return [bearingDeg, distanceNm];
 }
 
+const CONTOUR_REFRESH_MS = 2000;
+const CONTOUR_DELTA_NM = 0.25;
+
 export class AntennaCoverageLayer {
   private maxRangeBinsNm: Float32Array = new Float32Array(360);
+  private renderedBinsNm: Float32Array = new Float32Array(360);
   private visible: boolean = false;
   private dirty: boolean = false;
   private rxAltitudeFt: number = 50;
@@ -65,9 +69,7 @@ export class AntennaCoverageLayer {
       this.engine.removeParametricLayer("antenna_coverage_contour");
     }
     this.engine = newEngine;
-    if (this.visible) {
-      this.render();
-    }
+    if (this.visible) this.render();
   }
 
   public setVisible(visible: boolean): void {
@@ -81,28 +83,20 @@ export class AntennaCoverageLayer {
   }
 
   public recordTargetSignal(lat: number, lon: number, _rssiDbfs?: number, _altFt?: number): void {
-    const [bearing, distanceNm] = calculateBearingAndDistance(
-      this.centerLat,
-      this.centerLon,
-      lat,
-      lon,
-    );
+    if (!Number.isFinite(lat) || !Number.isFinite(lon)) return;
+    const [bearing, distanceNm] = calculateBearingAndDistance(this.centerLat, this.centerLon, lat, lon);
 
     if (distanceNm > 0 && distanceNm < 450) {
       const bin = Math.floor(bearing) % 360;
       if (distanceNm > this.maxRangeBinsNm[bin]) {
         this.maxRangeBinsNm[bin] = distanceNm;
-        this.dirty = true;
+        if (distanceNm > this.renderedBinsNm[bin] + CONTOUR_DELTA_NM) this.dirty = true;
       }
     }
 
     if (this.visible && this.dirty) {
       const now = Date.now();
-      if (now - this.lastRenderMs >= 500) {
-        this.lastRenderMs = now;
-        this.renderContour();
-        this.dirty = false;
-      }
+      if (now - this.lastRenderMs >= CONTOUR_REFRESH_MS) this.renderContour(now);
     }
   }
 
@@ -127,8 +121,13 @@ export class AntennaCoverageLayer {
 
   public clear(): void {
     this.maxRangeBinsNm.fill(0);
-    this.dirty = true;
-    if (this.visible) this.render();
+    this.renderedBinsNm.fill(0);
+    this.dirty = false;
+    this.lastRenderMs = 0;
+    if (this.visible) {
+      this.engine.removeParametricLayer("antenna_coverage_contour");
+      this.render();
+    }
   }
 
   public render(): void {
@@ -158,28 +157,28 @@ export class AntennaCoverageLayer {
     this.renderContour();
   }
 
-  private renderContour(): void {
-    // 2. Build 360-degree closed polygon for empirical max range
+  private renderContour(now = Date.now()): void {
+    this.dirty = false;
+    this.renderedBinsNm.set(this.maxRangeBinsNm);
+
+    // 2. Build 360-degree closed polygon for empirical max range (2-degree angular step)
     const contourPoints: [number, number][] = [];
     let hasData = false;
 
     for (let deg = 0; deg < 360; deg += 2) {
-      const rangeNm = Math.max(5, this.maxRangeBinsNm[deg]);
-      if (this.maxRangeBinsNm[deg] > 0) hasData = true;
-
-      const pt = destinationPoint(
-        this.centerLat,
-        this.centerLon,
-        deg,
-        rangeNm * METERS_PER_NAUTICAL_MILE,
+      const binMax = Math.max(this.maxRangeBinsNm[deg], this.maxRangeBinsNm[deg + 1]);
+      const rangeNm = Math.max(5, binMax);
+      if (binMax > 0) hasData = true;
+      contourPoints.push(
+        destinationPoint(this.centerLat, this.centerLon, deg, rangeNm * METERS_PER_NAUTICAL_MILE),
       );
-      contourPoints.push(pt);
     }
 
     if (hasData && contourPoints.length > 0) {
+      this.lastRenderMs = now;
       contourPoints.push(contourPoints[0]); // Close loop
       this.engine.setParametricLines("antenna_coverage_contour", [contourPoints], {
-        color: "#10b981", // Emerald green contour
+        color: "#10b981",
         weight: 2.0,
         opacity: 0.75,
       });
