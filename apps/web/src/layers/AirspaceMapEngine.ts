@@ -22,6 +22,8 @@ export interface TargetVisualUpdate {
   category: string;
   heading: number;
   altitudeFt?: number;
+  groundSpeedKts?: number;
+  verticalRateFpm?: number;
   isEmergency: boolean;
   isSelected: boolean;
   showLabel: boolean;

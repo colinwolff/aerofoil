@@ -13,6 +13,7 @@ crates, in the imperative, one line each, with the `storypole` task key in paren
 
 ### Added
 
+- Add 60 FPS client-side kinematic dead-reckoning interpolation (`KinematicDeadReckoning`) across 3D aircraft meshes, HUD labels, stems, and frame-synced `jumpTo` `ChaseCameraManager` tracking (`AF-95`).
 - Add toolbar toggle (`K`) for aircraft callsign/FL map labels and single-aircraft telemetry list row selection highlighting (`AF-87`).
 - Add elevated 3D range rings and volumetric surveillance dome with floating altitude labels in MapLibre GL (`AF-77`).
 - Add instanced 3D aircraft models with dynamic pitch, roll, and heading orientation in MapLibre GL (`AF-76`).
