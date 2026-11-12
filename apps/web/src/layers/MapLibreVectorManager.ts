@@ -1,8 +1,11 @@
-//! MapLibreVectorManager — Renders GeoJSON vector airspaces, parametric range rings, and azimuth lines.
+//! MapLibreVectorManager — Renders GeoJSON vector airspaces, 3D extruded volumes, and parametric range rings.
 
 import type { Map as MapLibreMap } from "maplibre-gl";
+import { AirspaceVolume3dManager } from "./AirspaceVolume3dManager";
 
 export class MapLibreVectorManager {
+  private volumeManager = new AirspaceVolume3dManager();
+
   constructor(
     private mapGetter: () => MapLibreMap | null,
     private whenReady: (cb: () => void) => void = (cb) => cb(),
@@ -26,6 +29,7 @@ export class MapLibreVectorManager {
         },
         beforeId,
       );
+      this.volumeManager.setupVolume(map, id, geoJsonData, beforeId);
     };
 
     this.whenReady(run);
@@ -34,10 +38,16 @@ export class MapLibreVectorManager {
   public removeVectorLayer(id: string): void {
     const map = this.mapGetter();
     if (!map) return;
+    this.volumeManager.removeVolume(map, id);
     const srcId = `vector-src-${id}`;
     const lyrId = `vector-lyr-${id}`;
     if (map.getLayer(lyrId)) map.removeLayer(lyrId);
     if (map.getSource(srcId)) map.removeSource(srcId);
+  }
+
+  public setVolumesVisible(visible: boolean): void {
+    const map = this.mapGetter();
+    if (map) this.volumeManager.setVolumesVisible(map, visible);
   }
 
   public setParametricLines(id: string, lines: [number, number][][], style: Record<string, any>): void {

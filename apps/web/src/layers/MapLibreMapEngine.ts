@@ -189,6 +189,7 @@ export class MapLibreMapEngine implements AirspaceMapEngine {
 
   public setVectorLayer(id: string, geoJsonData: any, _styleFn: (feature: any) => Record<string, any>): void { this.vectorManager.setVectorLayer(id, geoJsonData); }
   public removeVectorLayer(id: string): void { this.vectorManager.removeVectorLayer(id); }
+  public setVolumesVisible(visible: boolean): void { this.vectorManager.setVolumesVisible(visible); }
   public setParametricLines(id: string, lines: [number, number][][], style: Record<string, any>): void { this.vectorManager.setParametricLines(id, lines, style); }
   public setParametricCircles(id: string, circles: { center: [number, number]; radiusMeters: number }[], style: Record<string, any>): void { this.vectorManager.setParametricCircles(id, circles, style); }
   public removeParametricLayer(id: string): void { this.vectorManager.removeParametricLayer(id); }
