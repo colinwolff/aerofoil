@@ -30,11 +30,13 @@ export class AirspaceRadarManager {
   private labelsMgr = new AircraftLabelsManager();
   private allTrailsActive: boolean = false;
   private filterCriteria: AirspaceFilterCriteria = DEFAULT_FILTER_CRITERIA;
+  private chaseCamera: any = null;
 
   constructor(private engine: AirspaceMapEngine | any = null) {}
 
   public setAntennaLayer(layer: any): void { this.antennaLayer = layer; }
   public setInspector(inspector: AircraftInspector): void { this.inspector = inspector; }
+  public setChaseCamera(mgr: any): void { this.chaseCamera = mgr; }
 
   public setFilterCriteria(criteria: AirspaceFilterCriteria): void {
     this.filterCriteria = criteria;
@@ -96,6 +98,7 @@ export class AirspaceRadarManager {
       this.engine?.removeTargetMarker?.(key);
     } else {
       this.renderTargetMarker(key, target);
+      this.chaseCamera?.onTargetUpdate?.(target);
     }
     this.renderTable();
   }

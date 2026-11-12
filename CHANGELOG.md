@@ -13,6 +13,7 @@ crates, in the imperative, one line each, with the `storypole` task key in paren
 
 ### Added
 
+- Add smooth 3D chase camera tracking and follow mode for active airborne targets in MapLibre GL (`AF-75`).
 - Add 3D extruded polygonal airspace volumes for Class B/C/D and Special Use Airspace in MapLibre GL (`AF-74`).
 - Add bidirectional URL search state persistence for map position, mode, target selection, and filters in apps/web (`AF-73`).
 - Add dynamic regex callsign search, altitude/speed bounds, and provenance filters in apps/web (`AF-72`).

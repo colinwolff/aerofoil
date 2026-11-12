@@ -31,6 +31,7 @@ export class AircraftInspector {
   private currentTarget: TargetWire | null = null;
   private altitudeHistory: AltitudePoint[] = [];
   private onCenterCallback: ((lat: number, lon: number) => void) | null = null;
+  private onChaseCallback: ((icao: string) => void) | null = null;
 
   public init(containerId: string = "aircraft-inspector-container"): void {
     let el = document.getElementById(containerId);
@@ -45,6 +46,10 @@ export class AircraftInspector {
 
   public setOnCenter(cb: (lat: number, lon: number) => void): void {
     this.onCenterCallback = cb;
+  }
+
+  public setOnChase(cb: (icao: string) => void): void {
+    this.onChaseCallback = cb;
   }
 
   public selectTarget(target: TargetWire, history: AltitudePoint[] = []): void {
@@ -155,14 +160,18 @@ export class AircraftInspector {
         </div>
 
         <div class="flex gap-2 mt-3 pt-2 border-t border-slate-800/80">
-          <button type="button" id="inspector-center-btn" class="btn-tag flex-1 py-1 text-center" title="Center map on aircraft">⌖ Center Map</button>
-          <button type="button" id="inspector-dismiss-btn" class="btn-tag flex-1 py-1 text-center text-slate-400">Dismiss</button>
+          <button type="button" id="inspector-center-btn" class="btn-tag flex-1 py-1 text-center" title="Center map on aircraft">⌖ Center</button>
+          <button type="button" id="inspector-chase-btn" class="btn-tag flex-1 py-1 text-center text-sky-400 font-bold" title="3D chase camera">🎥 Chase 3D</button>
+          <button type="button" id="inspector-dismiss-btn" class="btn-tag py-1 px-2 text-center text-slate-400">✕</button>
         </div>
       </div>
     `;
 
     document.getElementById("inspector-close-btn")?.addEventListener("click", () => this.close());
     document.getElementById("inspector-dismiss-btn")?.addEventListener("click", () => this.close());
+    document.getElementById("inspector-chase-btn")?.addEventListener("click", () => {
+      this.onChaseCallback?.(t.address);
+    });
     document.getElementById("inspector-center-btn")?.addEventListener("click", () => {
       const lat = t.latitude ?? t.lat;
       const lon = t.longitude ?? t.lon;

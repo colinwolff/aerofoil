@@ -19,6 +19,7 @@ import { ThemeManager } from "./components/ThemeManager";
 import { AircraftInspector } from "./components/AircraftInspector";
 import { AirspaceFilterBar } from "./components/AirspaceFilterBar";
 import { UrlStateManager } from "./components/UrlStateManager";
+import { ChaseCameraManager } from "./components/ChaseCameraManager";
 import { applyBasemap, bindToolbar } from "./components/ToolbarBinder";
 import { AirspaceRadarManager } from "./radar";
 
@@ -97,7 +98,10 @@ async function initApp(): Promise<void> {
     inspector.setOnCenter((lat, lon) => {
       toggleMgr.getActiveEngine().setView(lat, lon, 11);
     });
+    const chaseCamera = new ChaseCameraManager(toggleMgr);
+    inspector.setOnChase((icao) => chaseCamera.toggleChase(icao));
     radarManager.setInspector(inspector);
+    radarManager.setChaseCamera(chaseCamera);
 
     const filterBar = new AirspaceFilterBar();
     filterBar.onFilterChange((c) => radarManager.setFilterCriteria(c));
