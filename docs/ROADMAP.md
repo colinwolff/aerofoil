@@ -107,12 +107,12 @@ when its crates compile, its tests pass and the tiered gates in `AGENTS.md` §3.
 
 ---
 
-## 6. Milestone 6 — Advanced Surveillance Avionics, Clean-Room Parity & 3D Spatial Airspace (planned)
+## 6. Milestone 6 — Advanced Surveillance Avionics, Clean-Room Parity & 3D Spatial Airspace (complete)
 
 > **Target:** `0.1.0-beta.3` (lockstep SemVer) · **Scope:** `ADR-0019`
 > **Specification of reference:** Clean-room functional parity with `tar1090` (17 U.S.C. § 102(b), zero GPL contamination) translated into native spatial 3D.
 
-- [ ] Epic: Milestone 6 — Advanced Surveillance Avionics, Clean-Room Parity & 3D Spatial Airspace (`AF-68`).
+- [x] Epic: Milestone 6 — Advanced Surveillance Avionics, Clean-Room Parity & 3D Spatial Airspace (`AF-68`).
 - [x] Glassmorphic Aircraft Inspector Pane: floating avionics card displaying registration, airframe type, operator, squawk, TAS/IAS, Mach, roll angle, selected MCP altitude, RSSI, message rate, and dynamic 3D altitude profile sparkline (`AF-69`).
 - [x] LOD-aware aircraft callsign and altitude flight level map labels: collision-tested callsign/FL/speed text badges beside aircraft markers with zoom-level density decluttering in 2D and 3D (`AF-70`).
 - [x] Persistent multi-aircraft track trails and global track toggle hotkey (`T`): keyboard shortcut `T` to toggle all flight trails, individual selection persistence, and multiselect inspection mode (`AF-71`).
