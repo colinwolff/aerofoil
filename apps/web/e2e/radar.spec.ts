@@ -91,11 +91,12 @@ test.describe("Airspace Radar E2E Suite", () => {
   test("inspects aircraft marker click and populates telemetry table", async ({ page }) => {
     await page.goto("/");
 
+    await page.waitForFunction(() => !!(window as any).radarManager);
+
     // Inject target telemetry
     await page.evaluate(() => {
       const w = window as any;
-      if (w.radarManager) {
-        w.radarManager.updateTarget({
+      w.radarManager.updateTarget({
           address: "4840D6",
           callsign: "KLM1023",
           altitude: 32000,
@@ -107,7 +108,6 @@ test.describe("Airspace Radar E2E Suite", () => {
           source: "ModeS1090",
           reception: "Direct",
         });
-      }
     });
 
     // Verify target count metric updates

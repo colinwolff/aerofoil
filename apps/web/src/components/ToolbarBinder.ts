@@ -47,6 +47,7 @@ export function bindToolbar(
   cfgModal: MapConfigModal,
   splitter: SidebarSplitter,
   toggleMgr: EngineToggleManager,
+  radarMgr?: any,
 ): void {
   const btnLayers = document.getElementById("btn-toggle-layers");
   btnLayers?.addEventListener("click", () => {
@@ -65,7 +66,9 @@ export function bindToolbar(
     e.stopPropagation();
     centerDropdown?.classList.toggle("hidden");
   });
-  window.addEventListener("click", () => centerDropdown?.classList.add("hidden"));
+  if (typeof window !== "undefined") {
+    window.addEventListener("click", () => centerDropdown?.classList.add("hidden"));
+  }
 
   const getEngine = () => toggleMgr.getActiveEngine();
   document.getElementById("btn-center-receiver")?.addEventListener("click", () => {
@@ -91,6 +94,27 @@ export function bindToolbar(
   });
 
   document.getElementById("btn-open-settings")?.addEventListener("click", () => cfgModal.show());
+
+  const btnTrails = document.getElementById("btn-toggle-trails");
+  const toggleTrails = () => {
+    if (radarMgr) {
+      const active = radarMgr.toggleAllTrails();
+      btnTrails?.classList.toggle("active", active);
+    }
+  };
+  btnTrails?.addEventListener("click", toggleTrails);
+
+  if (typeof window !== "undefined") {
+    window.addEventListener("keydown", (e) => {
+      const tag = (e.target as HTMLElement | undefined)?.tagName;
+      if (tag === "INPUT" || tag === "SELECT" || tag === "TEXTAREA") {
+        return;
+      }
+      if (e.key === "t" || e.key === "T") {
+        toggleTrails();
+      }
+    });
+  }
 
   const toggleSidebar = () => splitter.toggleCollapse();
   document.getElementById("btn-toggle-sidebar")?.addEventListener("click", toggleSidebar);

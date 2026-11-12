@@ -36,6 +36,13 @@ export interface AirspaceMapEngine {
     popupHtml: string,
   ): void;
   removeTargetMarker(address: string): void;
+  updateTargetTrajectory?(
+    address: string,
+    lon: number,
+    lat: number,
+    altMeters: number,
+    vRate?: number,
+  ): void;
 
   // Vector overlays (Airspace boundaries, GeoJSON / TopoJSON)
   setVectorLayer(

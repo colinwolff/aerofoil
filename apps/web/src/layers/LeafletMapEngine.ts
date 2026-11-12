@@ -58,43 +58,32 @@ export class LeafletMapEngine implements AirspaceMapEngine {
     this.viewChangeCallbacks.push(callback);
   }
 
+  private createTileLayer(url: string, attr: string, opts?: AirspaceLayerOptions, defaultPane: string = PANE_BASEMAP): TileLayer {
+    return new TileLayer(url, {
+      attribution: attr,
+      minZoom: opts?.minZoom ?? 0,
+      maxZoom: opts?.maxZoom ?? 19,
+      maxNativeZoom: opts?.maxNativeZoom ?? opts?.maxZoom ?? 19,
+      subdomains: opts?.subdomains ?? "abc",
+      opacity: opts?.opacity ?? (defaultPane === PANE_BASEMAP ? 1.0 : 0.7),
+      pane: opts?.pane ?? defaultPane,
+      tms: opts?.tms ?? false,
+    });
+  }
+
   public setBaseTileLayer(id: string, url: string, attribution: string, options?: AirspaceLayerOptions): void {
     if (!this.map) return;
     if (this.baseLayer) {
       this.map.removeLayer(this.baseLayer);
       this.baseLayer = null;
     }
-
-    const tileOptions: any = {
-      attribution,
-      minZoom: options?.minZoom ?? 0,
-      maxZoom: options?.maxZoom ?? 19,
-      maxNativeZoom: options?.maxNativeZoom ?? options?.maxZoom ?? 19,
-      subdomains: options?.subdomains ?? "abc",
-      opacity: options?.opacity ?? 1.0,
-      pane: options?.pane ?? PANE_BASEMAP,
-      tms: options?.tms ?? false,
-    };
-
-    this.baseLayer = new TileLayer(url, tileOptions).addTo(this.map);
+    this.baseLayer = this.createTileLayer(url, attribution, options, PANE_BASEMAP).addTo(this.map);
   }
 
   public addOverlayTileLayer(id: string, url: string, attribution: string, options?: AirspaceLayerOptions): void {
     if (!this.map) return;
     this.removeTileLayer(id);
-
-    const tileOptions: any = {
-      attribution,
-      minZoom: options?.minZoom ?? 0,
-      maxZoom: options?.maxZoom ?? 19,
-      maxNativeZoom: options?.maxNativeZoom ?? options?.maxZoom ?? 19,
-      subdomains: options?.subdomains ?? "abc",
-      opacity: options?.opacity ?? 0.7,
-      pane: options?.pane ?? "overlayPane",
-      tms: options?.tms ?? false,
-    };
-
-    const layer = new TileLayer(url, tileOptions).addTo(this.map);
+    const layer = this.createTileLayer(url, attribution, options, "overlayPane").addTo(this.map);
     this.overlayTiles.set(id, layer);
   }
 
@@ -177,15 +166,19 @@ export class LeafletMapEngine implements AirspaceMapEngine {
     }
   }
 
+  public get trajectoryManager(): LeafletParametricManager | null {
+    return this.parametricManager;
+  }
+
+  public updateTargetTrajectory(address: string, lon: number, lat: number): void {
+    this.parametricManager?.updateTrajectory(address, lat, lon);
+  }
+
   public setParametricLines(id: string, lines: [number, number][][], style: Record<string, any>): void {
     this.parametricManager?.setParametricLines(id, lines, style);
   }
 
-  public setParametricCircles(
-    id: string,
-    circles: { center: [number, number]; radiusMeters: number }[],
-    style: Record<string, any>,
-  ): void {
+  public setParametricCircles(id: string, circles: { center: [number, number]; radiusMeters: number }[], style: Record<string, any>): void {
     this.parametricManager?.setParametricCircles(id, circles, style);
   }
 

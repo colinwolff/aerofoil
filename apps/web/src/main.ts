@@ -97,7 +97,7 @@ async function initApp(): Promise<void> {
     });
     radarManager.setInspector(inspector);
 
-    bindToolbar(drawer, configModal, splitter, toggleMgr);
+    bindToolbar(drawer, configModal, splitter, toggleMgr, radarManager);
   } else {
     radarManager = new AirspaceRadarManager(null);
   }

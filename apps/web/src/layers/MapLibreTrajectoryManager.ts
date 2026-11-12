@@ -15,6 +15,8 @@ export interface TargetTrajectory {
   verticalRateFpm: number;
 }
 
+export type TrailsMode = "all" | "selected" | "none";
+
 const MAX_HISTORY_POINTS = 60;
 const SOURCE_ID = "trajectories-source";
 const LAYER_ID = "trajectories-layer";
@@ -25,6 +27,30 @@ export class MapLibreTrajectoryManager {
   private rafId: number | null = null;
   private lastFlushTime: number = 0;
   private readonly minFlushIntervalMs = 100; // <= 10 Hz throttle
+  private trailsMode: TrailsMode = "selected";
+  private selectedIcaos: Set<string> = new Set();
+
+  public setTrailsMode(mode: TrailsMode): void {
+    if (this.trailsMode !== mode) {
+      this.trailsMode = mode;
+      this.dirty = true;
+    }
+  }
+
+  public getTrailsMode(): TrailsMode {
+    return this.trailsMode;
+  }
+
+  public setSelectedIcaos(icaos: Set<string>): void {
+    this.selectedIcaos = new Set(icaos);
+    this.dirty = true;
+  }
+
+  public toggleAllTrails(): boolean {
+    const next = this.trailsMode === "all" ? "selected" : "all";
+    this.setTrailsMode(next);
+    return next === "all";
+  }
 
   public addCoordinate(
     address: string,
@@ -76,20 +102,14 @@ export class MapLibreTrajectoryManager {
 
     map.addSource(SOURCE_ID, {
       type: "geojson",
-      data: {
-        type: "FeatureCollection",
-        features: [],
-      },
+      data: { type: "FeatureCollection", features: [] },
     });
 
     map.addLayer({
       id: LAYER_ID,
       type: "line",
       source: SOURCE_ID,
-      layout: {
-        "line-join": "round",
-        "line-cap": "round",
-      },
+      layout: { "line-join": "round", "line-cap": "round" },
       paint: {
         "line-color": [
           "case",
@@ -105,11 +125,11 @@ export class MapLibreTrajectoryManager {
     });
   }
 
-  public update(map: MapLibreMap): void {
+  public update(map: MapLibreMap, force: boolean = false): void {
     if (!this.dirty) return;
 
     const now = performance.now();
-    if (now - this.lastFlushTime < this.minFlushIntervalMs) {
+    if (!force && now - this.lastFlushTime < this.minFlushIntervalMs) {
       if (this.rafId === null && typeof requestAnimationFrame !== "undefined") {
         this.rafId = requestAnimationFrame(() => {
           this.rafId = null;
@@ -126,25 +146,27 @@ export class MapLibreTrajectoryManager {
     if (!source || !source.setData) return;
 
     const features = [];
-    for (const traj of this.trajectories.values()) {
-      if (traj.points.length < 2) continue;
+    if (this.trailsMode !== "none") {
+      for (const traj of this.trajectories.values()) {
+        if (traj.points.length < 2) continue;
+        if (this.trailsMode === "selected" && !this.selectedIcaos.has(traj.address)) {
+          continue;
+        }
 
-      features.push({
-        type: "Feature" as const,
-        properties: {
-          address: traj.address,
-          verticalRateFpm: traj.verticalRateFpm,
-        },
-        geometry: {
-          type: "LineString" as const,
-          coordinates: traj.points.map((p) => [p.lon, p.lat, p.altMeters]),
-        },
-      });
+        features.push({
+          type: "Feature" as const,
+          properties: {
+            address: traj.address,
+            verticalRateFpm: traj.verticalRateFpm,
+          },
+          geometry: {
+            type: "LineString" as const,
+            coordinates: traj.points.map((p) => [p.lon, p.lat, p.altMeters]),
+          },
+        });
+      }
     }
 
-    source.setData({
-      type: "FeatureCollection",
-      features,
-    });
+    source.setData({ type: "FeatureCollection", features });
   }
 }

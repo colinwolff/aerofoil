@@ -115,7 +115,7 @@ when its crates compile, its tests pass and the tiered gates in `AGENTS.md` §3.
 - [ ] Epic: Milestone 6 — Advanced Surveillance Avionics, Clean-Room Parity & 3D Spatial Airspace (`AF-68`).
 - [x] Glassmorphic Aircraft Inspector Pane: floating avionics card displaying registration, airframe type, operator, squawk, TAS/IAS, Mach, roll angle, selected MCP altitude, RSSI, message rate, and dynamic 3D altitude profile sparkline (`AF-69`).
 - [x] LOD-aware aircraft callsign and altitude flight level map labels: collision-tested callsign/FL/speed text badges beside aircraft markers with zoom-level density decluttering in 2D and 3D (`AF-70`).
-- [ ] Persistent multi-aircraft track trails and global track toggle hotkey (`T`): keyboard shortcut `T` to toggle all flight trails, individual selection persistence, and multiselect inspection mode (`AF-71`).
+- [x] Persistent multi-aircraft track trails and global track toggle hotkey (`T`): keyboard shortcut `T` to toggle all flight trails, individual selection persistence, and multiselect inspection mode (`AF-71`).
 - [ ] Dynamic regex callsign search and spatial altitude/speed/provenance filtering: interactive search bar supporting callsign regex (`^UAL|DAL`), altitude bounds slider ($FL_{min} \dots FL_{max}$), speed boundaries, and data source toggle (`adsb`, `uat`, `mlat`) (`AF-72`).
 - [ ] Bidirectional URL search/hash state persistence: deep-linking query parameters for map center, zoom, pitch, bearing, viewport mode, isolated ICAO hexes (`?icao=...`), and active filter criteria (`AF-73`).
 - [ ] 3D extruded polygonal airspace volumes: render FAA Class B/C/D and Special Use Airspace (SUA) as semi-transparent 3D polygonal columns extruded from aeronautical floor to ceiling MSL (`AF-74`).
