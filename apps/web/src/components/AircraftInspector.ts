@@ -32,6 +32,7 @@ export class AircraftInspector {
   private altitudeHistory: AltitudePoint[] = [];
   private onCenterCallback: ((lat: number, lon: number) => void) | null = null;
   private onChaseCallback: ((icao: string) => void) | null = null;
+  private onCloseCallback: (() => void) | null = null;
 
   public init(containerId: string = "aircraft-inspector-container"): void {
     let el = document.getElementById(containerId);
@@ -52,6 +53,10 @@ export class AircraftInspector {
     this.onChaseCallback = cb;
   }
 
+  public setOnClose(cb: () => void): void {
+    this.onCloseCallback = cb;
+  }
+
   public selectTarget(target: TargetWire, history: AltitudePoint[] = []): void {
     this.currentTarget = target;
     this.altitudeHistory = history;
@@ -60,8 +65,10 @@ export class AircraftInspector {
   }
 
   public close(): void {
+    const hadTarget = this.currentTarget !== null;
     this.currentTarget = null;
     this.container?.classList.add("hidden");
+    if (hadTarget) this.onCloseCallback?.();
   }
 
   public isVisible(): boolean {

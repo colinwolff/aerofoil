@@ -69,5 +69,24 @@ describe("AircraftLabelsManager", () => {
     expect(marker).toContain("plane-marker-wrapper");
     expect(marker).toContain("<svg");
     expect(marker).toContain("TEST");
+
+    const selectedMarker = mgr.buildMarkerHtml("Narrowbody", 180, 25000, false, labelHtml, true);
+    expect(selectedMarker).toContain("selected-plane");
+  });
+
+  test("toggles global label visibility while preserving selected and emergency labels", () => {
+    const toggleMgr = new AircraftLabelsManager(40);
+    expect(toggleMgr.isLabelsEnabled()).toBe(true);
+    expect(toggleMgr.shouldShowLabel(9.0, false, false)).toBe(true);
+
+    expect(toggleMgr.toggleLabels()).toBe(false);
+    expect(toggleMgr.isLabelsEnabled()).toBe(false);
+    expect(toggleMgr.shouldShowLabel(9.0, false, false)).toBe(false);
+    // Selected or emergency still show their label when global labels are off
+    expect(toggleMgr.shouldShowLabel(9.0, true, false)).toBe(true);
+    expect(toggleMgr.shouldShowLabel(9.0, false, true)).toBe(true);
+
+    expect(toggleMgr.toggleLabels()).toBe(true);
+    expect(toggleMgr.shouldShowLabel(9.0, false, false)).toBe(true);
   });
 });

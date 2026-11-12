@@ -13,14 +13,29 @@ export interface ScreenPoint {
 
 export class AircraftLabelsManager {
   private minDistancePx: number = 42;
+  private labelsEnabled: boolean = true;
 
   constructor(minDistance: number = 42) {
     this.minDistancePx = minDistance;
   }
 
+  public setLabelsEnabled(enabled: boolean): void {
+    this.labelsEnabled = enabled;
+  }
+
+  public isLabelsEnabled(): boolean {
+    return this.labelsEnabled;
+  }
+
+  public toggleLabels(): boolean {
+    this.labelsEnabled = !this.labelsEnabled;
+    return this.labelsEnabled;
+  }
+
   /// Determines if a label should be displayed based on zoom level and target priority.
   public shouldShowLabel(zoom: number, isSelected: boolean, isEmergency: boolean): boolean {
     if (isSelected || isEmergency) return true;
+    if (!this.labelsEnabled) return false;
     return zoom >= 7.5;
   }
 
@@ -62,10 +77,12 @@ export class AircraftLabelsManager {
     altitudeFt: number | undefined,
     isEmergency: boolean,
     labelHtml: string,
+    isSelected: boolean = false,
   ): string {
     const iconSvg = renderAircraftSvg(category, heading, altitudeFt, isEmergency);
+    const wrapperCls = isSelected ? "plane-marker-wrapper selected-plane" : "plane-marker-wrapper";
     return `
-      <div class="plane-marker-wrapper">
+      <div class="${wrapperCls}">
         ${iconSvg}
         ${labelHtml}
       </div>

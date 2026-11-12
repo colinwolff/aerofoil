@@ -13,6 +13,7 @@ crates, in the imperative, one line each, with the `storypole` task key in paren
 
 ### Added
 
+- Add toolbar toggle (`K`) for aircraft callsign/FL map labels and single-aircraft telemetry list row selection highlighting (`AF-87`).
 - Add elevated 3D range rings and volumetric surveillance dome with floating altitude labels in MapLibre GL (`AF-77`).
 - Add instanced 3D aircraft models with dynamic pitch, roll, and heading orientation in MapLibre GL (`AF-76`).
 - Add smooth 3D chase camera tracking and follow mode for active airborne targets in MapLibre GL (`AF-75`).

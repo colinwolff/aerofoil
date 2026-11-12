@@ -39,7 +39,10 @@ export class AirspaceRadarManager {
   constructor(private engine: AirspaceMapEngine | any = null) {}
 
   public setAntennaLayer(layer: any): void { this.antennaLayer = layer; }
-  public setInspector(inspector: AircraftInspector): void { this.inspector = inspector; }
+  public setInspector(inspector: AircraftInspector): void {
+    this.inspector = inspector;
+    this.inspector.setOnClose?.(() => this.clearSelection());
+  }
   public setChaseCamera(mgr: any): void { this.chaseCamera = mgr; }
 
   public setFilterCriteria(criteria: AirspaceFilterCriteria): void {
@@ -64,8 +67,26 @@ export class AirspaceRadarManager {
   }
 
   public isAllTrailsActive(): boolean { return this.allTrailsActive; }
+  public toggleAllLabels(): boolean {
+    const enabled = this.labelsMgr.toggleLabels();
+    this.onViewChanged();
+    return enabled;
+  }
+  public isLabelsEnabled(): boolean { return this.labelsMgr.isLabelsEnabled(); }
   public getSelectedIcao(): string | null { return this.selectedIcaos.values().next().value ?? null; }
   public getSelectedIcaos(): Set<string> { return new Set(this.selectedIcaos); }
+
+  public clearSelection(): void {
+    if (this.selectedIcaos.size === 0) return;
+    const prev = new Set(this.selectedIcaos);
+    this.selectedIcaos.clear();
+    for (const oldKey of prev) {
+      const oldTarget = this.targets.get(oldKey);
+      if (oldTarget && matchesFilter(oldTarget, this.filterCriteria)) this.renderTargetMarker(oldKey, oldTarget, false);
+    }
+    this.engine?.trajectoryManager?.setSelectedIcaos?.(this.selectedIcaos);
+    this.renderTable();
+  }
 
   public selectTarget(icao: string, multiSelect: boolean = false): void {
     const key = icao.toUpperCase();
@@ -133,7 +154,7 @@ export class AirspaceRadarManager {
     const zoom = typeof this.engine.getZoom === "function" ? this.engine.getZoom() : 8;
     const showLabel = this.labelsMgr.shouldShowLabel(zoom, isSelected, isEmergency);
     const labelHtml = this.labelsMgr.formatLabel(target, isSelected, isEmergency, !showLabel);
-    const markerHtml = this.labelsMgr.buildMarkerHtml(category, heading, target.altitude, isEmergency, labelHtml);
+    const markerHtml = this.labelsMgr.buildMarkerHtml(category, heading, target.altitude, isEmergency, labelHtml, isSelected);
 
     const isMlat = target.reception === "Mlat";
     const mlatBadge = isMlat ? ' <span class="badge bg-purple-700 text-white font-bold text-[10px] px-1 py-0.2 rounded">MLAT</span>' : "";

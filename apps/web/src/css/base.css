@@ -149,7 +149,16 @@ th {
 }
 
 td { padding: 0.4rem 0.4rem; border-bottom: 1px solid rgba(125, 125, 125, 0.1); }
-tbody tr:hover { background: rgba(125, 125, 125, 0.1); }
+tbody tr { cursor: pointer; transition: background-color 0.1s ease; }
+tbody tr:hover { background: rgba(125, 125, 125, 0.12); }
+
+tr.selected {
+  background-color: rgba(56, 189, 248, 0.22);
+  color: #38bdf8;
+  font-weight: 600;
+  box-shadow: inset 3px 0 0 #38bdf8;
+}
+tr.selected:hover { background-color: rgba(56, 189, 248, 0.3); }
 
 tr.emergency {
   background-color: rgba(239, 68, 68, 0.25);

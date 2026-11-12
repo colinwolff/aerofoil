@@ -104,6 +104,15 @@ export function bindToolbar(
   };
   btnTrails?.addEventListener("click", toggleTrails);
 
+  const btnLabels = document.getElementById("btn-toggle-labels");
+  const toggleLabels = () => {
+    if (radarMgr && typeof radarMgr.toggleAllLabels === "function") {
+      const active = radarMgr.toggleAllLabels();
+      btnLabels?.classList.toggle("active", active);
+    }
+  };
+  btnLabels?.addEventListener("click", toggleLabels);
+
   if (typeof window !== "undefined") {
     window.addEventListener("keydown", (e) => {
       const tag = (e.target as HTMLElement | undefined)?.tagName;
@@ -112,6 +121,8 @@ export function bindToolbar(
       }
       if (e.key === "t" || e.key === "T") {
         toggleTrails();
+      } else if (e.key === "k" || e.key === "K") {
+        toggleLabels();
       }
     });
   }
