@@ -1,6 +1,6 @@
 //! MapLibre3dModelLayer — Custom 3D WebGL layer for instanced 3D aircraft models with true pitch, roll, and heading.
 
-import { MercatorCoordinate, type CustomLayerInterface, type Map as MapLibreMap } from "maplibre-gl";
+import { MercatorCoordinate, type CustomLayerInterface, type CustomRenderMethodInput, type Map as MapLibreMap } from "maplibre-gl";
 import type { AirframeCategory } from "../icons/AircraftIconMatrix";
 import { getMeshForCategory } from "./AircraftMeshCatalog";
 
@@ -92,8 +92,12 @@ export class MapLibre3dModelLayer implements CustomLayerInterface {
     this.normalAttr = gl.getAttribLocation(this.program, "a_normal");
   }
 
-  public render(gl: WebGLRenderingContext | WebGL2RenderingContext, matrix: number[]): void {
-    if (!gl || !this.program || this.targets.size === 0) return;
+  public render(gl: WebGLRenderingContext | WebGL2RenderingContext, options: CustomRenderMethodInput | ArrayLike<number>): void {
+    const matrix = MapLibre3dModelLayer.extractProjectionMatrix(options);
+    if (!gl || !this.program || !matrix || this.targets.size === 0) return;
+
+    const gl2 = gl as WebGL2RenderingContext;
+    if (typeof gl2.bindVertexArray === "function") gl2.bindVertexArray(null);
 
     gl.useProgram(this.program);
     gl.enable(gl.DEPTH_TEST);
@@ -106,9 +110,12 @@ export class MapLibre3dModelLayer implements CustomLayerInterface {
     gl.enableVertexAttribArray(this.normalAttr);
 
     const zoom = this.map ? this.map.getZoom() : 10;
+    const hasTerrain = Boolean(this.map?.getTerrain());
 
     for (const target of this.targets.values()) {
-      const coord = MercatorCoordinate.fromLngLat([target.lon, target.lat], target.altMeters);
+      const groundElev = hasTerrain ? (this.map!.queryTerrainElevation([target.lon, target.lat]) ?? 0) : 0;
+      const altMeters = Math.max(target.altMeters, groundElev + 15);
+      const coord = MercatorCoordinate.fromLngLat([target.lon, target.lat], altMeters);
       const meterScale = coord.meterInMercatorCoordinateUnits();
       const minScale = 26.0 / (32.0 * 256.0 * Math.pow(2, zoom));
       const scale = Math.max(meterScale, minScale);
@@ -136,14 +143,25 @@ export class MapLibre3dModelLayer implements CustomLayerInterface {
     gl.disableVertexAttribArray(this.normalAttr);
   }
 
+  public static extractProjectionMatrix(input: unknown): ArrayLike<number> | null {
+    if (!input) return null;
+    if (Array.isArray(input) || ArrayBuffer.isView(input)) {
+      const arr = input as ArrayLike<number>;
+      return arr.length >= 16 ? arr : null;
+    }
+    const opts = input as Partial<CustomRenderMethodInput>;
+    const m = opts.defaultProjectionData?.mainMatrix ?? opts.modelViewProjectionMatrix;
+    return m && m.length >= 16 ? m : null;
+  }
+
   public computeModelMatrix(
-    p: number[], x: number, y: number, z: number, scale: number, hdg: number, pitch: number = 0, roll: number = 0,
+    p: ArrayLike<number>, x: number, y: number, z: number, scale: number, hdg: number, pitch: number = 0, roll: number = 0,
   ): Float32Array {
     return this.computeTransforms(p, x, y, z, scale, hdg, pitch, roll).modelMatrix;
   }
 
   private computeTransforms(
-    p: number[], x: number, y: number, z: number, s: number, hdg: number, pitch: number = 0, roll: number = 0,
+    p: ArrayLike<number>, x: number, y: number, z: number, s: number, hdg: number, pitch: number = 0, roll: number = 0,
   ): { modelMatrix: Float32Array; normalMatrix: Float32Array } {
     const psi = (hdg * Math.PI) / 180, theta = (pitch * Math.PI) / 180, phi = (roll * Math.PI) / 180;
     const cp = Math.cos(psi), sp = Math.sin(psi);

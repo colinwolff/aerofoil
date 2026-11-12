@@ -63,6 +63,7 @@ crates, in the imperative, one line each, with the `storypole` task key in paren
 
 ### Fixed
 
+- Fix MapLibre GL v6 `CustomLayerInterface.render` matrix extraction (`defaultProjectionData.mainMatrix`), WebGL2 VAO unbinding, terrain elevation offset, and layer z-order so 3D aircraft models render above airspace volumes (`AF-89`).
 - Restore interactive airspace section selection and popup labels in 2D and 3D by making `antennaPane` and parametric range rings non-interactive, preserving `onEachFeature` callbacks across engine toggles, and adding MapLibre 3D volume click popups (`AF-88`).
 - Fix 3D mode stuttering and UI freezes by throttling telemetry table DOM updates, eliminating the `onViewChange` feedback loop, caching marker HTML, converting 3D dome disks into hollow rings, and configuring MapLibre glyph endpoints (`AF-86`).
 - Fix MapLibre 3D aircraft model visibility by correcting projection matrix multiplication, establishing dynamic zoom-adaptive model scaling, adding directional normal lighting, and triggering WebGL repaints (`AF-76`).

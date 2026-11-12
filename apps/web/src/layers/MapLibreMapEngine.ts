@@ -59,10 +59,10 @@ export class MapLibreMapEngine implements AirspaceMapEngine {
       this.styleReady = true;
       (this.map as any).setSky?.({ "sky-color": "#06090e", "horizon-color": "#1e293b", "fog-color": "#090d16", "sky-horizon-blend": 0.5 });
       this.stemsManager.setupLayers(this.map); this.trajectoryManager.setupLayers(this.map);
-      if (!this.map.getLayer(this.modelLayer3d.id)) this.map.addLayer(this.modelLayer3d);
       const dem = MapLibreTerrainHelper.resolveDemUrl(this.terrainOpts.provider, this.terrainOpts.customUrl, this.terrainOpts.maptilerKey);
       MapLibreTerrainHelper.enableTerrain(this.map, dem.url, this.terrainOpts.exaggeration ?? 1.5, dem.encoding, dem.tileSize, this.beforeLayerId());
       while (this.readyQueue.length > 0) this.readyQueue.shift()?.();
+      if (!this.map.getLayer(this.modelLayer3d.id)) this.map.addLayer(this.modelLayer3d);
       this.trajectoryManager.update(this.map); this.stemsManager.update(this.map);
     });
 
@@ -112,7 +112,9 @@ export class MapLibreMapEngine implements AirspaceMapEngine {
   }
 
   private beforeLayerId(): string | undefined {
-    return this.map?.getLayer("altitude-shadows-layer") ? "altitude-shadows-layer" : (this.map?.getLayer("trajectories-layer") ? "trajectories-layer" : undefined);
+    if (this.map?.getLayer("altitude-shadows-layer")) return "altitude-shadows-layer";
+    if (this.map?.getLayer("trajectories-layer")) return "trajectories-layer";
+    return this.map?.getLayer(this.modelLayer3d.id) ? this.modelLayer3d.id : undefined;
   }
 
   private addRaster(srcId: string, lyrId: string, url: string, attr: string, opt?: AirspaceLayerOptions, opacity?: number, isDark?: boolean): void {

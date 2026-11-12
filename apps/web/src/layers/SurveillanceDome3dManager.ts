@@ -115,6 +115,7 @@ export class SurveillanceDome3dManager {
     const ribbonData = generateDomeRibbonsGeoJson(this.centerLat, this.centerLon, this.tiers);
     const labelData = generateDomeLabelsGeoJson(this.centerLat, this.centerLon, this.tiers);
 
+    const resolvedBefore = beforeLayerId ?? (map.getLayer("aircraft-3d-models-layer") ? "aircraft-3d-models-layer" : undefined);
     map.addSource(SOURCE_ID, { type: "geojson", data: ribbonData });
     map.addLayer(
       {
@@ -128,7 +129,7 @@ export class SurveillanceDome3dManager {
           "fill-extrusion-opacity": 0.35,
         },
       },
-      beforeLayerId,
+      resolvedBefore,
     );
 
     map.addSource(LABELS_SOURCE_ID, { type: "geojson", data: labelData });

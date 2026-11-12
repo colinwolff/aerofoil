@@ -21,7 +21,11 @@ export class MapLibreVectorManager {
       const srcId = `vector-src-${id}`;
       const lyrId = `vector-lyr-${id}`;
       map.addSource(srcId, { type: "geojson", data: geoJsonData });
-      const beforeId = map.getLayer("altitude-shadows-layer") ? "altitude-shadows-layer" : undefined;
+      const beforeId = map.getLayer("altitude-shadows-layer")
+        ? "altitude-shadows-layer"
+        : map.getLayer("aircraft-3d-models-layer")
+          ? "aircraft-3d-models-layer"
+          : undefined;
       map.addLayer(
         {
           id: lyrId,
@@ -71,7 +75,11 @@ export class MapLibreVectorManager {
           })),
         },
       });
-      const beforeId = map.getLayer("altitude-shadows-layer") ? "altitude-shadows-layer" : undefined;
+      const beforeId = map.getLayer("altitude-shadows-layer")
+        ? "altitude-shadows-layer"
+        : map.getLayer("aircraft-3d-models-layer")
+          ? "aircraft-3d-models-layer"
+          : undefined;
       map.addLayer(
         {
           id: lyrId,

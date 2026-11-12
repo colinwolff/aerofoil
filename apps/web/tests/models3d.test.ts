@@ -99,4 +99,73 @@ describe("MapLibre3dModelLayer Custom WebGL Layer", () => {
     // Starboard vector (column 0) must have negative Z component (right wing down)
     expect(matrix[2]).toBeLessThan(0);
   });
+
+  test("extracts projection matrix from MapLibre v6 CustomRenderMethodInput and legacy arrays", () => {
+    const mainMatrix = new Float64Array([1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1]);
+    const fallbackMatrix = [2,0,0,0, 0,2,0,0, 0,0,2,0, 0,0,0,1];
+
+    expect(MapLibre3dModelLayer.extractProjectionMatrix(fallbackMatrix)).toBe(fallbackMatrix);
+    expect(
+      MapLibre3dModelLayer.extractProjectionMatrix({
+        defaultProjectionData: { mainMatrix },
+        modelViewProjectionMatrix: fallbackMatrix,
+      }),
+    ).toBe(mainMatrix);
+    expect(
+      MapLibre3dModelLayer.extractProjectionMatrix({
+        modelViewProjectionMatrix: fallbackMatrix,
+      }),
+    ).toBe(fallbackMatrix);
+    expect(MapLibre3dModelLayer.extractProjectionMatrix({})).toBeNull();
+  });
+
+  test("render unbinds WebGL2 VAO and uploads non-NaN u_matrix with MapLibre v6 options", () => {
+    const layer = new MapLibre3dModelLayer();
+    layer.updateTarget("A1234F", -122.3, 47.5, 3048, 90, 0, 0, "Jet");
+
+    const vaoCalls: any[] = [];
+    const uploadedMatrices: Float32Array[] = [];
+    let drawCalls = 0;
+
+    const fakeGl = {
+      VERTEX_SHADER: 1, FRAGMENT_SHADER: 2, ARRAY_BUFFER: 3, ELEMENT_ARRAY_BUFFER: 4,
+      STATIC_DRAW: 5, DEPTH_TEST: 6, LEQUAL: 7, CULL_FACE: 8, BLEND: 9,
+      SRC_ALPHA: 10, ONE_MINUS_SRC_ALPHA: 11, FLOAT: 12, TRIANGLES: 13, UNSIGNED_SHORT: 14,
+      createShader: () => ({}),
+      shaderSource: () => {},
+      compileShader: () => {},
+      createProgram: () => ({}),
+      attachShader: () => {},
+      linkProgram: () => {},
+      getUniformLocation: (_p: any, name: string) => name,
+      getAttribLocation: (_p: any, name: string) => (name === "a_pos" ? 0 : 1),
+      bindVertexArray: (vao: any) => { vaoCalls.push(vao); },
+      useProgram: () => {},
+      enable: () => {},
+      depthFunc: () => {},
+      disable: () => {},
+      blendFunc: () => {},
+      enableVertexAttribArray: () => {},
+      disableVertexAttribArray: () => {},
+      createBuffer: () => ({}),
+      bindBuffer: () => {},
+      bufferData: () => {},
+      vertexAttribPointer: () => {},
+      uniformMatrix4fv: (_loc: any, _t: boolean, val: Float32Array) => { uploadedMatrices.push(new Float32Array(val)); },
+      uniformMatrix3fv: () => {},
+      uniform4fv: () => {},
+      drawElements: () => { drawCalls++; },
+    } as any;
+
+    const fakeMap = { getZoom: () => 10, getTerrain: () => null } as any;
+    layer.onAdd(fakeMap, fakeGl);
+    layer.render(fakeGl, {
+      defaultProjectionData: { mainMatrix: new Float64Array([1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1]) },
+    } as any);
+
+    expect(vaoCalls).toEqual([null]);
+    expect(drawCalls).toBe(1);
+    expect(uploadedMatrices.length).toBe(1);
+    expect(Array.from(uploadedMatrices[0]).every((n) => Number.isFinite(n))).toBe(true);
+  });
 });
