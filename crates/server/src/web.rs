@@ -13,55 +13,44 @@ use aerofoil_tracker::Tracker;
 /// Resolves the MIME type for an HTTP static asset by file extension.
 #[must_use]
 pub fn mime_type_for_path(path: &str) -> &'static str {
-    if path.ends_with(".html") || path.ends_with('/') || path.is_empty() {
-        "text/html; charset=utf-8"
-    } else if path.ends_with(".js") || path.ends_with(".mjs") {
-        "application/javascript; charset=utf-8"
-    } else if path.ends_with(".css") {
-        "text/css; charset=utf-8"
-    } else if path.ends_with(".json") || path.ends_with(".topojson") {
-        "application/json; charset=utf-8"
-    } else if path.ends_with(".svg") {
-        "image/svg+xml"
-    } else if path.ends_with(".png") {
-        "image/png"
-    } else if path.ends_with(".ico") {
-        "image/x-icon"
-    } else {
-        "application/octet-stream"
+    if path.ends_with('/') || path.is_empty() {
+        return "text/html; charset=utf-8";
+    }
+    match path.rsplit_once('.').map(|(_, ext)| ext) {
+        Some("html") => "text/html; charset=utf-8",
+        Some("js" | "mjs") => "application/javascript; charset=utf-8",
+        Some("css") => "text/css; charset=utf-8",
+        Some("json" | "topojson") => "application/json; charset=utf-8",
+        Some("svg") => "image/svg+xml",
+        Some("png") => "image/png",
+        Some("ico") => "image/x-icon",
+        _ => "application/octet-stream",
     }
 }
 
 /// Locates the production web root directory across development and container layouts.
 #[must_use]
 pub fn find_web_root(custom_dir: Option<&str>) -> Option<PathBuf> {
-    if let Some(dir) = custom_dir {
+    let env_dir = std::env::var("AEROFOIL_WEB_DIR").ok();
+    for dir in custom_dir.into_iter().chain(env_dir.as_deref()) {
         let p = PathBuf::from(dir);
         if p.is_dir() {
             return Some(p);
         }
     }
-
-    if let Ok(env_dir) = std::env::var("AEROFOIL_WEB_DIR") {
-        let p = PathBuf::from(env_dir);
-        if p.is_dir() {
-            return Some(p);
-        }
-    }
-
-    let candidates = [
+    const CANDIDATES: &[&str] = &[
         "apps/web/dist",
         "dist",
         "/app/web",
         "../../apps/web/dist",
         "apps/web",
     ];
-
-    for candidate in candidates {
-        let p = PathBuf::from(candidate);
-        if p.is_dir() && (p.join("index.html").exists() || p.join("src").exists()) {
-            return Some(p);
-        }
+    if let Some(found) = CANDIDATES
+        .iter()
+        .map(PathBuf::from)
+        .find(|p| p.is_dir() && (p.join("index.html").exists() || p.join("src").exists()))
+    {
+        return Some(found);
     }
 
     None
@@ -88,9 +77,19 @@ pub fn read_static_file(web_root: &Path, request_path: &str) -> Option<(Vec<u8>,
 
 /// Handles HTTP GET requests for static assets, /health probes, and SPA fallbacks.
 pub fn serve_http_response(
+    stream: TcpStream,
+    tracker: &Tracker,
+    request_line: &str,
+) -> io::Result<()> {
+    serve_http_response_with_encoding(stream, tracker, request_line, false)
+}
+
+/// Handles HTTP GET requests with optional gzip content negotiation for static assets.
+pub fn serve_http_response_with_encoding(
     mut stream: TcpStream,
     tracker: &Tracker,
     request_line: &str,
+    accept_gzip: bool,
 ) -> io::Result<()> {
     if request_line.starts_with("OPTIONS ") {
         let resp = b"HTTP/1.1 204 No Content\r\nAccess-Control-Allow-Origin: *\r\nAccess-Control-Allow-Methods: GET, OPTIONS\r\nAccess-Control-Allow-Headers: Content-Type\r\nConnection: close\r\n\r\n";
@@ -140,24 +139,24 @@ pub fn serve_http_response(
             } else {
                 "no-cache"
             };
-            let header = format!(
-                "HTTP/1.1 200 OK\r\nContent-Type: {mime}\r\nAccess-Control-Allow-Origin: *\r\nCache-Control: {cache_ctrl}\r\nContent-Length: {}\r\nConnection: close\r\n\r\n",
-                bytes.len()
+            return crate::gzip::write_static_response(
+                &mut stream,
+                mime,
+                cache_ctrl,
+                &bytes,
+                accept_gzip,
             );
-            stream.write_all(header.as_bytes())?;
-            stream.write_all(&bytes)?;
-            return stream.flush();
         }
 
         if req_path == "/" || req_path == "/index.html" {
             let body = embedded_fallback_html(tracker.len());
-            let header = format!(
-                "HTTP/1.1 200 OK\r\nContent-Type: text/html; charset=utf-8\r\nContent-Length: {}\r\nConnection: close\r\n\r\n{}",
-                body.len(),
-                body
+            return crate::gzip::write_static_response(
+                &mut stream,
+                "text/html; charset=utf-8",
+                "no-cache",
+                body.as_bytes(),
+                accept_gzip,
             );
-            stream.write_all(header.as_bytes())?;
-            return stream.flush();
         }
     }
 

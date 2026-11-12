@@ -18,14 +18,18 @@ export class MapLibreVectorManager {
       const map = this.mapGetter();
       if (!map) return;
       this.removeVectorLayer(id);
-      const srcId = `vector-src-${id}`;
-      const lyrId = `vector-lyr-${id}`;
-      map.addSource(srcId, { type: "geojson", data: geoJsonData });
       const beforeId = map.getLayer("altitude-shadows-layer")
         ? "altitude-shadows-layer"
         : map.getLayer("aircraft-3d-models-layer")
           ? "aircraft-3d-models-layer"
           : undefined;
+      this.volumeManager.setupVolume(map, id, geoJsonData, beforeId);
+      // 3D volumetric extrusions/outlines already visualize polygon airspace;
+      // skip redundant 2D terrain-draped vector lines when a 3D volume mounted.
+      if (map.getLayer(`vol-fill-${id}`)) return;
+      const srcId = `vector-src-${id}`;
+      const lyrId = `vector-lyr-${id}`;
+      map.addSource(srcId, { type: "geojson", data: geoJsonData });
       map.addLayer(
         {
           id: lyrId,
@@ -36,7 +40,6 @@ export class MapLibreVectorManager {
         beforeId,
       );
       this.volumeManager.bindLayerPopup(map, lyrId);
-      this.volumeManager.setupVolume(map, id, geoJsonData, beforeId);
     };
 
     this.whenReady(run);
@@ -61,19 +64,25 @@ export class MapLibreVectorManager {
     const run = () => {
       const map = this.mapGetter();
       if (!map) return;
-      this.removeParametricLayer(id);
       const srcId = `param-src-${id}`;
       const lyrId = `param-lyr-${id}`;
+      const data = {
+        type: "FeatureCollection" as const,
+        features: lines.map((l) => ({
+          type: "Feature" as const,
+          properties: {},
+          geometry: { type: "LineString" as const, coordinates: l.map(([lat, lon]) => [lon, lat]) },
+        })),
+      };
+      const existingSrc = map.getSource(srcId) as { setData?: (d: unknown) => void } | undefined;
+      if (existingSrc && typeof existingSrc.setData === "function" && map.getLayer(lyrId)) {
+        existingSrc.setData(data);
+        return;
+      }
+      this.removeParametricLayer(id);
       map.addSource(srcId, {
         type: "geojson",
-        data: {
-          type: "FeatureCollection",
-          features: lines.map((l) => ({
-            type: "Feature" as const,
-            properties: {},
-            geometry: { type: "LineString" as const, coordinates: l.map(([lat, lon]) => [lon, lat]) },
-          })),
-        },
+        data,
       });
       const beforeId = map.getLayer("altitude-shadows-layer")
         ? "altitude-shadows-layer"

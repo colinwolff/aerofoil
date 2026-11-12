@@ -13,7 +13,10 @@ use std::{
 
 use aerofoil_tracker::Tracker;
 
-use crate::{sse::handle_sse_stream, web::serve_http_response, ws::handle_ws_client};
+use crate::{
+    gzip::accepts_gzip, sse::handle_sse_stream, web::serve_http_response_with_encoding,
+    ws::handle_ws_client,
+};
 
 /// Default egress port for HTTP/SSE/WebSocket streaming.
 pub const DEFAULT_EGRESS_PORT: u16 = 3000;
@@ -132,6 +135,7 @@ fn dispatch_http_client(stream: TcpStream, tracker: Arc<Tracker>, shutdown: Arc<
     }
 
     let mut last_event_id: u64 = 0;
+    let mut client_accepts_gzip = false;
     let mut line = String::new();
     while reader.read_line(&mut line).is_ok() && line.trim() != "" {
         let lower = line.to_ascii_lowercase();
@@ -139,6 +143,8 @@ fn dispatch_http_client(stream: TcpStream, tracker: Arc<Tracker>, shutdown: Arc<
             && let Some(val) = line.split(':').nth(1)
         {
             last_event_id = val.trim().parse::<u64>().unwrap_or(0);
+        } else if let Some(val) = lower.strip_prefix("accept-encoding:") {
+            client_accepts_gzip = accepts_gzip(val);
         }
         line.clear();
     }
@@ -148,6 +154,11 @@ fn dispatch_http_client(stream: TcpStream, tracker: Arc<Tracker>, shutdown: Arc<
     if request_line.starts_with("GET /events") || request_line.starts_with("GET /api/stream") {
         let _ = handle_sse_stream(raw_stream, tracker, shutdown, last_event_id);
     } else {
-        let _ = serve_http_response(raw_stream, &tracker, &request_line);
+        let _ = serve_http_response_with_encoding(
+            raw_stream,
+            &tracker,
+            &request_line,
+            client_accepts_gzip,
+        );
     }
 }
