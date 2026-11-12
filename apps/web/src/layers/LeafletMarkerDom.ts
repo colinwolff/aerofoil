@@ -28,10 +28,23 @@ function buildWrapperHtml(u: TargetVisualUpdate): string {
   </div>`;
 }
 
+export function bindLeafletMarkerClick(
+  marker: Marker,
+  address: string,
+  onTargetClick?: (address: string, multi: boolean) => void,
+): void {
+  marker.on("click", (ev: any) => {
+    const oe = ev?.originalEvent as { shiftKey?: boolean; ctrlKey?: boolean; metaKey?: boolean; stopPropagation?: () => void } | undefined;
+    oe?.stopPropagation?.();
+    onTargetClick?.(address, Boolean(oe?.shiftKey || oe?.ctrlKey || oe?.metaKey));
+  });
+}
+
 export function upsertLeafletMarkerFast(
   map: LeafletMap,
   markers: Map<string, Marker>,
   u: TargetVisualUpdate,
+  onTargetClick?: (address: string, multi: boolean) => void,
 ): void {
   const key = u.address.toUpperCase();
   const rot = Math.round(u.heading);
@@ -47,6 +60,7 @@ export function upsertLeafletMarkerFast(
     });
     marker = new Marker([u.lat, u.lon] as LatLngExpression, { icon }).addTo(map);
     marker.bindPopup(u.popupHtml);
+    bindLeafletMarkerClick(marker, u.address, onTargetClick);
     marker.__st = { lat: u.lat, lon: u.lon, rot, color, cat: u.category, cs: u.callsign, tel: u.telemetryText, sel: u.isSelected, emg: u.isEmergency, vis: u.showLabel, pop: u.popupHtml };
     markers.set(key, marker);
     return;

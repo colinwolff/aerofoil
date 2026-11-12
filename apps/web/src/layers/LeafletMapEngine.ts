@@ -5,13 +5,14 @@ import {
   GeoJSON,
   LeafletMap,
   Marker,
-  TileLayer,
   type LatLngExpression,
+  type TileLayer,
 } from "leaflet";
 import type { AirspaceLayerOptions, AirspaceMapEngine, TargetVisualUpdate } from "./AirspaceMapEngine";
 import { setupLeafletPanes, PANE_BASEMAP, PANE_AIRSPACE } from "./LeafletPanes";
 import { LeafletParametricManager } from "./LeafletParametricManager";
-import { upsertLeafletMarkerFast } from "./LeafletMarkerDom";
+import { bindLeafletMarkerClick, upsertLeafletMarkerFast } from "./LeafletMarkerDom";
+import { createLeafletTileLayer } from "./LeafletTileHelper";
 
 export class LeafletMapEngine implements AirspaceMapEngine {
   private map: LeafletMap | null = null;
@@ -22,6 +23,7 @@ export class LeafletMapEngine implements AirspaceMapEngine {
   private vectorLayers: Map<string, GeoJSON> = new Map();
   private parametricManager: LeafletParametricManager | null = null;
   private viewChangeCallbacks: (() => void)[] = [];
+  private onTargetClick?: (address: string, multi: boolean) => void;
 
   public init(containerId: string, centerLat: number, centerLon: number, zoom: number): void {
     this.map = new LeafletMap(containerId, {
@@ -62,20 +64,8 @@ export class LeafletMapEngine implements AirspaceMapEngine {
     }
   }
 
-  private createTileLayer(url: string, attr: string, opts?: AirspaceLayerOptions, defaultPane: string = PANE_BASEMAP): TileLayer {
-    return new TileLayer(url, {
-      attribution: attr,
-      minZoom: opts?.minZoom ?? 0,
-      maxZoom: opts?.maxZoom ?? 19,
-      maxNativeZoom: opts?.maxNativeZoom ?? opts?.maxZoom ?? 19,
-      subdomains: opts?.subdomains ?? "abc",
-      opacity: opts?.opacity ?? (defaultPane === PANE_BASEMAP ? 1.0 : 0.7),
-      pane: opts?.pane ?? defaultPane,
-      tms: opts?.tms ?? false,
-      keepBuffer: 4,
-      updateWhenZooming: false,
-      updateWhenIdle: true,
-    });
+  public setOnTargetClick(callback: (address: string, multi: boolean) => void): void {
+    this.onTargetClick = callback;
   }
 
   public setBaseTileLayer(id: string, url: string, attribution: string, options?: AirspaceLayerOptions): void {
@@ -86,13 +76,13 @@ export class LeafletMapEngine implements AirspaceMapEngine {
       this.map.removeLayer(this.baseLayer);
       this.baseLayer = null;
     }
-    this.baseLayer = this.createTileLayer(url, attribution, options, PANE_BASEMAP).addTo(this.map);
+    this.baseLayer = createLeafletTileLayer(url, attribution, options, PANE_BASEMAP).addTo(this.map);
   }
 
   public addOverlayTileLayer(id: string, url: string, attribution: string, options?: AirspaceLayerOptions): void {
     if (!this.map) return;
     this.removeTileLayer(id);
-    const layer = this.createTileLayer(url, attribution, options, "overlayPane").addTo(this.map);
+    const layer = createLeafletTileLayer(url, attribution, options, "overlayPane").addTo(this.map);
     this.overlayTiles.set(id, layer);
   }
 
@@ -126,6 +116,7 @@ export class LeafletMapEngine implements AirspaceMapEngine {
       const icon = new DivIcon({ html: iconHtml, className: "custom-plane-icon", iconSize: [32, 32], iconAnchor: [16, 16] });
       marker = new Marker([lat, lon] as LatLngExpression, { icon }).addTo(this.map);
       marker.bindPopup(popupHtml);
+      bindLeafletMarkerClick(marker, key, (addr, multi) => this.onTargetClick?.(addr, multi));
       marker.__cachedHtml = iconHtml;
       marker.__cachedPopup = popupHtml;
       this.targetMarkers.set(key, marker);
@@ -144,7 +135,7 @@ export class LeafletMapEngine implements AirspaceMapEngine {
 
   public updateTargetVisual(update: TargetVisualUpdate): void {
     if (!this.map) return;
-    upsertLeafletMarkerFast(this.map as any, this.targetMarkers, update);
+    upsertLeafletMarkerFast(this.map as any, this.targetMarkers, update, (addr, multi) => this.onTargetClick?.(addr, multi));
   }
 
   public removeTargetMarker(address: string): void {

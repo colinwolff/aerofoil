@@ -89,9 +89,8 @@ export class MapLibre3dModelLayer implements CustomLayerInterface {
     if (!gl || !matrix) return;
 
     const now = performance.now();
-    this.linesRenderer.render(gl, matrix, this.map, this.stemsSource, this.trajectorySource, this.targets, now);
-
     let animating = false;
+    gl.depthMask?.(true);
     if (this.targets.size > 0) {
       const zoom = typeof this.map?.getZoom === "function" ? this.map.getZoom() : 8;
       if (this.instanced) {
@@ -100,6 +99,10 @@ export class MapLibre3dModelLayer implements CustomLayerInterface {
         animating = this.fallback.render(gl, matrix, this.map, this.targets.values(), zoom, now);
       }
     }
+
+    gl.depthMask?.(false);
+    this.linesRenderer.render(gl, matrix, this.map, this.stemsSource, this.trajectorySource, this.targets, now);
+    gl.depthMask?.(true);
 
     this.hudOverlay?.draw(matrix, now);
 
