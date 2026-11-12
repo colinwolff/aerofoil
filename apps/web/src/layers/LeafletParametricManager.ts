@@ -53,16 +53,23 @@ export class LeafletParametricManager {
   public updateTrajectory(id: string, lat: number, lon: number, style?: Record<string, any>): void {
     const key = id.toUpperCase();
     let poly = this.trajectoryPolylines.get(key);
+    const show = this.trailsMode === "all" || (this.trailsMode === "selected" && !!this.lastSelectedIcaos?.has(key));
     if (!poly) {
       poly = new Polyline([[lat, lon]], {
         color: style?.color ?? "#06b6d4",
         weight: 2,
         opacity: 0.75,
+        interactive: false,
         pane: "overlayPane",
-      }).addTo(this.map);
+      });
+      if (show) poly.addTo(this.map);
       this.trajectoryPolylines.set(key, poly);
     } else {
-      poly.addLatLng([lat, lon]);
+      const pts = poly.getLatLngs() as any[];
+      pts.push([lat, lon]);
+      if (pts.length > 60) pts.shift();
+      poly.setLatLngs(pts);
+      if (show && !this.map.hasLayer(poly)) this.map.addLayer(poly);
     }
   }
 
@@ -85,7 +92,7 @@ export class LeafletParametricManager {
     } else if (mode === "all") {
       this.setTrajectoriesVisible(true);
     } else {
-      this.setTrajectoriesVisible(true, this.lastSelectedIcaos);
+      this.setTrajectoriesVisible(true, this.lastSelectedIcaos ?? new Set());
     }
   }
 
@@ -98,7 +105,7 @@ export class LeafletParametricManager {
 
   public setTrajectoriesVisible(visible: boolean, selectedIcaos?: Set<string>): void {
     for (const [id, poly] of this.trajectoryPolylines.entries()) {
-      const show = visible && (!selectedIcaos || selectedIcaos.size === 0 || selectedIcaos.has(id));
+      const show = visible && (selectedIcaos === undefined || selectedIcaos.has(id));
       if (show) {
         if (!this.map.hasLayer(poly)) this.map.addLayer(poly);
       } else {

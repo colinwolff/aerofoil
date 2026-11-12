@@ -55,7 +55,9 @@ export class LeafletMapEngine implements AirspaceMapEngine {
   }
 
   public onViewChange(callback: () => void): void {
-    this.viewChangeCallbacks.push(callback);
+    if (!this.viewChangeCallbacks.includes(callback)) {
+      this.viewChangeCallbacks.push(callback);
+    }
   }
 
   private createTileLayer(url: string, attr: string, opts?: AirspaceLayerOptions, defaultPane: string = PANE_BASEMAP): TileLayer {
@@ -112,22 +114,24 @@ export class LeafletMapEngine implements AirspaceMapEngine {
     if (!this.map) return;
     const key = address.toUpperCase();
 
-    const icon = new DivIcon({
-      html: iconHtml,
-      className: "custom-plane-icon",
-      iconSize: [32, 32],
-      iconAnchor: [16, 16],
-    });
-
-    let marker = this.targetMarkers.get(key);
+    let marker = this.targetMarkers.get(key) as any;
     if (!marker) {
+      const icon = new DivIcon({ html: iconHtml, className: "custom-plane-icon", iconSize: [32, 32], iconAnchor: [16, 16] });
       marker = new Marker([lat, lon] as LatLngExpression, { icon }).addTo(this.map);
       marker.bindPopup(popupHtml);
+      marker._html = iconHtml;
+      marker._popup = popupHtml;
       this.targetMarkers.set(key, marker);
     } else {
       marker.setLatLng([lat, lon] as LatLngExpression);
-      marker.setIcon(icon);
-      marker.setPopupContent(popupHtml);
+      if (marker._html !== iconHtml) {
+        marker.setIcon(new DivIcon({ html: iconHtml, className: "custom-plane-icon", iconSize: [32, 32], iconAnchor: [16, 16] }));
+        marker._html = iconHtml;
+      }
+      if (marker._popup !== popupHtml) {
+        marker.setPopupContent(popupHtml);
+        marker._popup = popupHtml;
+      }
     }
   }
 

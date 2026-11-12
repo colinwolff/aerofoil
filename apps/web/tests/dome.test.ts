@@ -23,7 +23,9 @@ describe("SurveillanceDome3dManager Geometry", () => {
     expect(tier1.properties.ceiling_m).toBeCloseTo(3048 + 35, 1);
     expect(tier1.properties.floor_m).toBeCloseTo(3048 - 35, 1);
     expect(tier1.geometry.type).toBe("Polygon");
-    expect(tier1.geometry.coordinates[0].length).toBeGreaterThan(36); // Full circular polygon
+    expect(tier1.geometry.coordinates.length).toBe(2); // Hollow ring: outer + inner hole
+    expect(tier1.geometry.coordinates[0].length).toBeGreaterThan(36);
+    expect(tier1.geometry.coordinates[1].length).toBeGreaterThan(36);
   });
 
   test("generates floating 3D labels at cardinal azimuth intersections", () => {
