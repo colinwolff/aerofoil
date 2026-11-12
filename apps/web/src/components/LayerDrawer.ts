@@ -2,7 +2,7 @@
 
 import type { BaseMapManager } from "../layers/BaseMapRegistry";
 import type { DynamicRingsLayer } from "../layers/DynamicRingsLayer";
-import type { VectorOverlayManager } from "../layers/VectorOverlayManager";
+import { VectorOverlayManager } from "../layers/VectorOverlayManager";
 import type { WeatherRadarLayer } from "../layers/WeatherRadarLayer";
 import type { WeatherScrubber } from "./WeatherScrubber";
 import type { LegalModal } from "./LegalModal";

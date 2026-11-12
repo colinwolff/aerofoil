@@ -130,7 +130,12 @@ export class MapLibreMapEngine implements AirspaceMapEngine {
       if (lyrId === this.baseLayerId) this.currentBaseUrl = url;
       if (this.map.getLayer(lyrId)) this.map.removeLayer(lyrId);
       if (this.map.getSource(srcId)) this.map.removeSource(srcId);
-      const subs = opt?.subdomains && opt.subdomains.length > 0 ? opt.subdomains : ["a", "b", "c"];
+      const rawSubs = opt?.subdomains;
+      const subs = Array.isArray(rawSubs) && rawSubs.length > 0
+        ? rawSubs
+        : typeof rawSubs === "string" && rawSubs.length > 0
+          ? rawSubs.split("")
+          : ["a", "b", "c"];
       const tiles = url.includes("{s}") ? subs.map((s) => url.replace("{r}", "").replace("{s}", s)) : [url.replace("{r}", "")];
       this.map.addSource(srcId, {
         type: "raster", tiles, tileSize: 256, attribution: attr,

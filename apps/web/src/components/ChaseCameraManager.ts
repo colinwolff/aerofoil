@@ -9,7 +9,7 @@ export class ChaseCameraManager {
   private mode: CameraFollowMode = "off";
   private targetIcao: string | null = null;
   private lastHeading: number = 0;
-  private lastChaseAt: number = 0;
+  private lastChaseAt: number = -1000;
   private onModeChangeCallbacks: ((mode: CameraFollowMode, icao: string | null) => void)[] = [];
 
   constructor(private toggleMgr: EngineToggleManager) {
