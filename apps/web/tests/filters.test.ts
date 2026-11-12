@@ -194,4 +194,41 @@ describe("AirspaceRadarManager Filter Integration", () => {
 
     expect(removedMarkers).toContain("A00002");
   });
+
+  test("reuses precompiled RegExp across consecutive calls and updates when query changes", () => {
+    const tUal: TargetWire = {
+      schema: "aerofoil.target", version: 1, address: "A00001",
+      callsign: "UAL102", source: "ModeS1090", last_seen_ms: 1000,
+    };
+    const tDal: TargetWire = {
+      schema: "aerofoil.target", version: 1, address: "A00002",
+      callsign: "DAL45", source: "ModeS1090", last_seen_ms: 2000,
+    };
+    const q1: AirspaceFilterCriteria = {
+      ...DEFAULT_FILTER_CRITERIA,
+      query: "^UAL\\d+$",
+      sources: { ...DEFAULT_FILTER_CRITERIA.sources },
+    };
+    const origRegExp = globalThis.RegExp;
+    let compileCount = 0;
+    (globalThis as any).RegExp = function (pattern: any, flags?: any) {
+      compileCount++;
+      return new origRegExp(pattern, flags);
+    };
+    try {
+      expect(matchesFilter(tUal, q1)).toBe(true);
+      expect(matchesFilter(tDal, q1)).toBe(false);
+      expect(compileCount).toBe(1);
+
+      const q2: AirspaceFilterCriteria = {
+        ...DEFAULT_FILTER_CRITERIA,
+        query: "^DAL\\d+$",
+        sources: { ...DEFAULT_FILTER_CRITERIA.sources },
+      };
+      expect(matchesFilter(tDal, q2)).toBe(true);
+      expect(compileCount).toBe(2);
+    } finally {
+      globalThis.RegExp = origRegExp;
+    }
+  });
 });

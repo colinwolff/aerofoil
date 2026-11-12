@@ -129,7 +129,7 @@ when its crates compile, its tests pass and the tiered gates in `AGENTS.md` §3.
 - [x] Eliminate 3D terrain drape tile invalidation (`4 FPS` to `60 FPS`) and throttle 3D DOM marker updates (`AF-90`).
 - [x] Fix tile caching, duplicate DEM sources, source cache eviction on mode/theme toggle, and tile request storms (`AF-91`).
 - [x] Fix `aerofoil-server` TCP ingest `O_NONBLOCK` busy-spin loop, WebSocket broadcast flood, and missing CORS/`Cache-Control` headers (`AF-92`).
-- [ ] Zero-DOM 3D/2D target rendering, precompiled filter regex, and CSS label LOD toggle (`AF-93`).
+- [x] Zero-DOM 3D/2D target rendering, precompiled filter regex, and CSS label LOD toggle (`AF-93`).
 - [ ] WebGL2 instanced 3D aircraft rendering, terrain elevation cache, and dirty-flagged line VBOs (`AF-94`).
 - [ ] 60 FPS client-side kinematic dead-reckoning and frame-synced Chase Camera (`AF-95`).
 - [ ] Coalesced batch WebSocket frames, keyed TelemetryTableRenderer DOM updates, and throttled AircraftInspector (`AF-96`).

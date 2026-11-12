@@ -7,6 +7,7 @@ import { MapLibre3dLinesRenderer } from "./MapLibre3dLinesRenderer";
 import { computeAircraftTransforms, extractProjectionMatrix } from "./MapLibre3dMath";
 import type { MapLibreAltitudeStems } from "./MapLibreAltitudeStems";
 import type { MapLibreTrajectoryManager } from "./MapLibreTrajectoryManager";
+import type { MapLibreHudOverlay } from "./MapLibreHudOverlay";
 
 export interface Target3dState {
   address: string;
@@ -43,10 +44,15 @@ export class MapLibre3dModelLayer implements CustomLayerInterface {
   private linesRenderer = new MapLibre3dLinesRenderer();
   private stemsSource: MapLibreAltitudeStems | null = null;
   private trajectorySource: MapLibreTrajectoryManager | null = null;
+  private hudOverlay: MapLibreHudOverlay | null = null;
 
   public setLineSources(stems: MapLibreAltitudeStems, trajectories: MapLibreTrajectoryManager): void {
     this.stemsSource = stems;
     this.trajectorySource = trajectories;
+  }
+
+  public setHudOverlay(hud: MapLibreHudOverlay): void {
+    this.hudOverlay = hud;
   }
 
   public updateTarget(
@@ -164,6 +170,8 @@ export class MapLibre3dModelLayer implements CustomLayerInterface {
     if (stems.length > 0 || trajectories.length > 0) {
       this.linesRenderer.render(gl, matrix, this.map, stems, trajectories);
     }
+
+    this.hudOverlay?.draw(matrix);
   }
 
   public static extractProjectionMatrix(input: unknown): ArrayLike<number> | null {

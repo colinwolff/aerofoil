@@ -146,6 +146,46 @@ describe("AirspaceRadarManager", () => {
     expect(manager.getSelectedIcao()).toBeNull();
     expect(markers.get("A12345")).not.toContain("selected-plane");
   });
+
+  test("skips view-change full marker sweep unless zoom crosses LOD label threshold", () => {
+    let zoom = 9.0;
+    let viewCb: (() => void) | null = null;
+    let visualUpdates = 0;
+    const mockEngine = {
+      getZoom: () => zoom,
+      onViewChange: (cb: () => void) => { viewCb = cb; },
+      updateTargetVisual: () => { visualUpdates++; },
+    };
+    const manager = new AirspaceRadarManager(null);
+    manager.setEngine(mockEngine as any);
+    manager.updateTarget({
+      schema: "aerofoil.target",
+      version: 1,
+      address: "4840D6",
+      callsign: "KLM1023",
+      altitude: 32000,
+      lat: 52.3,
+      lon: 4.8,
+      source: "ModeS1090",
+      last_seen_ms: 1000,
+    });
+    expect(visualUpdates).toBe(1);
+
+    // Panning within the same LOD band (> 7.5) skips redundant marker sweeps
+    zoom = 9.5;
+    viewCb?.();
+    expect(visualUpdates).toBe(1);
+
+    // Crossing below LOD threshold (< 7.5) triggers refresh
+    zoom = 6.5;
+    viewCb?.();
+    expect(visualUpdates).toBe(2);
+
+    // Subsequent pan remaining below LOD threshold (< 7.5) skips sweep
+    zoom = 5.0;
+    viewCb?.();
+    expect(visualUpdates).toBe(2);
+  });
 });
 
 describe("ThemeManager", () => {

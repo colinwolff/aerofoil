@@ -179,11 +179,17 @@ test.describe("Airspace Radar E2E Suite", () => {
     });
     expect(hasTarget3d).toBe(true);
 
-    const svgIcon = page.locator("#map-3d .plane-marker-wrapper > svg").first();
-    await expect(svgIcon).toBeHidden();
-
-    const label = page.locator("#map-3d .plane-label").first();
-    await expect(label).toBeVisible();
-    await expect(label).toContainText("KLM1023");
+    await expect(page.locator("#map-3d .maplibre-3d-marker")).toHaveCount(0);
+    await expect(page.locator("#map-3d .plane-marker-wrapper")).toHaveCount(0);
+    await expect(page.locator("#map-3d .maplibre-3d-hud-canvas")).toBeAttached();
+    await expect
+      .poll(() =>
+        page.evaluate(() => {
+          const rm = (window as any).radarManager;
+          const hud = rm?.engine?.hudOverlay;
+          return Boolean(hud && hud.getRenderedLabels().includes("KLM1023"));
+        }),
+      )
+      .toBe(true);
   });
 });
