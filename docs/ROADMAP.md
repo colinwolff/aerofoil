@@ -107,12 +107,12 @@ when its crates compile, its tests pass and the tiered gates in `AGENTS.md` §3.
 
 ---
 
-## 6. Milestone 6 — Advanced Surveillance Avionics, Clean-Room Parity & 3D Spatial Airspace (in progress)
+## 6. Milestone 6 — Advanced Surveillance Avionics, Clean-Room Parity & 3D Spatial Airspace (completed)
 
 > **Target:** `0.1.0-beta.3` (lockstep SemVer) · **Scope:** `ADR-0019`
 > **Specification of reference:** Clean-room functional parity with `tar1090` (17 U.S.C. § 102(b), zero GPL contamination) translated into native spatial 3D.
 
-- [ ] Epic: Milestone 6 — Advanced Surveillance Avionics, Clean-Room Parity & 3D Spatial Airspace (`AF-68`).
+- [x] Epic: Milestone 6 — Advanced Surveillance Avionics, Clean-Room Parity & 3D Spatial Airspace (`AF-68`).
 - [x] Glassmorphic Aircraft Inspector Pane: floating avionics card displaying registration, airframe type, operator, squawk, TAS/IAS, Mach, roll angle, selected MCP altitude, RSSI, message rate, and dynamic 3D altitude profile sparkline (`AF-69`).
 - [x] LOD-aware aircraft callsign and altitude flight level map labels: collision-tested callsign/FL/speed text badges beside aircraft markers with zoom-level density decluttering in 2D and 3D (`AF-70`).
 - [x] Persistent multi-aircraft track trails and global track toggle hotkey (`T`): keyboard shortcut `T` to toggle all flight trails, individual selection persistence, and multiselect inspection mode (`AF-71`).
@@ -128,7 +128,7 @@ when its crates compile, its tests pass and the tiered gates in `AGENTS.md` §3.
 - [x] Fix MapLibre GL v6 `CustomLayerInterface.render` matrix input, WebGL2 VAO state, and layer z-order for 3D aircraft models (`AF-89`).
 - [x] Eliminate 3D terrain drape tile invalidation (`4 FPS` to `60 FPS`) and throttle 3D DOM marker updates (`AF-90`).
 - [x] Fix tile caching, duplicate DEM sources, source cache eviction on mode/theme toggle, and tile request storms (`AF-91`).
-- [ ] Fix `aerofoil-server` TCP ingest `O_NONBLOCK` busy-spin loop, WebSocket broadcast flood, and missing CORS/`Cache-Control` headers (`AF-92`).
+- [x] Fix `aerofoil-server` TCP ingest `O_NONBLOCK` busy-spin loop, WebSocket broadcast flood, and missing CORS/`Cache-Control` headers (`AF-92`).
 
 **Exit criteria:** Complete clean-room feature parity with `tar1090` without GPL code contamination; full 3D spatial airspace extrusion, instanced 3D aircraft models, elevated 3D surveillance dome rings, and chase camera verified in MapLibre GL; deep linking and regex filtering verified in test suites.
 

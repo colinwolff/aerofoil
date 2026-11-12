@@ -92,11 +92,17 @@ pub fn serve_http_response(
     tracker: &Tracker,
     request_line: &str,
 ) -> io::Result<()> {
+    if request_line.starts_with("OPTIONS ") {
+        let resp = b"HTTP/1.1 204 No Content\r\nAccess-Control-Allow-Origin: *\r\nAccess-Control-Allow-Methods: GET, OPTIONS\r\nAccess-Control-Allow-Headers: Content-Type\r\nConnection: close\r\n\r\n";
+        stream.write_all(resp)?;
+        return stream.flush();
+    }
+
     if request_line.starts_with("GET /health") {
         let count = tracker.len();
         let body = format!("{{\"status\":\"ok\",\"tracks\":{count}}}\n");
         let resp = format!(
-            "HTTP/1.1 200 OK\r\nContent-Type: application/json\r\nContent-Length: {}\r\nConnection: close\r\n\r\n{}",
+            "HTTP/1.1 200 OK\r\nContent-Type: application/json\r\nAccess-Control-Allow-Origin: *\r\nCache-Control: no-store\r\nContent-Length: {}\r\nConnection: close\r\n\r\n{}",
             body.len(),
             body
         );
@@ -107,7 +113,7 @@ pub fn serve_http_response(
     if request_line.starts_with("GET /api/config") {
         let body = crate::config::ServerWebConfig::from_env().to_json();
         let resp = format!(
-            "HTTP/1.1 200 OK\r\nContent-Type: application/json\r\nContent-Length: {}\r\nConnection: close\r\n\r\n{}",
+            "HTTP/1.1 200 OK\r\nContent-Type: application/json\r\nAccess-Control-Allow-Origin: *\r\nCache-Control: no-store\r\nContent-Length: {}\r\nConnection: close\r\n\r\n{}",
             body.len(),
             body
         );
@@ -127,8 +133,15 @@ pub fn serve_http_response(
         if let Some(web_root) = find_web_root(None)
             && let Some((bytes, mime)) = read_static_file(&web_root, req_path)
         {
+            let cache_ctrl = if req_path.starts_with("/assets/") {
+                "public, max-age=31536000, immutable"
+            } else if req_path.ends_with(".topojson") || req_path.ends_with(".json") {
+                "public, max-age=86400"
+            } else {
+                "no-cache"
+            };
             let header = format!(
-                "HTTP/1.1 200 OK\r\nContent-Type: {mime}\r\nContent-Length: {}\r\nConnection: close\r\n\r\n",
+                "HTTP/1.1 200 OK\r\nContent-Type: {mime}\r\nAccess-Control-Allow-Origin: *\r\nCache-Control: {cache_ctrl}\r\nContent-Length: {}\r\nConnection: close\r\n\r\n",
                 bytes.len()
             );
             stream.write_all(header.as_bytes())?;

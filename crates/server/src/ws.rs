@@ -1,6 +1,7 @@
 //! WebSocket egress streaming handler (`docs/SPEC.md` §5).
 
 use std::{
+    collections::HashMap,
     io,
     net::TcpStream,
     sync::{
@@ -29,6 +30,7 @@ pub fn handle_ws_client(
     };
 
     let mut min_alt: Option<i32> = None;
+    let mut last_sent: HashMap<u64, u64> = HashMap::new();
     let _ = ws
         .get_mut()
         .set_read_timeout(Some(Duration::from_millis(50)));
@@ -68,6 +70,12 @@ pub fn handle_ws_client(
                     continue;
                 }
             }
+
+            let key = ((target.address_type as u64) << 32) | (target.address as u64);
+            if last_sent.get(&key).copied() == Some(target.last_seen_ms) {
+                continue;
+            }
+            last_sent.insert(key, target.last_seen_ms);
 
             let wire = TargetWireJson::from_target(target);
             let Ok(json) = serde_json::to_string(&wire) else {

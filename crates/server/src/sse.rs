@@ -1,6 +1,7 @@
 //! Server-Sent Events (SSE) egress handler (`docs/SPEC.md` §5).
 
 use std::{
+    collections::HashMap,
     io::{self, Write},
     net::TcpStream,
     sync::{
@@ -35,23 +36,33 @@ Access-Control-Allow-Origin: *\r\n\r\n";
     stream.flush()?;
 
     let mut keepalive_timer = 0;
+    let mut last_sent: HashMap<u64, u64> = HashMap::new();
 
     while !shutdown.load(Ordering::Relaxed) {
         let targets = tracker.snapshot();
+        let mut sent_any = false;
 
-        if !targets.is_empty() {
-            for target in &targets {
-                let wire = TargetWireJson::from_target(target);
-                let Ok(json) = serde_json::to_string(&wire) else {
-                    continue;
-                };
-
-                event_id += 1;
-                let payload = format!("id: {event_id}\nevent: target\ndata: {json}\n\n");
-                if stream.write_all(payload.as_bytes()).is_err() {
-                    return Ok(());
-                }
+        for target in &targets {
+            let key = ((target.address_type as u64) << 32) | (target.address as u64);
+            if last_sent.get(&key).copied() == Some(target.last_seen_ms) {
+                continue;
             }
+            last_sent.insert(key, target.last_seen_ms);
+
+            let wire = TargetWireJson::from_target(target);
+            let Ok(json) = serde_json::to_string(&wire) else {
+                continue;
+            };
+
+            event_id += 1;
+            let payload = format!("id: {event_id}\nevent: target\ndata: {json}\n\n");
+            if stream.write_all(payload.as_bytes()).is_err() {
+                return Ok(());
+            }
+            sent_any = true;
+        }
+
+        if sent_any {
             if stream.flush().is_err() {
                 return Ok(());
             }

@@ -11,6 +11,13 @@ use aerofoil_tracker::{TargetUpdate, Tracker};
 
 use crate::{cpr::CprResolver, metrics::IngestMetrics};
 
+fn now_ms() -> u64 {
+    std::time::SystemTime::now()
+        .duration_since(std::time::UNIX_EPOCH)
+        .map(|d| d.as_millis() as u64)
+        .unwrap_or(1_000_000)
+}
+
 /// Dispatches a raw Mode S 1090 MHz frame into the shared tracker.
 pub fn dispatch_1090(raw: &[u8], tracker: &Tracker, metrics: &IngestMetrics, cpr: &CprResolver) {
     metrics.inc_frames(true);
@@ -21,6 +28,7 @@ pub fn dispatch_1090(raw: &[u8], tracker: &Tracker, metrics: &IngestMetrics, cpr
         return;
     };
 
+    let ts_ms = now_ms();
     let update = match frame {
         ModeSFrame::ExtendedSquitter(es) => {
             let mut u = TargetUpdate::new(
@@ -28,7 +36,7 @@ pub fn dispatch_1090(raw: &[u8], tracker: &Tracker, metrics: &IngestMetrics, cpr
                 es.icao_address,
                 TransponderSource::ModeS1090,
                 ReceptionSource::Direct,
-                1_000_000,
+                ts_ms,
             );
             match es.payload {
                 EsPayload::AirbornePosition(pos) => {
@@ -40,7 +48,7 @@ pub fn dispatch_1090(raw: &[u8], tracker: &Tracker, metrics: &IngestMetrics, cpr
                         pos.cpr_odd,
                         pos.lat_cpr,
                         pos.lon_cpr,
-                        1_000_000,
+                        ts_ms,
                     ) {
                         u = u.with_position(position);
                     }
@@ -75,7 +83,7 @@ pub fn dispatch_1090(raw: &[u8], tracker: &Tracker, metrics: &IngestMetrics, cpr
                 df4.ap,
                 TransponderSource::ModeS1090,
                 ReceptionSource::Direct,
-                1_000_000,
+                ts_ms,
             );
             if let Some(alt) = df4.altitude {
                 u = u.with_altitude(alt);
@@ -88,7 +96,7 @@ pub fn dispatch_1090(raw: &[u8], tracker: &Tracker, metrics: &IngestMetrics, cpr
                 df5.ap,
                 TransponderSource::ModeS1090,
                 ReceptionSource::Direct,
-                1_000_000,
+                ts_ms,
             );
             if let Some(sq) = df5.squawk {
                 u = u.with_squawk(sq);
@@ -136,7 +144,7 @@ pub fn dispatch_978(raw: &[u8], tracker: &Tracker, metrics: &IngestMetrics) {
         address,
         TransponderSource::Uat978,
         ReceptionSource::Direct,
-        1_000_000,
+        now_ms(),
     );
 
     if let Some(pos) = sv.position {

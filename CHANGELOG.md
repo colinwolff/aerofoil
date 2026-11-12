@@ -63,6 +63,7 @@ crates, in the imperative, one line each, with the `storypole` task key in paren
 
 ### Fixed
 
+- Fix `aerofoil-server` TCP ingest `O_NONBLOCK` busy-spin loop (`set_nonblocking(false)`), replace hardcoded `1_000_000` timestamps with monotonic wall-clock ms, emit delta-only WebSocket/SSE target updates, and add CORS and `Cache-Control` HTTP headers (`AF-92`).
 - Fix tile caching and reduce network request storms by deduplicating 3D DEM sources, capping Mapterhorn DEM `maxzoom` to 12, preserving tile `SourceCache` across 2D/3D and theme toggles, expanding `{s}` subdomains in 3D, lazy-loading/bounding RainViewer frames, throttling ChaseCamera `easeTo`, and fixing 404 dome glyph fontstacks (`AF-91`).
 - Eliminate 10 Hz 3D terrain drape tile invalidations by rendering altitude stems and flight trajectories natively in WebGL (`gl.LINES`), throttle redundant DOM `Marker.setLngLat` calls, and round heading in SVG icon caching (`AF-90`).
 - Fix MapLibre GL v6 `CustomLayerInterface.render` matrix extraction (`defaultProjectionData.mainMatrix`), WebGL2 VAO unbinding, terrain elevation offset, and layer z-order so 3D aircraft models render above airspace volumes (`AF-89`).

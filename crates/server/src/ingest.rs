@@ -163,6 +163,7 @@ fn handle_client(
     shutdown: Arc<AtomicBool>,
     is_1090: bool,
 ) {
+    let _ = stream.set_nonblocking(false);
     let _ = stream.set_read_timeout(Some(Duration::from_millis(200)));
     let mut reader = BeastReader::new(BufReader::new(stream));
 
