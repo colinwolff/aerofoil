@@ -117,4 +117,34 @@ describe("AerofoilClient", () => {
     expect(receivedTarget?.address).toBe("40621D");
     expect(receivedTarget?.callsign).toBe("BAW142");
   });
+
+  test("unpacks coalesced WebSocket JSON array batches in order", async () => {
+    const received: TargetWire[] = [];
+    const server = Bun.serve({
+      port: 0,
+      fetch(req, srv) {
+        return srv.upgrade(req) ? undefined : new Response("no", { status: 400 });
+      },
+      websocket: {
+        open(ws) {
+          ws.send(JSON.stringify([
+            { schema: "aerofoil.target", version: 1, address: "4840D6", callsign: "KLM1", source: "ModeS1090", last_seen_ms: 1 },
+            { schema: "aerofoil.target", version: 1, address: "A00001", callsign: "UAL2", source: "ModeS1090", last_seen_ms: 2 },
+          ]));
+        },
+        message() {},
+      },
+    });
+
+    const client = new AerofoilClient({ url: `http://127.0.0.1:${server.port}` });
+    const unsub = client.subscribeWebSocket((t) => received.push(t));
+    for (let i = 0; i < 20 && received.length < 2; i++) {
+      await new Promise((r) => setTimeout(r, 25));
+    }
+    unsub();
+    client.close();
+    server.stop(true);
+
+    expect(received.map((t) => t.address)).toEqual(["4840D6", "A00001"]);
+  });
 });

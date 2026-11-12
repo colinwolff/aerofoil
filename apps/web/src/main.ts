@@ -148,10 +148,25 @@ function initStreaming(radarManager: AirspaceRadarManager, serverUrl: string): v
     }
   };
 
+  const pending = new Map<string, TargetWire>();
+  let flushRaf: number | null = null;
+  const flush = () => {
+    flushRaf = null;
+    if (pending.size === 0) return;
+    const batch = Array.from(pending.values());
+    pending.clear();
+    radarManager.updateTargetBatch(batch);
+  };
+
   setStatus("connecting");
   client.subscribeWebSocket((target: TargetWire) => {
     setStatus("connected");
-    radarManager.updateTarget(target);
+    pending.set(target.address.toUpperCase(), target);
+    if (flushRaf === null) {
+      flushRaf = typeof requestAnimationFrame === "function"
+        ? requestAnimationFrame(flush)
+        : (setTimeout(flush, 16) as unknown as number);
+    }
   });
 }
 

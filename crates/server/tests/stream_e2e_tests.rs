@@ -190,3 +190,32 @@ fn test_sse_client_backpressure_and_isolation() {
 
     server.shutdown();
 }
+
+#[test]
+fn test_websocket_coalesced_batch_frame() {
+    let tracker = Arc::new(Tracker::new());
+    let server = EgressServer::start(Arc::clone(&tracker), 0).expect("egress must start");
+
+    for (icao, cs) in [(0x4840D6, *b"KLM1023 "), (0xA00001, *b"UAL102  ")] {
+        let mut up = TargetUpdate::new(
+            AddressType::Icao,
+            icao,
+            TransponderSource::ModeS1090,
+            ReceptionSource::Direct,
+            2000,
+        );
+        up.callsign = Some(cs);
+        tracker.update(&up);
+    }
+
+    let stream = TcpStream::connect(("127.0.0.1", server.port())).unwrap();
+    let (mut ws, _) = client(format!("ws://127.0.0.1:{}/ws", server.port()), stream)
+        .expect("ws handshake succeeds");
+
+    let Message::Text(txt) = ws.read().expect("batch frame") else {
+        panic!("expected text frame");
+    };
+    let parsed: Vec<serde_json::Value> = serde_json::from_str(&txt).expect("JSON array batch");
+    assert_eq!(parsed.len(), 2);
+    server.shutdown();
+}
