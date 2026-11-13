@@ -10,7 +10,7 @@ homepage.workspace = true
 description = "Sharded aircraft state table, ADS-R deduplication, and track lifecycle for aerofoil"
 
 [dependencies]
-aerofoil-common = { path = "../common", version = "0.1.0-beta.1" }
+aerofoil-common = { path = "../common", version = "0.1.0-beta.2" }
 parking_lot = "0.12"
 
 [lints]

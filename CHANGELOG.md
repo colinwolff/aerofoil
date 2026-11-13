@@ -11,6 +11,8 @@ crates, in the imperative, one line each, with the `storypole` task key in paren
 
 ## [Unreleased]
 
+## [0.1.0-beta.2] - 2026-11-13
+
 ### Added
 
 - Add 60 FPS client-side kinematic dead-reckoning interpolation (`KinematicDeadReckoning`) across 3D aircraft meshes, HUD labels, stems, and frame-synced `jumpTo` `ChaseCameraManager` tracking (`AF-95`).
@@ -204,5 +206,6 @@ crates, in the imperative, one line each, with the `storypole` task key in paren
   one; `docs/ARCHITECTURE.md` now states that sources hand the pipeline framed bytes, and the ingest
   stage states the band-tag and multi-source model.
 
-[Unreleased]: https://github.com/colinwolff/aerofoil/compare/v0.1.0-beta.1...HEAD
+[Unreleased]: https://github.com/colinwolff/aerofoil/compare/v0.1.0-beta.2...HEAD
+[0.1.0-beta.2]: https://github.com/colinwolff/aerofoil/compare/v0.1.0-beta.1...v0.1.0-beta.2
 [0.1.0-beta.1]: https://github.com/colinwolff/aerofoil/releases/tag/v0.1.0-beta.1

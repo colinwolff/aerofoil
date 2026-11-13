@@ -10,7 +10,7 @@ homepage.workspace = true
 description = "Multilateration (MLAT) receiver registry, clock drift synchronization, and TDOA hyperbolic solver for aerofoil"
 
 [dependencies]
-aerofoil-common = { path = "../common", version = "0.1.0-beta.1" }
+aerofoil-common = { path = "../common", version = "0.1.0-beta.2" }
 
 [lints]
 workspace = true

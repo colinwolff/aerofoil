@@ -1,6 +1,6 @@
 # Roadmap & Delivery Horizons: `aerofoil`
 
-> **Status:** pre-release (`0.1.0-beta.1` released, Milestones 0–6 completed, lockstep SemVer)
+> **Status:** pre-release (`0.1.0-beta.2` released, Milestones 0–5 completed, Milestone 6 in progress, lockstep SemVer)
 > **Scope of record:** [`PROJECT.md`](./PROJECT.md) · **Invariants:** [`SPEC.md`](./SPEC.md)
 > **Task backlog:** `storypole` (`.gaugeblock/storypole/`), keys `AF-N`
 
@@ -71,7 +71,7 @@ when its crates compile, its tests pass and the tiered gates in `AGENTS.md` §3.
 
 ---
 
-## 5. Milestone 5 — Production Web Radar, Multi-Topology Containerization & Cloud Deployment (completed)
+## 5. Milestone 5 — Production Web Radar, Multi-Topology Containerization & Cloud Deployment (completed, released as `0.1.0-beta.2`)
 
 > **Target:** `0.1.0-beta.2` (lockstep SemVer) · **Scope:** `ADR-0013`, `ADR-0014`, `ADR-0015`, `ADR-0016`, `ADR-0017`, `ADR-0018`
 
