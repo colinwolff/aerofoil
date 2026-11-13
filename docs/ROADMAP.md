@@ -1,6 +1,6 @@
 # Roadmap & Delivery Horizons: `aerofoil`
 
-> **Status:** pre-release (`0.1.0-beta.2` released, Milestones 0–5 completed, Milestone 6 in progress, lockstep SemVer)
+> **Status:** pre-release (`0.1.0-beta.2` released, Milestones 0–6 completed, lockstep SemVer; `0.1.0-beta.3` is the post-release fixes slot)
 > **Scope of record:** [`PROJECT.md`](./PROJECT.md) · **Invariants:** [`SPEC.md`](./SPEC.md)
 > **Task backlog:** `storypole` (`.gaugeblock/storypole/`), keys `AF-N`
 
@@ -107,9 +107,9 @@ when its crates compile, its tests pass and the tiered gates in `AGENTS.md` §3.
 
 ---
 
-## 6. Milestone 6 — Advanced Surveillance Avionics, Clean-Room Parity & 3D Spatial Airspace (in progress)
+## 6. Milestone 6 — Advanced Surveillance Avionics, Clean-Room Parity & 3D Spatial Airspace (completed, released as `0.1.0-beta.2`)
 
-> **Target:** `0.1.0-beta.3` (lockstep SemVer) · **Scope:** `ADR-0019`
+> **Released in:** `0.1.0-beta.2` (lockstep SemVer) · **Scope:** `ADR-0019`
 > **Specification of reference:** Clean-room functional parity with `tar1090` (17 U.S.C. § 102(b), zero GPL contamination) translated into native spatial 3D.
 
 - [x] Epic: Milestone 6 — Advanced Surveillance Avionics, Clean-Room Parity & 3D Spatial Airspace (`AF-68`).
@@ -139,7 +139,27 @@ when its crates compile, its tests pass and the tiered gates in `AGENTS.md` §3.
 
 ---
 
-## 7. Horizons (post-`0.1.0`)
+## 7. Hardening — `0.1.0-beta.3` (open)
+
+> **Target:** `0.1.0-beta.3` (lockstep SemVer) · **Scope:** work landed after the `0.1.0-beta.2` tag
+
+Milestone 6 shipped inside `0.1.0-beta.2`, so this slot is deliberately not a milestone: it is where
+post-release work accumulates until another version is worth cutting. Nothing listed here travelled in
+`0.1.0-beta.2` — the ticket-store migration (`AF-99`), the CI suite gates (`AF-19`) and the release
+itself (`AF-101`) all landed before that tag and ship with it.
+
+- [ ] Return `scripts/reserve-namespaces.sh` to the workspace's real crate list, and stop maintaining
+  that list by hand (`AF-100`).
+- [ ] Replace the reservation script with `outfeed reserve` once a released outfeed carries the verb;
+  parked on suite `GB-362` (`AF-22`).
+
+**Exit criteria:** the tickets above are closed and the whole gate set is green (`cargo fmt`, clippy,
+nextest, doc tests, `miter audit --threshold 250`, `miter deps --unused`, `chalkline docs check`), with
+every workspace crate publishing at `0.1.0-beta.3` under lockstep SemVer.
+
+---
+
+## 8. Horizons (post-`0.1.0`)
 
 - **H1 — Hardening:** fuzzing (`cargo-fuzz`) over every decoder entry point, property tests relating the table-driven and CLMUL CRC paths, and a published throughput regression budget.
 - **H2 — Breadth:** uplink `RS(92, 72)` and FIS-B APDU disassembly, UAT uplink scheduling, multi-band time-synchronised fusion.

@@ -218,9 +218,9 @@ State lives under `.gaugeblock/` and is split by ownership:
 | `sawhorse` | Provider runtime for the synthesis tools. Not invoked directly by hand-written changes. |
 
 **Backlog state:** every ticket is a record under `tickets/`, and `storypole next` returns the one
-actionable leaf. Milestones 0–5 are closed and verified; Milestone 6 is the open wave. An epic gains
-children when the preceding milestone verifies, so no leaf is written a milestone ahead of the
-constraints that decide it.
+actionable leaf. Milestones 0–6 are closed and shipped in `0.1.0-beta.2`; `0.1.0-beta.3` collects work
+landed after that tag. An epic gains children when the preceding milestone verifies, so no leaf is
+written a milestone ahead of the constraints that decide it.
 
 ## 5. Agent Execution Loop
 
@@ -306,9 +306,10 @@ its first member. `chalkline docs check` now runs and reports 9 present, 0 missi
    `v0.1.0-beta.2` (Milestone 5, 2026-11-13) put every workspace member on crates.io under lockstep
    SemVer, with `aerofoil-mlat` publishing for the first time in beta.2. The `aerofoil` umbrella name
    is still a `0.1.0-alpha.1` reservation placeholder — no umbrella crate exists yet.
-6. **The backlog is the record of the work.** Milestones 0–5 are closed and verified and Milestone 6 is
-   in progress; an epic gains children only when the milestone before it verifies. Nothing is created
-   to fill a gap.
+6. **The backlog is the record of the work.** Milestones 0–6 are closed and verified, and all of them
+   shipped in `0.1.0-beta.2`; `0.1.0-beta.3` collects work landed after that tag rather than a new
+   milestone. An epic gains children only when the milestone before it verifies. Nothing is created to
+   fill a gap.
 7. **Twelve member crates exist** — `aerofoil-common`, `-1090`, `-978`, `-tracker`, `-mlat`,
    `-persistence`, `-sdr`, `-server`, and the `cli`, `tui`, `mcp` and `replay` apps — so
    `cargo check --workspace` proves the whole tree, and the `no_std` job proves `aerofoil-common`.
