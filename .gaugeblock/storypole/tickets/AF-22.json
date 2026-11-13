@@ -6,7 +6,7 @@
     "title": "Reduce scripts/reserve-namespaces.sh to a wrapper around outfeed reserve",
     "description": "Once outfeed owns namespace reservation end to end, this repository's script should be a thin wrapper or be deleted outright. Keeping a second implementation means the measured crates.io behaviour (burst of five, ten-minute window, 429 reset timestamp) has to be maintained twice and can drift. Tracked upstream as OF-5.",
     "kind": "tech_debt",
-    "status": "triage",
+    "status": "deferred",
     "priority": 3,
     "scope": {
       "repo": null,
@@ -33,7 +33,7 @@
     "latest_handoff": null,
     "verification_receipt": null,
     "created_at_epoch_ms": 1793823336654,
-    "updated_at_epoch_ms": 1793823336654
+    "updated_at_epoch_ms": 1794557932165
   },
   "events": [
     {
@@ -76,6 +76,14 @@
       },
       "captured_by_agent": "cline",
       "discovered_from_task_id": "6ebc5a7c-6e11-4494-a385-98d04982c449"
+    },
+    {
+      "event": "status_changed",
+      "task_id": "f71a39bd-35eb-4ddf-8b04-926e1bb77301",
+      "from": "triage",
+      "to": "deferred",
+      "reason": "Parked: Blocked on GB-362 in the suite repo: outfeed reserve was added in d2f4df9 (2026-11-05) but is contained in no tag, and crates.io's newest outfeed-cli (0.1.0-beta.7) has no such verb - the only hits for reserve in that tree are unrelated code in clone.rs. Wrapping would therefore depend on a pinned git install of an unpublished command, for a manual once-a-year operation that must be reviewable; outfeed is self-contained, so a release is the only missing piece. Unblock when a released outfeed-cli answers 'outfeed reserve --help'. Two further reasons to wait: scaffold takes names only (no per-crate descriptions) and its --repository default points at github.com/gaugeblock, so the wrapper would not be thin. The crate-list drift this ticket was filed alongside is split out to AF-100 and is actionable now.",
+      "timestamp_ms": 1794557932165
     }
   ]
 }
