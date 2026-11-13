@@ -1,6 +1,6 @@
 {
   "name": "@aerofoil-rs/sdk",
-  "version": "0.1.0-beta.1",
+  "version": "0.1.0-beta.2",
   "description": "TypeScript client SDK for aerofoil surveillance streaming and aircraft state subscriptions",
   "main": "src/index.ts",
   "module": "src/index.ts",
