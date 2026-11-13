@@ -26,10 +26,14 @@ allowed_crates = [
 ]
 claim_ttl_minutes = 60
 
-# `crate_or_repo -> Tier 2 command` pairs executed by `storypole verify --run`. The lookup tries the
-# crate name first, then the repository name, so `aerofoil` is the fallback for any crate that has no
-# entry of its own yet. A receipt produced by `--run` therefore records a command that actually ran,
-# instead of certifying what an agent claims to have run by hand.
+# `crate_or_repo -> Tier 2 command` pairs executed by `storypole verify`. The lookup tries the crate
+# name first, then the repository name, each exactly; only then does it take the reserved `default`
+# key. A receipt produced by an executed chain therefore records a command that actually ran, instead
+# of certifying what an agent claims to have run by hand.
+#
+# The `default` entry below is what an unscoped ticket resolves to — one with neither a crate nor a
+# repository, which is every harness-level task in this repo (`AF-19`, `AF-22`, `AF-99`). Without it
+# those tickets fall through to the hardcoded `cargo test` and certify less than this gate does.
 verification_commands = [
     ["aerofoil", "cargo nextest run --workspace"],
     ["aerofoil-common", "cargo nextest run -p aerofoil-common"],
@@ -44,4 +48,6 @@ verification_commands = [
     ["aerofoil-mcp", "cargo nextest run -p aerofoil-mcp"],
     ["aerofoil-replay", "cargo nextest run -p aerofoil-replay"],
     ["aerofoil-mlat", "cargo nextest run -p aerofoil-mlat"],
+    # Reserved key: the chain for tickets scoped to neither a crate nor a repository.
+    ["default", "cargo nextest run --workspace"],
 ]

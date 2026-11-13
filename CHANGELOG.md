@@ -58,6 +58,8 @@ crates, in the imperative, one line each, with the `storypole` task key in paren
 
 ### Changed
 
+- Declare a reserved `default` verification chain so a ticket scoped to neither a crate nor a repository executes the configured gate instead of the `cargo test` fallback (`AF-99`).
+
 - Migrate the `.gaugeblock/storypole` store from a single append-only `ledger.jsonl` to one record per ticket under `tickets/<KEY>.json`, and archive the superseded ledger to `ledger-archive/` as read-only history (`AF-99`).
 
 - Skip redundant 2D terrain-draped vector line layers in 3D when volumetric airspace layers mount (`MapLibreVectorManager`), reuse GeoJSON sources via `setData`, throttle `AntennaCoverageLayer` contour redraws to 2s with a 0.25nm jitter filter, and serve compressible HTTP static assets with gzip content negotiation in `aerofoil-server` (`AF-97`).
