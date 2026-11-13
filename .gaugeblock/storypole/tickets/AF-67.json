@@ -1,0 +1,119 @@
+{
+  "ticket": {
+    "id": "2783511d-ba65-447c-9c8e-16192402b975",
+    "ticket_key": "AF-67",
+    "slug": "load-carto-api-key-from-env-with-key-auth-and-verify-3d-dem-relief-rendering-278351",
+    "title": "Load CARTO_API_KEY from .env with ?key= auth and verify 3D DEM relief rendering",
+    "description": "Expose CARTO_API_KEY from .env in Vite, support CARTO Dark Matter and CARTO Voyager with ?key= parameter and visible carto.com/attributions, and ensure 3D DEM terrain mesh and hillshading visibly render in 3D mode.",
+    "kind": "bug",
+    "status": "verified",
+    "priority": 1,
+    "scope": {
+      "repo": null,
+      "crate_name": "aerofoil-server",
+      "module_path": null,
+      "target_files": [
+        "apps/web/vite.config.ts,apps/web/src/layers/BaseMapRegistry.ts,apps/web/src/layers/MapLibreTerrainHelper.ts,apps/web/src/layers/MapLibreMapEngine.ts,apps/web/src/components/LayerDrawer.ts"
+      ],
+      "target_symbols": [],
+      "labels": []
+    },
+    "edges": [],
+    "decisions": [],
+    "acceptance_criteria": [],
+    "plan": null,
+    "active_claim": null,
+    "latest_handoff": null,
+    "verification_receipt": {
+      "verifier": "storypole-verify",
+      "command": "cargo nextest run -p aerofoil-server",
+      "exit_code": 0,
+      "diagnostic_count": null,
+      "summary": "",
+      "verified_at_epoch_ms": 1794424135668,
+      "git_branch": "feat/af-67-carto-env-3d-terrain",
+      "base_commit_sha": "e8f14b1530d5651f2151a52df606e5305f50a019",
+      "head_commit_sha": "6a845ee862fb54a18bed249aefbeab8a25ad484b",
+      "commit_shas": [
+        "6a845ee862fb54a18bed249aefbeab8a25ad484b"
+      ],
+      "repo": null,
+      "chain_key": "aerofoil-server"
+    },
+    "created_at_epoch_ms": 1794423362671,
+    "updated_at_epoch_ms": 1794424135668
+  },
+  "events": [
+    {
+      "event": "task_created",
+      "task": {
+        "id": "2783511d-ba65-447c-9c8e-16192402b975",
+        "ticket_key": "AF-67",
+        "slug": "load-carto-api-key-from-env-with-key-auth-and-verify-3d-dem-relief-rendering-278351",
+        "title": "Load CARTO_API_KEY from .env with ?key= auth and verify 3D DEM relief rendering",
+        "description": "Expose CARTO_API_KEY from .env in Vite, support CARTO Dark Matter and CARTO Voyager with ?key= parameter and visible carto.com/attributions, and ensure 3D DEM terrain mesh and hillshading visibly render in 3D mode.",
+        "kind": "bug",
+        "status": "ready",
+        "priority": 1,
+        "scope": {
+          "repo": null,
+          "crate_name": "aerofoil-server",
+          "module_path": null,
+          "target_files": [
+            "apps/web/vite.config.ts,apps/web/src/layers/BaseMapRegistry.ts,apps/web/src/layers/MapLibreTerrainHelper.ts,apps/web/src/layers/MapLibreMapEngine.ts,apps/web/src/components/LayerDrawer.ts"
+          ],
+          "target_symbols": [],
+          "labels": []
+        },
+        "edges": [],
+        "decisions": [],
+        "acceptance_criteria": [],
+        "plan": null,
+        "active_claim": null,
+        "latest_handoff": null,
+        "verification_receipt": null,
+        "created_at_epoch_ms": 1794423362671,
+        "updated_at_epoch_ms": 1794423362671
+      }
+    },
+    {
+      "event": "task_claimed",
+      "task_id": "2783511d-ba65-447c-9c8e-16192402b975",
+      "claim": {
+        "agent_id": "antigravity",
+        "claimed_at_epoch_ms": 1794423362793,
+        "lease_expires_at_epoch_ms": 1794426962793,
+        "git_branch": "feat/af-67-carto-env-3d-terrain",
+        "base_commit_sha": null
+      }
+    },
+    {
+      "event": "status_changed",
+      "task_id": "2783511d-ba65-447c-9c8e-16192402b975",
+      "from": "ready",
+      "to": "in_progress",
+      "reason": "Claimed by antigravity",
+      "timestamp_ms": 1794423362793
+    },
+    {
+      "event": "task_verified",
+      "task_id": "2783511d-ba65-447c-9c8e-16192402b975",
+      "receipt": {
+        "verifier": "storypole-verify",
+        "command": "cargo nextest run -p aerofoil-server",
+        "exit_code": 0,
+        "diagnostic_count": null,
+        "summary": "",
+        "verified_at_epoch_ms": 1794424135668,
+        "git_branch": "feat/af-67-carto-env-3d-terrain",
+        "base_commit_sha": "e8f14b1530d5651f2151a52df606e5305f50a019",
+        "head_commit_sha": "6a845ee862fb54a18bed249aefbeab8a25ad484b",
+        "commit_shas": [
+          "6a845ee862fb54a18bed249aefbeab8a25ad484b"
+        ],
+        "repo": null,
+        "chain_key": "aerofoil-server"
+      }
+    }
+  ]
+}

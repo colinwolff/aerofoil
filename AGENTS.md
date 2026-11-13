@@ -198,14 +198,16 @@ named the wrong owner; a template is a source of conventions, not of identity.
 State lives under `.gaugeblock/` and is split by ownership:
 
 - **Tracked (shared, reproducible):** `.gaugeblock/config.toml`, `.gaugeblock/docs.toml`,
-  `.gaugeblock/miter/*.toml` allowlists, `.gaugeblock/storypole/ledger.jsonl`,
-  `.gaugeblock/storypole/plans/<KEY>.md`.
-- **Ignored (per-machine):** `storypole/index.sqlite*`, `miter/*.redb`, `spool/`, `worktrees/`,
-  `datasets/`, `.env`. Rebuilt on demand; never committed.
+  `.gaugeblock/miter/*.toml` allowlists, `.gaugeblock/storypole/tickets/<KEY>.json` (one record per
+  ticket, holding the task, its ordered events and its references), `.gaugeblock/storypole/plans/<KEY>.md`,
+  and `.gaugeblock/storypole/ledger-archive/` — the pre-migration append-only ledger, kept as history
+  and never written to again.
+- **Ignored (per-machine):** `storypole/index.sqlite*`, `storypole/workspace.sqlite*`, `miter/*.redb`,
+  `spool/`, `worktrees/`, `datasets/`, `.env`. Rebuilt on demand; never committed.
 
 | Tool | What it is for here |
 | :--- | :--- |
-| `storypole` | Backlog of record. `list` / `next` / `claim` / `heartbeat` / `handoff` / `verify`, plus `defer` for out-of-scope finds. Tasks are the unit of atomic work; the ledger is append-only and is reconciled (`ledger-verify`, `ledger-reconcile`) rather than edited. |
+| `storypole` | Backlog of record. `list` / `next` / `claim` / `heartbeat` / `handoff` / `verify`, plus `defer` for out-of-scope finds. Tasks are the unit of atomic work, and each one is a file — `tickets/<KEY>.json` holds the task, its ordered events and its references — so two branches touching different tickets never collide. `ledger-verify` and `ledger-reconcile` audit those records against a replay rather than editing them; the pre-migration ledger is archived and read-only. |
 | `miter` | AST index. Use `lookup`, `skeleton`, `references`, `impact` to slice context instead of dumping files into a prompt; `audit` for the 250/200 line gates; `deps` for crate topology; `verify` for isolated compiler checks with sliced diagnostics. Index with `miter index .` when the DB is stale. |
 | `chalkline` | `recon` to detect conventions before writing code, `grill` to resolve ambiguity into decisions, `docs check` for documentation fidelity and AST drift. |
 | `outfeed` | Release mechanics: `status`, `plan`, `apply`, `lockfiles`, `clean`/`prune`. Owns the SemVer bump and changelog promotion described in §3.4–3.5. |

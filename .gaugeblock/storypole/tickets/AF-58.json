@@ -1,0 +1,166 @@
+{
+  "ticket": {
+    "id": "69ea3a02-da28-4c64-8216-d7b0f5380d7e",
+    "ticket_key": "AF-58",
+    "slug": "integrate-mlat-reception-source-in-tracker-and-surface-mlat-badges-in-web-radar-and-tui-69ea3a",
+    "title": "Integrate MLAT reception source in tracker and surface MLAT badges in web radar and TUI",
+    "description": "",
+    "kind": "feature",
+    "status": "verified",
+    "priority": 2,
+    "scope": {
+      "repo": null,
+      "crate_name": "aerofoil-tracker",
+      "module_path": null,
+      "target_files": [],
+      "target_symbols": [],
+      "labels": [
+        "mlat,tracker,ui,m5"
+      ]
+    },
+    "edges": [
+      {
+        "kind": "parent_epic",
+        "target_id": "a3add8bf-f367-412d-8216-a24a8efc1aa9",
+        "target_ticket_key": "AF-50"
+      },
+      {
+        "kind": "blocked_by",
+        "target_id": "4c849df0-09a6-431d-9177-1c517b0d74c1",
+        "target_ticket_key": "AF-57"
+      }
+    ],
+    "decisions": [],
+    "acceptance_criteria": [],
+    "plan": null,
+    "active_claim": null,
+    "latest_handoff": null,
+    "verification_receipt": {
+      "verifier": "storypole-verify",
+      "command": "cargo nextest run -p aerofoil-tracker",
+      "exit_code": 0,
+      "diagnostic_count": null,
+      "summary": "[window: no base commit could be named, so this receipt covers HEAD only]\n",
+      "verified_at_epoch_ms": 1794375354015,
+      "git_branch": "main",
+      "base_commit_sha": null,
+      "head_commit_sha": "b5966bed87831ddc04f39979785090441db01a57",
+      "commit_shas": [
+        "b5966bed87831ddc04f39979785090441db01a57"
+      ],
+      "repo": null,
+      "chain_key": "aerofoil-tracker"
+    },
+    "created_at_epoch_ms": 1794367085018,
+    "updated_at_epoch_ms": 1794375354015
+  },
+  "events": [
+    {
+      "event": "task_created",
+      "task": {
+        "id": "69ea3a02-da28-4c64-8216-d7b0f5380d7e",
+        "ticket_key": "AF-58",
+        "slug": "integrate-mlat-reception-source-in-tracker-and-surface-mlat-badges-in-web-radar-and-tui-69ea3a",
+        "title": "Integrate MLAT reception source in tracker and surface MLAT badges in web radar and TUI",
+        "description": "",
+        "kind": "feature",
+        "status": "ready",
+        "priority": 2,
+        "scope": {
+          "repo": null,
+          "crate_name": "aerofoil-tracker",
+          "module_path": null,
+          "target_files": [],
+          "target_symbols": [],
+          "labels": [
+            "mlat,tracker,ui,m5"
+          ]
+        },
+        "edges": [],
+        "decisions": [],
+        "acceptance_criteria": [],
+        "plan": null,
+        "active_claim": null,
+        "latest_handoff": null,
+        "verification_receipt": null,
+        "created_at_epoch_ms": 1794367085018,
+        "updated_at_epoch_ms": 1794367085018
+      }
+    },
+    {
+      "event": "edge_added",
+      "task_id": "69ea3a02-da28-4c64-8216-d7b0f5380d7e",
+      "edge": {
+        "kind": "parent_epic",
+        "target_id": "a3add8bf-f367-412d-8216-a24a8efc1aa9",
+        "target_ticket_key": "AF-50"
+      },
+      "timestamp_ms": 1794367089818
+    },
+    {
+      "event": "edge_added",
+      "task_id": "69ea3a02-da28-4c64-8216-d7b0f5380d7e",
+      "edge": {
+        "kind": "blocked_by",
+        "target_id": "4c849df0-09a6-431d-9177-1c517b0d74c1",
+        "target_ticket_key": "AF-57"
+      },
+      "timestamp_ms": 1794367089978
+    },
+    {
+      "event": "status_changed",
+      "task_id": "69ea3a02-da28-4c64-8216-d7b0f5380d7e",
+      "from": "ready",
+      "to": "blocked",
+      "reason": "Blocked by unverified task AF-57",
+      "timestamp_ms": 1794367089978
+    },
+    {
+      "event": "status_changed",
+      "task_id": "69ea3a02-da28-4c64-8216-d7b0f5380d7e",
+      "from": "blocked",
+      "to": "ready",
+      "reason": "Dependency AF-57 verified",
+      "timestamp_ms": 1794374897037
+    },
+    {
+      "event": "task_claimed",
+      "task_id": "69ea3a02-da28-4c64-8216-d7b0f5380d7e",
+      "claim": {
+        "agent_id": "antigravity",
+        "claimed_at_epoch_ms": 1794374911962,
+        "lease_expires_at_epoch_ms": 1794378511962,
+        "git_branch": "feat/mlat-tracker-ui",
+        "base_commit_sha": null
+      }
+    },
+    {
+      "event": "status_changed",
+      "task_id": "69ea3a02-da28-4c64-8216-d7b0f5380d7e",
+      "from": "ready",
+      "to": "in_progress",
+      "reason": "Claimed by antigravity",
+      "timestamp_ms": 1794374911962
+    },
+    {
+      "event": "task_verified",
+      "task_id": "69ea3a02-da28-4c64-8216-d7b0f5380d7e",
+      "receipt": {
+        "verifier": "storypole-verify",
+        "command": "cargo nextest run -p aerofoil-tracker",
+        "exit_code": 0,
+        "diagnostic_count": null,
+        "summary": "[window: no base commit could be named, so this receipt covers HEAD only]\n",
+        "verified_at_epoch_ms": 1794375354015,
+        "git_branch": "main",
+        "base_commit_sha": null,
+        "head_commit_sha": "b5966bed87831ddc04f39979785090441db01a57",
+        "commit_shas": [
+          "b5966bed87831ddc04f39979785090441db01a57"
+        ],
+        "repo": null,
+        "chain_key": "aerofoil-tracker"
+      }
+    }
+  ]
+}

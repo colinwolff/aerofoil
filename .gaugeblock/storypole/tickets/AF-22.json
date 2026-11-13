@@ -1,0 +1,81 @@
+{
+  "ticket": {
+    "id": "f71a39bd-35eb-4ddf-8b04-926e1bb77301",
+    "ticket_key": "AF-22",
+    "slug": "reduce-scripts-reserve-namespaces-sh-to-a-wrapper-around-outfeed-reserve-f71a39",
+    "title": "Reduce scripts/reserve-namespaces.sh to a wrapper around outfeed reserve",
+    "description": "Once outfeed owns namespace reservation end to end, this repository's script should be a thin wrapper or be deleted outright. Keeping a second implementation means the measured crates.io behaviour (burst of five, ten-minute window, 429 reset timestamp) has to be maintained twice and can drift. Tracked upstream as OF-5.",
+    "kind": "tech_debt",
+    "status": "triage",
+    "priority": 3,
+    "scope": {
+      "repo": null,
+      "crate_name": null,
+      "module_path": null,
+      "target_files": [
+        "scripts/reserve-namespaces.sh"
+      ],
+      "target_symbols": [],
+      "labels": [
+        "outfeed,tooling"
+      ]
+    },
+    "edges": [
+      {
+        "kind": "discovered_from",
+        "target_id": "6ebc5a7c-6e11-4494-a385-98d04982c449"
+      }
+    ],
+    "decisions": [],
+    "acceptance_criteria": [],
+    "plan": null,
+    "active_claim": null,
+    "latest_handoff": null,
+    "verification_receipt": null,
+    "created_at_epoch_ms": 1793823336654,
+    "updated_at_epoch_ms": 1793823336654
+  },
+  "events": [
+    {
+      "event": "deferred_item_captured",
+      "task": {
+        "id": "f71a39bd-35eb-4ddf-8b04-926e1bb77301",
+        "ticket_key": "AF-22",
+        "slug": "reduce-scripts-reserve-namespaces-sh-to-a-wrapper-around-outfeed-reserve-f71a39",
+        "title": "Reduce scripts/reserve-namespaces.sh to a wrapper around outfeed reserve",
+        "description": "Once outfeed owns namespace reservation end to end, this repository's script should be a thin wrapper or be deleted outright. Keeping a second implementation means the measured crates.io behaviour (burst of five, ten-minute window, 429 reset timestamp) has to be maintained twice and can drift. Tracked upstream as OF-5.",
+        "kind": "tech_debt",
+        "status": "triage",
+        "priority": 3,
+        "scope": {
+          "repo": null,
+          "crate_name": null,
+          "module_path": null,
+          "target_files": [
+            "scripts/reserve-namespaces.sh"
+          ],
+          "target_symbols": [],
+          "labels": [
+            "outfeed,tooling"
+          ]
+        },
+        "edges": [
+          {
+            "kind": "discovered_from",
+            "target_id": "6ebc5a7c-6e11-4494-a385-98d04982c449"
+          }
+        ],
+        "decisions": [],
+        "acceptance_criteria": [],
+        "plan": null,
+        "active_claim": null,
+        "latest_handoff": null,
+        "verification_receipt": null,
+        "created_at_epoch_ms": 1793823336654,
+        "updated_at_epoch_ms": 1793823336654
+      },
+      "captured_by_agent": "cline",
+      "discovered_from_task_id": "6ebc5a7c-6e11-4494-a385-98d04982c449"
+    }
+  ]
+}

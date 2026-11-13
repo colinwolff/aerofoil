@@ -1,0 +1,114 @@
+{
+  "ticket": {
+    "id": "fa37c8db-1bee-463e-8c0d-4f4746d5b8e8",
+    "ticket_key": "AF-5",
+    "slug": "m1-core-primitives-and-the-978-uat-foundation-fa37c8",
+    "title": "M1: core primitives and the 978 UAT foundation",
+    "description": "no_std primitives, CPR, and the DO-282B Reed-Solomon path, proven allocation-free.",
+    "kind": "epic",
+    "status": "verified",
+    "priority": 3,
+    "scope": {
+      "repo": "aerofoil",
+      "crate_name": null,
+      "module_path": null,
+      "target_files": [],
+      "target_symbols": [],
+      "labels": [
+        "m1"
+      ]
+    },
+    "edges": [],
+    "decisions": [],
+    "acceptance_criteria": [
+      "Every child verified; DO-282B Appendix vectors decode byte-exactly; zero heap traffic on the decode path"
+    ],
+    "plan": null,
+    "active_claim": null,
+    "latest_handoff": null,
+    "verification_receipt": {
+      "verifier": "storypole-verify",
+      "command": "cargo nextest run --workspace",
+      "exit_code": 0,
+      "diagnostic_count": null,
+      "summary": "[window: no base commit could be named, so this receipt covers HEAD only]\n",
+      "verified_at_epoch_ms": 1794271878681,
+      "git_branch": "main",
+      "base_commit_sha": null,
+      "head_commit_sha": "b542207ec8c2e6bc6efb442f3e8c7a67c4730d7b",
+      "commit_shas": [
+        "b542207ec8c2e6bc6efb442f3e8c7a67c4730d7b"
+      ],
+      "repo": "aerofoil",
+      "chain_key": "aerofoil"
+    },
+    "created_at_epoch_ms": 1793818849508,
+    "updated_at_epoch_ms": 1794271878681
+  },
+  "events": [
+    {
+      "event": "task_created",
+      "task": {
+        "id": "fa37c8db-1bee-463e-8c0d-4f4746d5b8e8",
+        "ticket_key": "AF-5",
+        "slug": "m1-core-primitives-and-the-978-uat-foundation-fa37c8",
+        "title": "M1: core primitives and the 978 UAT foundation",
+        "description": "no_std primitives, CPR, and the DO-282B Reed-Solomon path, proven allocation-free.",
+        "kind": "epic",
+        "status": "ready",
+        "priority": 1,
+        "scope": {
+          "repo": "aerofoil",
+          "crate_name": null,
+          "module_path": null,
+          "target_files": [],
+          "target_symbols": [],
+          "labels": [
+            "m1"
+          ]
+        },
+        "edges": [],
+        "decisions": [],
+        "acceptance_criteria": [
+          "Every child verified; DO-282B Appendix vectors decode byte-exactly; zero heap traffic on the decode path"
+        ],
+        "plan": null,
+        "active_claim": null,
+        "latest_handoff": null,
+        "verification_receipt": null,
+        "created_at_epoch_ms": 1793818849508,
+        "updated_at_epoch_ms": 1793818849508
+      }
+    },
+    {
+      "event": "task_updated",
+      "task_id": "fa37c8db-1bee-463e-8c0d-4f4746d5b8e8",
+      "title": null,
+      "description": null,
+      "priority": 3,
+      "scope": null,
+      "acceptance_criteria": null,
+      "timestamp_ms": 1793818927155
+    },
+    {
+      "event": "task_verified",
+      "task_id": "fa37c8db-1bee-463e-8c0d-4f4746d5b8e8",
+      "receipt": {
+        "verifier": "storypole-verify",
+        "command": "cargo nextest run --workspace",
+        "exit_code": 0,
+        "diagnostic_count": null,
+        "summary": "[window: no base commit could be named, so this receipt covers HEAD only]\n",
+        "verified_at_epoch_ms": 1794271878681,
+        "git_branch": "main",
+        "base_commit_sha": null,
+        "head_commit_sha": "b542207ec8c2e6bc6efb442f3e8c7a67c4730d7b",
+        "commit_shas": [
+          "b542207ec8c2e6bc6efb442f3e8c7a67c4730d7b"
+        ],
+        "repo": "aerofoil",
+        "chain_key": "aerofoil"
+      }
+    }
+  ]
+}

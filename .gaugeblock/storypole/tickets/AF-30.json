@@ -1,0 +1,186 @@
+{
+  "ticket": {
+    "id": "1bd83f27-3b16-40a1-9b0f-54529b685f52",
+    "ticket_key": "AF-30",
+    "slug": "implement-address-filtered-single-bit-error-correction-in-aerofoil-1090-1bd83f",
+    "title": "Implement address-filtered single-bit error correction in aerofoil-1090",
+    "description": "Implement address-filtered single-bit error correction in aerofoil-1090 per ADR-0003, accepting an AddressFilter trait without coupling the decoder upward into tracker state.",
+    "kind": "feature",
+    "status": "verified",
+    "priority": 2,
+    "scope": {
+      "repo": null,
+      "crate_name": "aerofoil-1090",
+      "module_path": null,
+      "target_files": [
+        "crates/1090/src/fec.rs",
+        "crates/1090/src/lib.rs"
+      ],
+      "target_symbols": [],
+      "labels": [
+        "m2",
+        "1090",
+        "fec"
+      ]
+    },
+    "edges": [
+      {
+        "kind": "parent_epic",
+        "target_id": "51030a94-fb0f-496f-bec3-f2bc4aae4c98",
+        "target_ticket_key": "AF-16",
+        "target_repo": "aerofoil"
+      },
+      {
+        "kind": "blocked_by",
+        "target_id": "8fc2c0d2-3e3e-47d8-8e90-cabe8ebf8462",
+        "target_ticket_key": "AF-28"
+      }
+    ],
+    "decisions": [],
+    "acceptance_criteria": [
+      "AddressFilter trait integration allowing caller injection of validated address sets",
+      "Single-bit correction enabled only when corrected address matches an active/verified track",
+      "Zero multi-bit correction or address guessing per ADR-0003 and SPEC Invariant 5"
+    ],
+    "plan": null,
+    "active_claim": null,
+    "latest_handoff": null,
+    "verification_receipt": {
+      "verifier": "storypole-verify",
+      "command": "cargo nextest run -p aerofoil-1090",
+      "exit_code": 0,
+      "diagnostic_count": null,
+      "summary": "[window: no base commit could be named, so this receipt covers HEAD only]\n",
+      "verified_at_epoch_ms": 1794280011594,
+      "git_branch": "main",
+      "base_commit_sha": null,
+      "head_commit_sha": "777dbfa8c2043053bf3f756570d0ce744d8afdb2",
+      "commit_shas": [
+        "777dbfa8c2043053bf3f756570d0ce744d8afdb2"
+      ],
+      "repo": null,
+      "chain_key": "aerofoil-1090"
+    },
+    "created_at_epoch_ms": 1794275198151,
+    "updated_at_epoch_ms": 1794280011594
+  },
+  "events": [
+    {
+      "event": "task_created",
+      "task": {
+        "id": "1bd83f27-3b16-40a1-9b0f-54529b685f52",
+        "ticket_key": "AF-30",
+        "slug": "implement-address-filtered-single-bit-error-correction-in-aerofoil-1090-1bd83f",
+        "title": "Implement address-filtered single-bit error correction in aerofoil-1090",
+        "description": "Implement address-filtered single-bit error correction in aerofoil-1090 per ADR-0003, accepting an AddressFilter trait without coupling the decoder upward into tracker state.",
+        "kind": "feature",
+        "status": "ready",
+        "priority": 2,
+        "scope": {
+          "repo": null,
+          "crate_name": "aerofoil-1090",
+          "module_path": null,
+          "target_files": [
+            "crates/1090/src/fec.rs",
+            "crates/1090/src/lib.rs"
+          ],
+          "target_symbols": [],
+          "labels": [
+            "m2",
+            "1090",
+            "fec"
+          ]
+        },
+        "edges": [],
+        "decisions": [],
+        "acceptance_criteria": [
+          "AddressFilter trait integration allowing caller injection of validated address sets",
+          "Single-bit correction enabled only when corrected address matches an active/verified track",
+          "Zero multi-bit correction or address guessing per ADR-0003 and SPEC Invariant 5"
+        ],
+        "plan": null,
+        "active_claim": null,
+        "latest_handoff": null,
+        "verification_receipt": null,
+        "created_at_epoch_ms": 1794275198151,
+        "updated_at_epoch_ms": 1794275198151
+      }
+    },
+    {
+      "event": "edge_added",
+      "task_id": "1bd83f27-3b16-40a1-9b0f-54529b685f52",
+      "edge": {
+        "kind": "parent_epic",
+        "target_id": "51030a94-fb0f-496f-bec3-f2bc4aae4c98",
+        "target_ticket_key": "AF-16",
+        "target_repo": "aerofoil"
+      },
+      "timestamp_ms": 1794275201171
+    },
+    {
+      "event": "edge_added",
+      "task_id": "1bd83f27-3b16-40a1-9b0f-54529b685f52",
+      "edge": {
+        "kind": "blocked_by",
+        "target_id": "8fc2c0d2-3e3e-47d8-8e90-cabe8ebf8462",
+        "target_ticket_key": "AF-28"
+      },
+      "timestamp_ms": 1794275206380
+    },
+    {
+      "event": "status_changed",
+      "task_id": "1bd83f27-3b16-40a1-9b0f-54529b685f52",
+      "from": "ready",
+      "to": "blocked",
+      "reason": "Blocked by unverified task AF-28",
+      "timestamp_ms": 1794275206380
+    },
+    {
+      "event": "status_changed",
+      "task_id": "1bd83f27-3b16-40a1-9b0f-54529b685f52",
+      "from": "blocked",
+      "to": "ready",
+      "reason": "Dependency AF-28 verified",
+      "timestamp_ms": 1794275558486
+    },
+    {
+      "event": "task_claimed",
+      "task_id": "1bd83f27-3b16-40a1-9b0f-54529b685f52",
+      "claim": {
+        "agent_id": "gemini",
+        "claimed_at_epoch_ms": 1794279527518,
+        "lease_expires_at_epoch_ms": 1794283127518,
+        "git_branch": "feat/af-30-single-bit-fec",
+        "base_commit_sha": null
+      }
+    },
+    {
+      "event": "status_changed",
+      "task_id": "1bd83f27-3b16-40a1-9b0f-54529b685f52",
+      "from": "ready",
+      "to": "in_progress",
+      "reason": "Claimed by gemini",
+      "timestamp_ms": 1794279527518
+    },
+    {
+      "event": "task_verified",
+      "task_id": "1bd83f27-3b16-40a1-9b0f-54529b685f52",
+      "receipt": {
+        "verifier": "storypole-verify",
+        "command": "cargo nextest run -p aerofoil-1090",
+        "exit_code": 0,
+        "diagnostic_count": null,
+        "summary": "[window: no base commit could be named, so this receipt covers HEAD only]\n",
+        "verified_at_epoch_ms": 1794280011594,
+        "git_branch": "main",
+        "base_commit_sha": null,
+        "head_commit_sha": "777dbfa8c2043053bf3f756570d0ce744d8afdb2",
+        "commit_shas": [
+          "777dbfa8c2043053bf3f756570d0ce744d8afdb2"
+        ],
+        "repo": null,
+        "chain_key": "aerofoil-1090"
+      }
+    }
+  ]
+}

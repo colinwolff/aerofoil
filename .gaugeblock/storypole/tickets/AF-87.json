@@ -1,0 +1,121 @@
+{
+  "ticket": {
+    "id": "c7b2d465-434c-4efe-92ac-eebc86eaeac9",
+    "ticket_key": "AF-87",
+    "slug": "add-toggleable-aircraft-map-labels-and-single-aircraft-telemetry-list-highlighting-c7b2d4",
+    "title": "Add toggleable aircraft map labels and single-aircraft telemetry list highlighting",
+    "description": "Add toolbar button and hotkey (K) to toggle aircraft callsign/FL map labels on/off, fix single-target selection and deselection in the telemetry table so clicks are never dropped during live streaming, and visually highlight the selected row, 2D marker, and 3D aircraft model.",
+    "kind": "feature",
+    "status": "verified",
+    "priority": 2,
+    "scope": {
+      "repo": null,
+      "crate_name": "aerofoil-server",
+      "module_path": null,
+      "target_files": [
+        "apps/web/index.html,apps/web/src/radar.ts,apps/web/src/layers/AircraftLabelsManager.ts,apps/web/src/components/ToolbarBinder.ts,apps/web/src/css/base.css,apps/web/src/css/hud.css"
+      ],
+      "target_symbols": [],
+      "labels": []
+    },
+    "edges": [],
+    "decisions": [],
+    "acceptance_criteria": [],
+    "plan": null,
+    "active_claim": null,
+    "latest_handoff": null,
+    "verification_receipt": {
+      "verifier": "storypole-verify",
+      "command": "cargo nextest run -p aerofoil-server",
+      "exit_code": 0,
+      "diagnostic_count": null,
+      "summary": "[window: no base commit could be named, so this receipt covers HEAD only]\n",
+      "verified_at_epoch_ms": 1794501912816,
+      "git_branch": "main",
+      "base_commit_sha": null,
+      "head_commit_sha": "49e98c8c854799e4ee89a67e25d79f67af27e71e",
+      "commit_shas": [
+        "49e98c8c854799e4ee89a67e25d79f67af27e71e"
+      ],
+      "repo": null,
+      "chain_key": "aerofoil-server",
+      "window_intact": true
+    },
+    "created_at_epoch_ms": 1794501025504,
+    "updated_at_epoch_ms": 1794501912816
+  },
+  "events": [
+    {
+      "event": "task_created",
+      "task": {
+        "id": "c7b2d465-434c-4efe-92ac-eebc86eaeac9",
+        "ticket_key": "AF-87",
+        "slug": "add-toggleable-aircraft-map-labels-and-single-aircraft-telemetry-list-highlighting-c7b2d4",
+        "title": "Add toggleable aircraft map labels and single-aircraft telemetry list highlighting",
+        "description": "Add toolbar button and hotkey (K) to toggle aircraft callsign/FL map labels on/off, fix single-target selection and deselection in the telemetry table so clicks are never dropped during live streaming, and visually highlight the selected row, 2D marker, and 3D aircraft model.",
+        "kind": "feature",
+        "status": "ready",
+        "priority": 2,
+        "scope": {
+          "repo": null,
+          "crate_name": "aerofoil-server",
+          "module_path": null,
+          "target_files": [
+            "apps/web/index.html,apps/web/src/radar.ts,apps/web/src/layers/AircraftLabelsManager.ts,apps/web/src/components/ToolbarBinder.ts,apps/web/src/css/base.css,apps/web/src/css/hud.css"
+          ],
+          "target_symbols": [],
+          "labels": []
+        },
+        "edges": [],
+        "decisions": [],
+        "acceptance_criteria": [],
+        "plan": null,
+        "active_claim": null,
+        "latest_handoff": null,
+        "verification_receipt": null,
+        "created_at_epoch_ms": 1794501025504,
+        "updated_at_epoch_ms": 1794501025504
+      }
+    },
+    {
+      "event": "task_claimed",
+      "task_id": "c7b2d465-434c-4efe-92ac-eebc86eaeac9",
+      "claim": {
+        "agent_id": "antigravity",
+        "claimed_at_epoch_ms": 1794501629416,
+        "lease_expires_at_epoch_ms": 1794505229416,
+        "git_branch": "feat/af-87-labels-highlight",
+        "base_commit_sha": null
+      }
+    },
+    {
+      "event": "status_changed",
+      "task_id": "c7b2d465-434c-4efe-92ac-eebc86eaeac9",
+      "from": "ready",
+      "to": "in_progress",
+      "reason": "Claimed by antigravity",
+      "timestamp_ms": 1794501629416
+    },
+    {
+      "event": "task_verified",
+      "task_id": "c7b2d465-434c-4efe-92ac-eebc86eaeac9",
+      "receipt": {
+        "verifier": "storypole-verify",
+        "command": "cargo nextest run -p aerofoil-server",
+        "exit_code": 0,
+        "diagnostic_count": null,
+        "summary": "[window: no base commit could be named, so this receipt covers HEAD only]\n",
+        "verified_at_epoch_ms": 1794501912816,
+        "git_branch": "main",
+        "base_commit_sha": null,
+        "head_commit_sha": "49e98c8c854799e4ee89a67e25d79f67af27e71e",
+        "commit_shas": [
+          "49e98c8c854799e4ee89a67e25d79f67af27e71e"
+        ],
+        "repo": null,
+        "chain_key": "aerofoil-server",
+        "window_intact": true
+      }
+    }
+  ]
+}

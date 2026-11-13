@@ -1,0 +1,119 @@
+{
+  "ticket": {
+    "id": "0b91466e-20b7-4c35-b242-471a41fb9c32",
+    "ticket_key": "AF-54",
+    "slug": "implement-best-in-class-web-radar-ui-ux-12-class-svg-aircraft-icon-matrix-map-overlays-floating-hud-and-legal-compliance-engine-0b9146",
+    "title": "Implement best-in-class Web Radar UI/UX: 12-class SVG aircraft icon matrix, map overlays, floating HUD, and legal compliance engine",
+    "description": "Handoff prompt: 12-class clean-room SVG icon set, pluggable AirspaceMapEngine (Leaflet 2.0 / MapLibre GL), TopoJSON FAA airspace boundaries, FAA VFR/IFR chart tiles with fallback, dynamic range rings and azimuths, RainViewer NEXRAD weather radar with scrubber dock, dynamic attribution control, legal modal, and map-config.json schema",
+    "kind": "feature",
+    "status": "verified",
+    "priority": 2,
+    "scope": {
+      "repo": "aerofoil",
+      "crate_name": null,
+      "module_path": null,
+      "target_files": [
+        "apps/web"
+      ],
+      "target_symbols": [],
+      "labels": []
+    },
+    "edges": [],
+    "decisions": [],
+    "acceptance_criteria": [],
+    "plan": null,
+    "active_claim": null,
+    "latest_handoff": null,
+    "verification_receipt": {
+      "verifier": "storypole-verify",
+      "command": "cargo nextest run --workspace",
+      "exit_code": 0,
+      "diagnostic_count": null,
+      "summary": "[window: no base commit could be named, so this receipt covers HEAD only]\n",
+      "verified_at_epoch_ms": 1794348623811,
+      "git_branch": "main",
+      "base_commit_sha": null,
+      "head_commit_sha": "2fbbd603b8ee3bfdb3e48ac54c2cb7b55431bc51",
+      "commit_shas": [
+        "2fbbd603b8ee3bfdb3e48ac54c2cb7b55431bc51"
+      ],
+      "repo": "aerofoil",
+      "chain_key": "aerofoil"
+    },
+    "created_at_epoch_ms": 1794344295406,
+    "updated_at_epoch_ms": 1794348623811
+  },
+  "events": [
+    {
+      "event": "task_created",
+      "task": {
+        "id": "0b91466e-20b7-4c35-b242-471a41fb9c32",
+        "ticket_key": "AF-54",
+        "slug": "implement-best-in-class-web-radar-ui-ux-12-class-svg-aircraft-icon-matrix-map-overlays-floating-hud-and-legal-compliance-engine-0b9146",
+        "title": "Implement best-in-class Web Radar UI/UX: 12-class SVG aircraft icon matrix, map overlays, floating HUD, and legal compliance engine",
+        "description": "Handoff prompt: 12-class clean-room SVG icon set, pluggable AirspaceMapEngine (Leaflet 2.0 / MapLibre GL), TopoJSON FAA airspace boundaries, FAA VFR/IFR chart tiles with fallback, dynamic range rings and azimuths, RainViewer NEXRAD weather radar with scrubber dock, dynamic attribution control, legal modal, and map-config.json schema",
+        "kind": "feature",
+        "status": "ready",
+        "priority": 2,
+        "scope": {
+          "repo": "aerofoil",
+          "crate_name": null,
+          "module_path": null,
+          "target_files": [
+            "apps/web"
+          ],
+          "target_symbols": [],
+          "labels": []
+        },
+        "edges": [],
+        "decisions": [],
+        "acceptance_criteria": [],
+        "plan": null,
+        "active_claim": null,
+        "latest_handoff": null,
+        "verification_receipt": null,
+        "created_at_epoch_ms": 1794344295406,
+        "updated_at_epoch_ms": 1794344295406
+      }
+    },
+    {
+      "event": "task_claimed",
+      "task_id": "0b91466e-20b7-4c35-b242-471a41fb9c32",
+      "claim": {
+        "agent_id": "antigravity",
+        "claimed_at_epoch_ms": 1794345861614,
+        "lease_expires_at_epoch_ms": 1794349461614,
+        "git_branch": "feat/web-radar-overlays-and-icons",
+        "base_commit_sha": null
+      }
+    },
+    {
+      "event": "status_changed",
+      "task_id": "0b91466e-20b7-4c35-b242-471a41fb9c32",
+      "from": "ready",
+      "to": "in_progress",
+      "reason": "Claimed by antigravity",
+      "timestamp_ms": 1794345861614
+    },
+    {
+      "event": "task_verified",
+      "task_id": "0b91466e-20b7-4c35-b242-471a41fb9c32",
+      "receipt": {
+        "verifier": "storypole-verify",
+        "command": "cargo nextest run --workspace",
+        "exit_code": 0,
+        "diagnostic_count": null,
+        "summary": "[window: no base commit could be named, so this receipt covers HEAD only]\n",
+        "verified_at_epoch_ms": 1794348623811,
+        "git_branch": "main",
+        "base_commit_sha": null,
+        "head_commit_sha": "2fbbd603b8ee3bfdb3e48ac54c2cb7b55431bc51",
+        "commit_shas": [
+          "2fbbd603b8ee3bfdb3e48ac54c2cb7b55431bc51"
+        ],
+        "repo": "aerofoil",
+        "chain_key": "aerofoil"
+      }
+    }
+  ]
+}

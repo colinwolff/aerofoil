@@ -1,0 +1,135 @@
+{
+  "ticket": {
+    "id": "d4e97321-e630-4533-8671-f248305749b0",
+    "ticket_key": "AF-35",
+    "slug": "implement-dual-band-ads-r-cross-band-deduplication-d4e973",
+    "title": "Implement dual-band ADS-R cross-band deduplication",
+    "description": "Implement dual-band ADS-R cross-band deduplication per SPEC Invariant 10: direct reception always wins; re-broadcast updates within Δt ≤ 1.0s and Δd ≤ 0.001° are deduplicated.",
+    "kind": "feature",
+    "status": "verified",
+    "priority": 3,
+    "scope": {
+      "repo": "aerofoil",
+      "crate_name": "aerofoil-tracker",
+      "module_path": null,
+      "target_files": [],
+      "target_symbols": [],
+      "labels": [
+        "m3"
+      ]
+    },
+    "edges": [
+      {
+        "kind": "parent_epic",
+        "target_id": "1000b2e8-c8d2-4fc1-bcdf-6ac0d42b4ec3",
+        "target_ticket_key": "AF-17",
+        "target_repo": "aerofoil"
+      },
+      {
+        "kind": "blocked_by",
+        "target_id": "e905b111-0bc2-4102-b35a-aea0526bdda1"
+      }
+    ],
+    "decisions": [],
+    "acceptance_criteria": [
+      "Direct-reception updates always win and are unconditionally applied to tracks",
+      "Rebroadcast updates arriving within Δt ≤ 1.0s and Δd ≤ 0.001° of recent direct reception are deduplicated and suppressed",
+      "Rebroadcast updates outside the spatio-temporal window (Δt > 1.0s or Δd > 0.001°) are admitted and update track state",
+      "Unit and integration tests prove cross-band deduplication and boundary conditions"
+    ],
+    "plan": null,
+    "active_claim": null,
+    "latest_handoff": null,
+    "verification_receipt": {
+      "verifier": "storypole-verify",
+      "command": "cargo nextest run -p aerofoil-tracker",
+      "exit_code": 0,
+      "diagnostic_count": null,
+      "summary": "[window: no base commit could be named, so this receipt covers HEAD only]\n",
+      "verified_at_epoch_ms": 1794291155312,
+      "git_branch": "main",
+      "base_commit_sha": null,
+      "head_commit_sha": "917615b2e36ddeb50b15878800950c4e8e169c38",
+      "commit_shas": [
+        "917615b2e36ddeb50b15878800950c4e8e169c38"
+      ],
+      "repo": "aerofoil",
+      "chain_key": "aerofoil-tracker"
+    },
+    "created_at_epoch_ms": 1794289540164,
+    "updated_at_epoch_ms": 1794291155312
+  },
+  "events": [
+    {
+      "event": "status_changed",
+      "task_id": "d4e97321-e630-4533-8671-f248305749b0",
+      "from": "blocked",
+      "to": "ready",
+      "reason": "Dependency AF-34 verified",
+      "timestamp_ms": 1794290754752
+    },
+    {
+      "event": "task_claimed",
+      "task_id": "d4e97321-e630-4533-8671-f248305749b0",
+      "claim": {
+        "agent_id": "gemini",
+        "claimed_at_epoch_ms": 1794290943282,
+        "lease_expires_at_epoch_ms": 1794294543282,
+        "git_branch": "feat/af-35-adsr-dedup",
+        "base_commit_sha": null
+      }
+    },
+    {
+      "event": "status_changed",
+      "task_id": "d4e97321-e630-4533-8671-f248305749b0",
+      "from": "ready",
+      "to": "in_progress",
+      "reason": "Claimed by gemini",
+      "timestamp_ms": 1794290943282
+    },
+    {
+      "event": "task_updated",
+      "task_id": "d4e97321-e630-4533-8671-f248305749b0",
+      "title": null,
+      "description": "Implement dual-band ADS-R cross-band deduplication per SPEC Invariant 10: direct reception always wins; re-broadcast updates within Δt ≤ 1.0s and Δd ≤ 0.001° are deduplicated.",
+      "priority": null,
+      "scope": {
+        "repo": "aerofoil",
+        "crate_name": "aerofoil-tracker",
+        "module_path": null,
+        "target_files": [],
+        "target_symbols": [],
+        "labels": [
+          "m3"
+        ]
+      },
+      "acceptance_criteria": [
+        "Direct-reception updates always win and are unconditionally applied to tracks",
+        "Rebroadcast updates arriving within Δt ≤ 1.0s and Δd ≤ 0.001° of recent direct reception are deduplicated and suppressed",
+        "Rebroadcast updates outside the spatio-temporal window (Δt > 1.0s or Δd > 0.001°) are admitted and update track state",
+        "Unit and integration tests prove cross-band deduplication and boundary conditions"
+      ],
+      "timestamp_ms": 1794290948352
+    },
+    {
+      "event": "task_verified",
+      "task_id": "d4e97321-e630-4533-8671-f248305749b0",
+      "receipt": {
+        "verifier": "storypole-verify",
+        "command": "cargo nextest run -p aerofoil-tracker",
+        "exit_code": 0,
+        "diagnostic_count": null,
+        "summary": "[window: no base commit could be named, so this receipt covers HEAD only]\n",
+        "verified_at_epoch_ms": 1794291155312,
+        "git_branch": "main",
+        "base_commit_sha": null,
+        "head_commit_sha": "917615b2e36ddeb50b15878800950c4e8e169c38",
+        "commit_shas": [
+          "917615b2e36ddeb50b15878800950c4e8e169c38"
+        ],
+        "repo": "aerofoil",
+        "chain_key": "aerofoil-tracker"
+      }
+    }
+  ]
+}

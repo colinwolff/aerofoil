@@ -1,0 +1,119 @@
+{
+  "ticket": {
+    "id": "1deb2888-0c2c-4e17-9401-070b4c865a9d",
+    "ticket_key": "AF-85",
+    "slug": "raw-iq-modulated-sample-capture-and-rf-replay-engine-1deb28",
+    "title": "Raw IQ modulated sample capture and RF replay engine",
+    "description": "Add support for capturing raw received RF IQ baseband samples (.cu8 unsigned 8-bit and .cf32 float32) directly to disk from the SDR receiver, along with an RF replay mode in aerofoil-replay to feed raw IQ samples into the aerofoil-sdr demodulator for DSP testing.",
+    "kind": "feature",
+    "status": "verified",
+    "priority": 2,
+    "scope": {
+      "repo": null,
+      "crate_name": "aerofoil-replay",
+      "module_path": null,
+      "target_files": [
+        "apps/replay/src/iq_replay.rs,crates/sdr/src/iq_capture.rs,apps/replay/src/main.rs"
+      ],
+      "target_symbols": [],
+      "labels": []
+    },
+    "edges": [],
+    "decisions": [],
+    "acceptance_criteria": [],
+    "plan": null,
+    "active_claim": null,
+    "latest_handoff": null,
+    "verification_receipt": {
+      "verifier": "storypole-verify",
+      "command": "cargo nextest run -p aerofoil-replay",
+      "exit_code": 0,
+      "diagnostic_count": null,
+      "summary": "",
+      "verified_at_epoch_ms": 1794438615865,
+      "git_branch": "feat/AF-85-raw-iq-capture-and-rf-replay",
+      "base_commit_sha": "09797f66a9dc227d250257e5c35c83343f6caaf9",
+      "head_commit_sha": "df76670775de4fc351209a49ecb380495d597499",
+      "commit_shas": [
+        "df76670775de4fc351209a49ecb380495d597499"
+      ],
+      "repo": null,
+      "chain_key": "aerofoil-replay"
+    },
+    "created_at_epoch_ms": 1794427739287,
+    "updated_at_epoch_ms": 1794438615865
+  },
+  "events": [
+    {
+      "event": "task_created",
+      "task": {
+        "id": "1deb2888-0c2c-4e17-9401-070b4c865a9d",
+        "ticket_key": "AF-85",
+        "slug": "raw-iq-modulated-sample-capture-and-rf-replay-engine-1deb28",
+        "title": "Raw IQ modulated sample capture and RF replay engine",
+        "description": "Add support for capturing raw received RF IQ baseband samples (.cu8 unsigned 8-bit and .cf32 float32) directly to disk from the SDR receiver, along with an RF replay mode in aerofoil-replay to feed raw IQ samples into the aerofoil-sdr demodulator for DSP testing.",
+        "kind": "feature",
+        "status": "ready",
+        "priority": 2,
+        "scope": {
+          "repo": null,
+          "crate_name": "aerofoil-replay",
+          "module_path": null,
+          "target_files": [
+            "apps/replay/src/iq_replay.rs,crates/sdr/src/iq_capture.rs,apps/replay/src/main.rs"
+          ],
+          "target_symbols": [],
+          "labels": []
+        },
+        "edges": [],
+        "decisions": [],
+        "acceptance_criteria": [],
+        "plan": null,
+        "active_claim": null,
+        "latest_handoff": null,
+        "verification_receipt": null,
+        "created_at_epoch_ms": 1794427739287,
+        "updated_at_epoch_ms": 1794427739287
+      }
+    },
+    {
+      "event": "task_claimed",
+      "task_id": "1deb2888-0c2c-4e17-9401-070b4c865a9d",
+      "claim": {
+        "agent_id": "aerofoil-agent",
+        "claimed_at_epoch_ms": 1794438449670,
+        "lease_expires_at_epoch_ms": 1794442049670,
+        "git_branch": "feat/AF-85-raw-iq-capture-and-rf-replay",
+        "base_commit_sha": null
+      }
+    },
+    {
+      "event": "status_changed",
+      "task_id": "1deb2888-0c2c-4e17-9401-070b4c865a9d",
+      "from": "ready",
+      "to": "in_progress",
+      "reason": "Claimed by aerofoil-agent",
+      "timestamp_ms": 1794438449670
+    },
+    {
+      "event": "task_verified",
+      "task_id": "1deb2888-0c2c-4e17-9401-070b4c865a9d",
+      "receipt": {
+        "verifier": "storypole-verify",
+        "command": "cargo nextest run -p aerofoil-replay",
+        "exit_code": 0,
+        "diagnostic_count": null,
+        "summary": "",
+        "verified_at_epoch_ms": 1794438615865,
+        "git_branch": "feat/AF-85-raw-iq-capture-and-rf-replay",
+        "base_commit_sha": "09797f66a9dc227d250257e5c35c83343f6caaf9",
+        "head_commit_sha": "df76670775de4fc351209a49ecb380495d597499",
+        "commit_shas": [
+          "df76670775de4fc351209a49ecb380495d597499"
+        ],
+        "repo": null,
+        "chain_key": "aerofoil-replay"
+      }
+    }
+  ]
+}

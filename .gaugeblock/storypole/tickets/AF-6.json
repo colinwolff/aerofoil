@@ -1,0 +1,196 @@
+{
+  "ticket": {
+    "id": "92ff213a-0076-4c63-ae8f-e30923f9d75d",
+    "ticket_key": "AF-6",
+    "slug": "scaffold-aerofoil-common-with-a-no-std-skeleton-decodeerror-and-unit-types-92ff21",
+    "title": "Add DecodeError and the shared unit types to aerofoil-common",
+    "description": "The no_std crate skeleton landed with AF-2, because a virtual workspace with no members cannot be built. This task fills it with the error model and the unit primitives.",
+    "kind": "feature",
+    "status": "verified",
+    "priority": 2,
+    "scope": {
+      "repo": "aerofoil",
+      "crate_name": "aerofoil-common",
+      "module_path": null,
+      "target_files": [
+        "crates/common/src/lib.rs"
+      ],
+      "target_symbols": [
+        "DecodeError"
+      ],
+      "labels": [
+        "m1,common"
+      ]
+    },
+    "edges": [
+      {
+        "kind": "parent_epic",
+        "target_id": "fa37c8db-1bee-463e-8c0d-4f4746d5b8e8",
+        "target_ticket_key": "AF-5",
+        "target_repo": "aerofoil"
+      },
+      {
+        "kind": "blocked_by",
+        "target_id": "758f80b2-8254-494a-b30a-cfa77727319f",
+        "target_ticket_key": "AF-2",
+        "target_repo": "aerofoil"
+      }
+    ],
+    "decisions": [],
+    "acceptance_criteria": [
+      "typed error enum matching SPEC 1.3 with Display and Error impls; unit types for altitude",
+      " squawk and heading; the first real tests in the crate so nextest has something to run; no allocation on the decode path"
+    ],
+    "plan": null,
+    "active_claim": null,
+    "latest_handoff": null,
+    "verification_receipt": {
+      "verifier": "manual",
+      "command": "n/a",
+      "exit_code": 0,
+      "diagnostic_count": null,
+      "summary": "Tier 2: fmt, clippy -D warnings, nextest (18 tests), miter audit 250, chalkline docs check (9/0/0). Tier 3: workspace fmt, clippy all-features, nextest --workspace (18), doc tests, miter audit 200, miter deps --unused, docs check. no_std not proven on a bare-metal target; recorded as gap and assigned to AF-3.",
+      "verified_at_epoch_ms": 1793820031587,
+      "git_branch": "main",
+      "base_commit_sha": "d9cdb131e330ad75a6933f1ad1d2079e9fbea11c",
+      "head_commit_sha": "d9cdb131e330ad75a6933f1ad1d2079e9fbea11c",
+      "commit_shas": [
+        "d9cdb131e330ad75a6933f1ad1d2079e9fbea11c"
+      ],
+      "repo": null,
+      "chain_key": null
+    },
+    "created_at_epoch_ms": 1793818857798,
+    "updated_at_epoch_ms": 1793820031587
+  },
+  "events": [
+    {
+      "event": "task_created",
+      "task": {
+        "id": "92ff213a-0076-4c63-ae8f-e30923f9d75d",
+        "ticket_key": "AF-6",
+        "slug": "scaffold-aerofoil-common-with-a-no-std-skeleton-decodeerror-and-unit-types-92ff21",
+        "title": "Scaffold aerofoil-common with a no_std skeleton, DecodeError and unit types",
+        "description": "",
+        "kind": "feature",
+        "status": "ready",
+        "priority": 2,
+        "scope": {
+          "repo": "aerofoil",
+          "crate_name": "aerofoil-common",
+          "module_path": null,
+          "target_files": [
+            "crates/common/src/lib.rs"
+          ],
+          "target_symbols": [
+            "DecodeError"
+          ],
+          "labels": [
+            "m1,common"
+          ]
+        },
+        "edges": [],
+        "decisions": [],
+        "acceptance_criteria": [
+          "no_std; typed error enum matching SPEC 1.3; no alloc on the decode path; doc comments on every public item"
+        ],
+        "plan": null,
+        "active_claim": null,
+        "latest_handoff": null,
+        "verification_receipt": null,
+        "created_at_epoch_ms": 1793818857798,
+        "updated_at_epoch_ms": 1793818857798
+      }
+    },
+    {
+      "event": "edge_added",
+      "task_id": "92ff213a-0076-4c63-ae8f-e30923f9d75d",
+      "edge": {
+        "kind": "parent_epic",
+        "target_id": "fa37c8db-1bee-463e-8c0d-4f4746d5b8e8",
+        "target_ticket_key": "AF-5",
+        "target_repo": "aerofoil"
+      },
+      "timestamp_ms": 1793818893721
+    },
+    {
+      "event": "edge_added",
+      "task_id": "92ff213a-0076-4c63-ae8f-e30923f9d75d",
+      "edge": {
+        "kind": "blocked_by",
+        "target_id": "758f80b2-8254-494a-b30a-cfa77727319f",
+        "target_ticket_key": "AF-2",
+        "target_repo": "aerofoil"
+      },
+      "timestamp_ms": 1793818901766
+    },
+    {
+      "event": "status_changed",
+      "task_id": "92ff213a-0076-4c63-ae8f-e30923f9d75d",
+      "from": "ready",
+      "to": "blocked",
+      "reason": "Blocked by unverified task AF-2",
+      "timestamp_ms": 1793818901766
+    },
+    {
+      "event": "task_updated",
+      "task_id": "92ff213a-0076-4c63-ae8f-e30923f9d75d",
+      "title": "Add DecodeError and the shared unit types to aerofoil-common",
+      "description": "The no_std crate skeleton landed with AF-2, because a virtual workspace with no members cannot be built. This task fills it with the error model and the unit primitives.",
+      "priority": null,
+      "scope": null,
+      "acceptance_criteria": [
+        "typed error enum matching SPEC 1.3 with Display and Error impls; unit types for altitude",
+        " squawk and heading; the first real tests in the crate so nextest has something to run; no allocation on the decode path"
+      ],
+      "timestamp_ms": 1793819584735
+    },
+    {
+      "event": "status_changed",
+      "task_id": "92ff213a-0076-4c63-ae8f-e30923f9d75d",
+      "from": "blocked",
+      "to": "ready",
+      "reason": "Dependency AF-2 verified",
+      "timestamp_ms": 1793819584786
+    },
+    {
+      "event": "task_claimed",
+      "task_id": "92ff213a-0076-4c63-ae8f-e30923f9d75d",
+      "claim": {
+        "agent_id": "cline",
+        "claimed_at_epoch_ms": 1793819767255,
+        "lease_expires_at_epoch_ms": 1793823367255,
+        "git_branch": "feat/af-6-error-and-units",
+        "base_commit_sha": null
+      }
+    },
+    {
+      "event": "status_changed",
+      "task_id": "92ff213a-0076-4c63-ae8f-e30923f9d75d",
+      "from": "ready",
+      "to": "in_progress",
+      "reason": "Claimed by cline",
+      "timestamp_ms": 1793819767255
+    },
+    {
+      "event": "task_verified",
+      "task_id": "92ff213a-0076-4c63-ae8f-e30923f9d75d",
+      "receipt": {
+        "verifier": "manual",
+        "command": "n/a",
+        "exit_code": 0,
+        "diagnostic_count": null,
+        "summary": "Tier 2: fmt, clippy -D warnings, nextest (18 tests), miter audit 250, chalkline docs check (9/0/0). Tier 3: workspace fmt, clippy all-features, nextest --workspace (18), doc tests, miter audit 200, miter deps --unused, docs check. no_std not proven on a bare-metal target; recorded as gap and assigned to AF-3.",
+        "verified_at_epoch_ms": 1793820031587,
+        "git_branch": "main",
+        "base_commit_sha": "d9cdb131e330ad75a6933f1ad1d2079e9fbea11c",
+        "head_commit_sha": "d9cdb131e330ad75a6933f1ad1d2079e9fbea11c",
+        "commit_shas": [
+          "d9cdb131e330ad75a6933f1ad1d2079e9fbea11c"
+        ],
+        "repo": null,
+        "chain_key": null
+      }
+    }
+  ]
+}

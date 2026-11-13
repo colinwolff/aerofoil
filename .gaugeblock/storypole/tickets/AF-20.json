@@ -1,0 +1,175 @@
+{
+  "ticket": {
+    "id": "6ebc5a7c-6e11-4494-a385-98d04982c449",
+    "ticket_key": "AF-20",
+    "slug": "reserve-the-eight-aerofoil-crate-names-on-crates-io-at-0-1-0-alpha-1-6ebc5a",
+    "title": "Reserve the eight aerofoil crate names on crates.io at 0.1.0-alpha.1",
+    "description": "All eight names returned 404 on the crates.io API on 2026-11-04 and are free. Run scripts/reserve-namespaces.sh check, then scaffold, then publish --yes with credentials present. Requires the ADR-0007 decision first: the publishing account owns every crate it creates.",
+    "kind": "feature",
+    "status": "verified",
+    "priority": 1,
+    "scope": {
+      "repo": "aerofoil",
+      "crate_name": null,
+      "module_path": null,
+      "target_files": [
+        "scripts/reserve-namespaces.sh"
+      ],
+      "target_symbols": [],
+      "labels": [
+        "release,namespaces"
+      ]
+    },
+    "edges": [],
+    "decisions": [
+      {
+        "decision_id": "700becc8-adab-497b-9579-e4edeb6ebd4a",
+        "parent_decision_id": null,
+        "status": "resolved",
+        "category": "release",
+        "question": "Which account owns the aerofoil namespaces, and therefore who publishes first? Decided by ADR-0007; recommended: gaugeblock org for the repo, publish from the maintainer account now and add the long-term owner as a crates.io owner. Flip ADR-0007 to Accepted in the same commit as the decision.",
+        "proposed_options": [
+          "gaugeblock organisation for the repo, crates published from the maintainer account",
+          "personal account (colinwolff) for both, transfer later",
+          "new organisation with a second-choice handle, since aerofoil is taken on GitHub",
+          "defer reservations until the first beta (leaves all eight names exposed)"
+        ],
+        "chosen_option": "personal account (colinwolff) for both, transfer later",
+        "rationale": "The eight crate names are free now and only publishing holds them; the GitHub handle aerofoil is taken by a user account, so an organisation cannot claim it. Ownership is mutable in both systems (cargo owner add/remove, GitHub transfer with redirects) while a name published by someone else is not recoverable, so holding under the maintainer account now costs nothing strategically. The gaugeblock organisation was excluded as out of scope for this project. The long-term handle stays open as ADR-0008.",
+        "resolved_by": "colinwolff",
+        "updated_at_epoch_ms": 1793821860564
+      }
+    ],
+    "acceptance_criteria": [
+      "all eight names return 200 on the crates.io API; each carries 0.1.0-alpha.1 with description and license; each README marks it a placeholder and links the repository; each placeholder is yanked once the real crate publishes beta"
+    ],
+    "plan": null,
+    "active_claim": null,
+    "latest_handoff": null,
+    "verification_receipt": {
+      "verifier": "manual",
+      "command": "n/a",
+      "exit_code": 0,
+      "diagnostic_count": null,
+      "summary": "All eight names reserved at 0.1.0-alpha.1 and confirmed live through the crates.io API (no yanks): aerofoil, aerofoil-common, aerofoil-1090, aerofoil-978, aerofoil-tracker, aerofoil-server, aerofoil-cli, aerofoil-mcp. Each carries Apache-2.0 OR MIT, edition 2024, rust-version 1.99 and repository github.com/colinwolff/aerofoil. Published from a gitignored staging tree; no placeholder is a workspace member. Rate limiting measured at a five-crate burst then roughly one crate per ten minutes; the script now honours the 429 reset timestamp.",
+      "verified_at_epoch_ms": 1793823725452,
+      "git_branch": "main",
+      "base_commit_sha": "1120b5b041e4937f1b5f7146606fad8485c2880d",
+      "head_commit_sha": "1120b5b041e4937f1b5f7146606fad8485c2880d",
+      "commit_shas": [
+        "1120b5b041e4937f1b5f7146606fad8485c2880d"
+      ],
+      "repo": null,
+      "chain_key": null
+    },
+    "created_at_epoch_ms": 1793820883594,
+    "updated_at_epoch_ms": 1793823725452
+  },
+  "events": [
+    {
+      "event": "task_created",
+      "task": {
+        "id": "6ebc5a7c-6e11-4494-a385-98d04982c449",
+        "ticket_key": "AF-20",
+        "slug": "reserve-the-eight-aerofoil-crate-names-on-crates-io-at-0-1-0-alpha-1-6ebc5a",
+        "title": "Reserve the eight aerofoil crate names on crates.io at 0.1.0-alpha.1",
+        "description": "All eight names returned 404 on the crates.io API on 2026-11-04 and are free. Run scripts/reserve-namespaces.sh check, then scaffold, then publish --yes with credentials present. Requires the ADR-0007 decision first: the publishing account owns every crate it creates.",
+        "kind": "feature",
+        "status": "ready",
+        "priority": 1,
+        "scope": {
+          "repo": "aerofoil",
+          "crate_name": null,
+          "module_path": null,
+          "target_files": [
+            "scripts/reserve-namespaces.sh"
+          ],
+          "target_symbols": [],
+          "labels": [
+            "release,namespaces"
+          ]
+        },
+        "edges": [],
+        "decisions": [],
+        "acceptance_criteria": [
+          "all eight names return 200 on the crates.io API; each carries 0.1.0-alpha.1 with description and license; each README marks it a placeholder and links the repository; each placeholder is yanked once the real crate publishes beta"
+        ],
+        "plan": null,
+        "active_claim": null,
+        "latest_handoff": null,
+        "verification_receipt": null,
+        "created_at_epoch_ms": 1793820883594,
+        "updated_at_epoch_ms": 1793820883594
+      }
+    },
+    {
+      "event": "decision_raised",
+      "task_id": "6ebc5a7c-6e11-4494-a385-98d04982c449",
+      "decision": {
+        "decision_id": "700becc8-adab-497b-9579-e4edeb6ebd4a",
+        "parent_decision_id": null,
+        "status": "pending",
+        "category": "release",
+        "question": "Which account owns the aerofoil namespaces, and therefore who publishes first? Decided by ADR-0007; recommended: gaugeblock org for the repo, publish from the maintainer account now and add the long-term owner as a crates.io owner. Flip ADR-0007 to Accepted in the same commit as the decision.",
+        "proposed_options": [
+          "gaugeblock organisation for the repo, crates published from the maintainer account",
+          "personal account (colinwolff) for both, transfer later",
+          "new organisation with a second-choice handle, since aerofoil is taken on GitHub",
+          "defer reservations until the first beta (leaves all eight names exposed)"
+        ],
+        "chosen_option": null,
+        "rationale": null,
+        "resolved_by": null,
+        "updated_at_epoch_ms": 1793820906458
+      },
+      "timestamp_ms": 1793820906458
+    },
+    {
+      "event": "status_changed",
+      "task_id": "6ebc5a7c-6e11-4494-a385-98d04982c449",
+      "from": "ready",
+      "to": "blocked",
+      "reason": "Pending architectural decision required",
+      "timestamp_ms": 1793820906458
+    },
+    {
+      "event": "decision_resolved",
+      "task_id": "6ebc5a7c-6e11-4494-a385-98d04982c449",
+      "decision_id": "700becc8-adab-497b-9579-e4edeb6ebd4a",
+      "chosen_option": "personal account (colinwolff) for both, transfer later",
+      "rationale": "The eight crate names are free now and only publishing holds them; the GitHub handle aerofoil is taken by a user account, so an organisation cannot claim it. Ownership is mutable in both systems (cargo owner add/remove, GitHub transfer with redirects) while a name published by someone else is not recoverable, so holding under the maintainer account now costs nothing strategically. The gaugeblock organisation was excluded as out of scope for this project. The long-term handle stays open as ADR-0008.",
+      "resolved_by": "colinwolff",
+      "spawned_followup": null,
+      "appended_criterion": null,
+      "timestamp_ms": 1793821860564
+    },
+    {
+      "event": "status_changed",
+      "task_id": "6ebc5a7c-6e11-4494-a385-98d04982c449",
+      "from": "blocked",
+      "to": "ready",
+      "reason": "All pending decisions and dependencies satisfied",
+      "timestamp_ms": 1793821860564
+    },
+    {
+      "event": "task_verified",
+      "task_id": "6ebc5a7c-6e11-4494-a385-98d04982c449",
+      "receipt": {
+        "verifier": "manual",
+        "command": "n/a",
+        "exit_code": 0,
+        "diagnostic_count": null,
+        "summary": "All eight names reserved at 0.1.0-alpha.1 and confirmed live through the crates.io API (no yanks): aerofoil, aerofoil-common, aerofoil-1090, aerofoil-978, aerofoil-tracker, aerofoil-server, aerofoil-cli, aerofoil-mcp. Each carries Apache-2.0 OR MIT, edition 2024, rust-version 1.99 and repository github.com/colinwolff/aerofoil. Published from a gitignored staging tree; no placeholder is a workspace member. Rate limiting measured at a five-crate burst then roughly one crate per ten minutes; the script now honours the 429 reset timestamp.",
+        "verified_at_epoch_ms": 1793823725452,
+        "git_branch": "main",
+        "base_commit_sha": "1120b5b041e4937f1b5f7146606fad8485c2880d",
+        "head_commit_sha": "1120b5b041e4937f1b5f7146606fad8485c2880d",
+        "commit_shas": [
+          "1120b5b041e4937f1b5f7146606fad8485c2880d"
+        ],
+        "repo": null,
+        "chain_key": null
+      }
+    }
+  ]
+}

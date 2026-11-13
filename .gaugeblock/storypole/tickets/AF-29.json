@@ -1,0 +1,186 @@
+{
+  "ticket": {
+    "id": "a20a7920-895c-4db6-8484-2789c751950a",
+    "ticket_key": "AF-29",
+    "slug": "implement-zero-copy-bitfield-parsers-for-df0-df4-df5-df11-df17-df18-df20-df21-a20a79",
+    "title": "Implement zero-copy bitfield parsers for DF0, DF4, DF5, DF11, DF17, DF18, DF20, DF21",
+    "description": "Implement zero-copy bitfield extraction and typed representation for Downlink Formats DF0, DF4, DF5, DF11, DF17, DF18, DF20, DF21 according to DO-260B / ICAO Annex 10.",
+    "kind": "feature",
+    "status": "verified",
+    "priority": 2,
+    "scope": {
+      "repo": null,
+      "crate_name": "aerofoil-1090",
+      "module_path": null,
+      "target_files": [
+        "crates/1090/src/df/",
+        "crates/1090/src/lib.rs"
+      ],
+      "target_symbols": [],
+      "labels": [
+        "m2",
+        "1090",
+        "df"
+      ]
+    },
+    "edges": [
+      {
+        "kind": "parent_epic",
+        "target_id": "51030a94-fb0f-496f-bec3-f2bc4aae4c98",
+        "target_ticket_key": "AF-16",
+        "target_repo": "aerofoil"
+      },
+      {
+        "kind": "blocked_by",
+        "target_id": "8fc2c0d2-3e3e-47d8-8e90-cabe8ebf8462",
+        "target_ticket_key": "AF-28"
+      }
+    ],
+    "decisions": [],
+    "acceptance_criteria": [
+      "Zero-copy bitfield parsers for DF0, DF4, DF5, DF11, DF17, DF18, DF20, DF21",
+      "Strongly typed domain models for altitude, squawk, airborne CPR, velocity, and surface status",
+      "Zero panics and zero heap allocation on hostile input"
+    ],
+    "plan": null,
+    "active_claim": null,
+    "latest_handoff": null,
+    "verification_receipt": {
+      "verifier": "storypole-verify",
+      "command": "cargo nextest run -p aerofoil-1090",
+      "exit_code": 0,
+      "diagnostic_count": null,
+      "summary": "[window: no base commit could be named, so this receipt covers HEAD only]\n",
+      "verified_at_epoch_ms": 1794279202569,
+      "git_branch": "main",
+      "base_commit_sha": null,
+      "head_commit_sha": "d1f7fbc79a349e3caeedd01c82d61cefcbef4fd6",
+      "commit_shas": [
+        "d1f7fbc79a349e3caeedd01c82d61cefcbef4fd6"
+      ],
+      "repo": null,
+      "chain_key": "aerofoil-1090"
+    },
+    "created_at_epoch_ms": 1794275187130,
+    "updated_at_epoch_ms": 1794279202569
+  },
+  "events": [
+    {
+      "event": "task_created",
+      "task": {
+        "id": "a20a7920-895c-4db6-8484-2789c751950a",
+        "ticket_key": "AF-29",
+        "slug": "implement-zero-copy-bitfield-parsers-for-df0-df4-df5-df11-df17-df18-df20-df21-a20a79",
+        "title": "Implement zero-copy bitfield parsers for DF0, DF4, DF5, DF11, DF17, DF18, DF20, DF21",
+        "description": "Implement zero-copy bitfield extraction and typed representation for Downlink Formats DF0, DF4, DF5, DF11, DF17, DF18, DF20, DF21 according to DO-260B / ICAO Annex 10.",
+        "kind": "feature",
+        "status": "ready",
+        "priority": 2,
+        "scope": {
+          "repo": null,
+          "crate_name": "aerofoil-1090",
+          "module_path": null,
+          "target_files": [
+            "crates/1090/src/df/",
+            "crates/1090/src/lib.rs"
+          ],
+          "target_symbols": [],
+          "labels": [
+            "m2",
+            "1090",
+            "df"
+          ]
+        },
+        "edges": [],
+        "decisions": [],
+        "acceptance_criteria": [
+          "Zero-copy bitfield parsers for DF0, DF4, DF5, DF11, DF17, DF18, DF20, DF21",
+          "Strongly typed domain models for altitude, squawk, airborne CPR, velocity, and surface status",
+          "Zero panics and zero heap allocation on hostile input"
+        ],
+        "plan": null,
+        "active_claim": null,
+        "latest_handoff": null,
+        "verification_receipt": null,
+        "created_at_epoch_ms": 1794275187130,
+        "updated_at_epoch_ms": 1794275187130
+      }
+    },
+    {
+      "event": "edge_added",
+      "task_id": "a20a7920-895c-4db6-8484-2789c751950a",
+      "edge": {
+        "kind": "parent_epic",
+        "target_id": "51030a94-fb0f-496f-bec3-f2bc4aae4c98",
+        "target_ticket_key": "AF-16",
+        "target_repo": "aerofoil"
+      },
+      "timestamp_ms": 1794275190624
+    },
+    {
+      "event": "edge_added",
+      "task_id": "a20a7920-895c-4db6-8484-2789c751950a",
+      "edge": {
+        "kind": "blocked_by",
+        "target_id": "8fc2c0d2-3e3e-47d8-8e90-cabe8ebf8462",
+        "target_ticket_key": "AF-28"
+      },
+      "timestamp_ms": 1794275194103
+    },
+    {
+      "event": "status_changed",
+      "task_id": "a20a7920-895c-4db6-8484-2789c751950a",
+      "from": "ready",
+      "to": "blocked",
+      "reason": "Blocked by unverified task AF-28",
+      "timestamp_ms": 1794275194103
+    },
+    {
+      "event": "status_changed",
+      "task_id": "a20a7920-895c-4db6-8484-2789c751950a",
+      "from": "blocked",
+      "to": "ready",
+      "reason": "Dependency AF-28 verified",
+      "timestamp_ms": 1794275558486
+    },
+    {
+      "event": "task_claimed",
+      "task_id": "a20a7920-895c-4db6-8484-2789c751950a",
+      "claim": {
+        "agent_id": "gemini",
+        "claimed_at_epoch_ms": 1794278325166,
+        "lease_expires_at_epoch_ms": 1794281925166,
+        "git_branch": "feat/af-29-df-parsers",
+        "base_commit_sha": null
+      }
+    },
+    {
+      "event": "status_changed",
+      "task_id": "a20a7920-895c-4db6-8484-2789c751950a",
+      "from": "ready",
+      "to": "in_progress",
+      "reason": "Claimed by gemini",
+      "timestamp_ms": 1794278325166
+    },
+    {
+      "event": "task_verified",
+      "task_id": "a20a7920-895c-4db6-8484-2789c751950a",
+      "receipt": {
+        "verifier": "storypole-verify",
+        "command": "cargo nextest run -p aerofoil-1090",
+        "exit_code": 0,
+        "diagnostic_count": null,
+        "summary": "[window: no base commit could be named, so this receipt covers HEAD only]\n",
+        "verified_at_epoch_ms": 1794279202569,
+        "git_branch": "main",
+        "base_commit_sha": null,
+        "head_commit_sha": "d1f7fbc79a349e3caeedd01c82d61cefcbef4fd6",
+        "commit_shas": [
+          "d1f7fbc79a349e3caeedd01c82d61cefcbef4fd6"
+        ],
+        "repo": null,
+        "chain_key": "aerofoil-1090"
+      }
+    }
+  ]
+}

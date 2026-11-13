@@ -1,0 +1,135 @@
+{
+  "ticket": {
+    "id": "e905b111-0bc2-4102-b35a-aea0526bdda1",
+    "ticket_key": "AF-34",
+    "slug": "implement-track-state-models-monotonic-field-merging-and-ttl-expiry-lifecycle-e905b1",
+    "title": "Implement track state models, monotonic field merging, and TTL expiry lifecycle",
+    "description": "Implement track state models, monotonic per-field updates (SPEC Invariant 10), and TTL expiry lifecycle emitting TargetAcquired, TargetUpdated, and TargetLost events.",
+    "kind": "feature",
+    "status": "verified",
+    "priority": 3,
+    "scope": {
+      "repo": "aerofoil",
+      "crate_name": "aerofoil-tracker",
+      "module_path": null,
+      "target_files": [],
+      "target_symbols": [],
+      "labels": [
+        "m3"
+      ]
+    },
+    "edges": [
+      {
+        "kind": "parent_epic",
+        "target_id": "1000b2e8-c8d2-4fc1-bcdf-6ac0d42b4ec3",
+        "target_ticket_key": "AF-17",
+        "target_repo": "aerofoil"
+      },
+      {
+        "kind": "blocked_by",
+        "target_id": "414ad68e-0ffb-49aa-89d4-27dc351840cd"
+      }
+    ],
+    "decisions": [],
+    "acceptance_criteria": [
+      "Monotonic per-field update preserves existing telemetry when incoming update lacks that field",
+      "Update returns AirspaceEvent::TargetAcquired for new tracks and AirspaceEvent::TargetUpdated for existing tracks",
+      "Track pruning based on TTL expiry removes dead tracks and emits AirspaceEvent::TargetLost",
+      "Comprehensive unit tests prove field monotonicity, event emission, and TTL lifecycle"
+    ],
+    "plan": null,
+    "active_claim": null,
+    "latest_handoff": null,
+    "verification_receipt": {
+      "verifier": "storypole-verify",
+      "command": "cargo nextest run -p aerofoil-tracker",
+      "exit_code": 0,
+      "diagnostic_count": null,
+      "summary": "[window: no base commit could be named, so this receipt covers HEAD only]\n",
+      "verified_at_epoch_ms": 1794290754752,
+      "git_branch": "main",
+      "base_commit_sha": null,
+      "head_commit_sha": "63872f7ea38079f626bfcb7e0619bc7b682be433",
+      "commit_shas": [
+        "63872f7ea38079f626bfcb7e0619bc7b682be433"
+      ],
+      "repo": "aerofoil",
+      "chain_key": "aerofoil-tracker"
+    },
+    "created_at_epoch_ms": 1794289540164,
+    "updated_at_epoch_ms": 1794290754752
+  },
+  "events": [
+    {
+      "event": "status_changed",
+      "task_id": "e905b111-0bc2-4102-b35a-aea0526bdda1",
+      "from": "blocked",
+      "to": "ready",
+      "reason": "Dependency AF-33 verified",
+      "timestamp_ms": 1794289960787
+    },
+    {
+      "event": "task_updated",
+      "task_id": "e905b111-0bc2-4102-b35a-aea0526bdda1",
+      "title": null,
+      "description": "Implement track state models, monotonic per-field updates (SPEC Invariant 10), and TTL expiry lifecycle emitting TargetAcquired, TargetUpdated, and TargetLost events.",
+      "priority": null,
+      "scope": {
+        "repo": "aerofoil",
+        "crate_name": "aerofoil-tracker",
+        "module_path": null,
+        "target_files": [],
+        "target_symbols": [],
+        "labels": [
+          "m3"
+        ]
+      },
+      "acceptance_criteria": [
+        "Monotonic per-field update preserves existing telemetry when incoming update lacks that field",
+        "Update returns AirspaceEvent::TargetAcquired for new tracks and AirspaceEvent::TargetUpdated for existing tracks",
+        "Track pruning based on TTL expiry removes dead tracks and emits AirspaceEvent::TargetLost",
+        "Comprehensive unit tests prove field monotonicity, event emission, and TTL lifecycle"
+      ],
+      "timestamp_ms": 1794290446295
+    },
+    {
+      "event": "task_claimed",
+      "task_id": "e905b111-0bc2-4102-b35a-aea0526bdda1",
+      "claim": {
+        "agent_id": "gemini",
+        "claimed_at_epoch_ms": 1794290448771,
+        "lease_expires_at_epoch_ms": 1794294048771,
+        "git_branch": "feat/af-34-track-lifecycle",
+        "base_commit_sha": null
+      }
+    },
+    {
+      "event": "status_changed",
+      "task_id": "e905b111-0bc2-4102-b35a-aea0526bdda1",
+      "from": "ready",
+      "to": "in_progress",
+      "reason": "Claimed by gemini",
+      "timestamp_ms": 1794290448771
+    },
+    {
+      "event": "task_verified",
+      "task_id": "e905b111-0bc2-4102-b35a-aea0526bdda1",
+      "receipt": {
+        "verifier": "storypole-verify",
+        "command": "cargo nextest run -p aerofoil-tracker",
+        "exit_code": 0,
+        "diagnostic_count": null,
+        "summary": "[window: no base commit could be named, so this receipt covers HEAD only]\n",
+        "verified_at_epoch_ms": 1794290754752,
+        "git_branch": "main",
+        "base_commit_sha": null,
+        "head_commit_sha": "63872f7ea38079f626bfcb7e0619bc7b682be433",
+        "commit_shas": [
+          "63872f7ea38079f626bfcb7e0619bc7b682be433"
+        ],
+        "repo": "aerofoil",
+        "chain_key": "aerofoil-tracker"
+      }
+    }
+  ]
+}

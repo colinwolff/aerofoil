@@ -1,0 +1,137 @@
+{
+  "ticket": {
+    "id": "ba1d5d4d-3c0d-4aba-a08b-4026080ed1d2",
+    "ticket_key": "AF-36",
+    "slug": "implement-aerofoil-cli-with-beast-and-avr-stream-parsing-on-stdin-and-json-lines-on-stdout-ba1d5d",
+    "title": "Implement aerofoil-cli with Beast and AVR stream parsing on stdin and JSON-lines on stdout",
+    "description": "Implement aerofoil-cli Unix pipeline binary reading Beast and AVR streams from stdin and emitting schema-versioned JSON-lines to stdout, well-behaved under SIGPIPE.",
+    "kind": "feature",
+    "status": "verified",
+    "priority": 3,
+    "scope": {
+      "repo": "aerofoil",
+      "crate_name": "aerofoil-cli",
+      "module_path": null,
+      "target_files": [],
+      "target_symbols": [],
+      "labels": [
+        "m3"
+      ]
+    },
+    "edges": [
+      {
+        "kind": "parent_epic",
+        "target_id": "1000b2e8-c8d2-4fc1-bcdf-6ac0d42b4ec3",
+        "target_ticket_key": "AF-17",
+        "target_repo": "aerofoil"
+      },
+      {
+        "kind": "blocked_by",
+        "target_id": "d4e97321-e630-4533-8671-f248305749b0"
+      }
+    ],
+    "decisions": [],
+    "acceptance_criteria": [
+      "aerofoil-cli binary created in apps/cli and added to workspace manifest",
+      "Beast binary 0x1A framing and escape sequences demuxed from stdin",
+      "AVR ASCII *<hex>; framing parsed from stdin with malformed hex dropped cleanly",
+      "Emits schema-versioned JSON-lines to stdout per SPEC wire contracts",
+      "Clean termination under broken pipe / SIGPIPE without panic or crash"
+    ],
+    "plan": null,
+    "active_claim": null,
+    "latest_handoff": null,
+    "verification_receipt": {
+      "verifier": "storypole-verify",
+      "command": "cargo nextest run -p aerofoil-cli",
+      "exit_code": 0,
+      "diagnostic_count": null,
+      "summary": "[window: no base commit could be named, so this receipt covers HEAD only]\n",
+      "verified_at_epoch_ms": 1794292402408,
+      "git_branch": "main",
+      "base_commit_sha": null,
+      "head_commit_sha": "b4014d93564317a4f83d644eecce79b6eccf315d",
+      "commit_shas": [
+        "b4014d93564317a4f83d644eecce79b6eccf315d"
+      ],
+      "repo": "aerofoil",
+      "chain_key": "aerofoil-cli"
+    },
+    "created_at_epoch_ms": 1794289540164,
+    "updated_at_epoch_ms": 1794292402408
+  },
+  "events": [
+    {
+      "event": "status_changed",
+      "task_id": "ba1d5d4d-3c0d-4aba-a08b-4026080ed1d2",
+      "from": "blocked",
+      "to": "ready",
+      "reason": "Dependency AF-35 verified",
+      "timestamp_ms": 1794291155312
+    },
+    {
+      "event": "task_claimed",
+      "task_id": "ba1d5d4d-3c0d-4aba-a08b-4026080ed1d2",
+      "claim": {
+        "agent_id": "gemini",
+        "claimed_at_epoch_ms": 1794291628058,
+        "lease_expires_at_epoch_ms": 1794295228058,
+        "git_branch": "feat/af-36-cli",
+        "base_commit_sha": null
+      }
+    },
+    {
+      "event": "status_changed",
+      "task_id": "ba1d5d4d-3c0d-4aba-a08b-4026080ed1d2",
+      "from": "ready",
+      "to": "in_progress",
+      "reason": "Claimed by gemini",
+      "timestamp_ms": 1794291628058
+    },
+    {
+      "event": "task_updated",
+      "task_id": "ba1d5d4d-3c0d-4aba-a08b-4026080ed1d2",
+      "title": null,
+      "description": "Implement aerofoil-cli Unix pipeline binary reading Beast and AVR streams from stdin and emitting schema-versioned JSON-lines to stdout, well-behaved under SIGPIPE.",
+      "priority": null,
+      "scope": {
+        "repo": "aerofoil",
+        "crate_name": "aerofoil-cli",
+        "module_path": null,
+        "target_files": [],
+        "target_symbols": [],
+        "labels": [
+          "m3"
+        ]
+      },
+      "acceptance_criteria": [
+        "aerofoil-cli binary created in apps/cli and added to workspace manifest",
+        "Beast binary 0x1A framing and escape sequences demuxed from stdin",
+        "AVR ASCII *<hex>; framing parsed from stdin with malformed hex dropped cleanly",
+        "Emits schema-versioned JSON-lines to stdout per SPEC wire contracts",
+        "Clean termination under broken pipe / SIGPIPE without panic or crash"
+      ],
+      "timestamp_ms": 1794291637307
+    },
+    {
+      "event": "task_verified",
+      "task_id": "ba1d5d4d-3c0d-4aba-a08b-4026080ed1d2",
+      "receipt": {
+        "verifier": "storypole-verify",
+        "command": "cargo nextest run -p aerofoil-cli",
+        "exit_code": 0,
+        "diagnostic_count": null,
+        "summary": "[window: no base commit could be named, so this receipt covers HEAD only]\n",
+        "verified_at_epoch_ms": 1794292402408,
+        "git_branch": "main",
+        "base_commit_sha": null,
+        "head_commit_sha": "b4014d93564317a4f83d644eecce79b6eccf315d",
+        "commit_shas": [
+          "b4014d93564317a4f83d644eecce79b6eccf315d"
+        ],
+        "repo": "aerofoil",
+        "chain_key": "aerofoil-cli"
+      }
+    }
+  ]
+}

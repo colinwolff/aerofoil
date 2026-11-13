@@ -1,0 +1,186 @@
+{
+  "ticket": {
+    "id": "9c10351d-04dc-43a8-9622-0614057490de",
+    "ticket_key": "AF-31",
+    "slug": "implement-runtime-detected-simd-clmul-crc-24-acceleration-9c1035",
+    "title": "Implement runtime-detected SIMD CLMUL CRC-24 acceleration",
+    "description": "Implement runtime-detected SIMD carryless multiplication (CLMUL/PMULL) for accelerated CRC-24 syndrome division in aerofoil-1090.",
+    "kind": "perf",
+    "status": "verified",
+    "priority": 3,
+    "scope": {
+      "repo": null,
+      "crate_name": "aerofoil-1090",
+      "module_path": null,
+      "target_files": [
+        "crates/1090/src/crc/simd.rs",
+        "crates/1090/src/crc/mod.rs"
+      ],
+      "target_symbols": [],
+      "labels": [
+        "m2",
+        "1090",
+        "simd"
+      ]
+    },
+    "edges": [
+      {
+        "kind": "parent_epic",
+        "target_id": "51030a94-fb0f-496f-bec3-f2bc4aae4c98",
+        "target_ticket_key": "AF-16",
+        "target_repo": "aerofoil"
+      },
+      {
+        "kind": "blocked_by",
+        "target_id": "8fc2c0d2-3e3e-47d8-8e90-cabe8ebf8462",
+        "target_ticket_key": "AF-28"
+      }
+    ],
+    "decisions": [],
+    "acceptance_criteria": [
+      "Runtime CPU detection for x86_64 pclmulqdq and aarch64 pmull",
+      "CRC-24 syndrome results match bit-for-bit with table-driven implementation",
+      "Clean fallback to table algorithm on CPUs without carryless multiplication"
+    ],
+    "plan": null,
+    "active_claim": null,
+    "latest_handoff": null,
+    "verification_receipt": {
+      "verifier": "storypole-verify",
+      "command": "cargo nextest run -p aerofoil-1090",
+      "exit_code": 0,
+      "diagnostic_count": null,
+      "summary": "[window: no base commit could be named, so this receipt covers HEAD only]\n",
+      "verified_at_epoch_ms": 1794280700781,
+      "git_branch": "main",
+      "base_commit_sha": null,
+      "head_commit_sha": "da5612064d1f1c485574138e14eef229f986b64a",
+      "commit_shas": [
+        "da5612064d1f1c485574138e14eef229f986b64a"
+      ],
+      "repo": null,
+      "chain_key": "aerofoil-1090"
+    },
+    "created_at_epoch_ms": 1794275210974,
+    "updated_at_epoch_ms": 1794280700781
+  },
+  "events": [
+    {
+      "event": "task_created",
+      "task": {
+        "id": "9c10351d-04dc-43a8-9622-0614057490de",
+        "ticket_key": "AF-31",
+        "slug": "implement-runtime-detected-simd-clmul-crc-24-acceleration-9c1035",
+        "title": "Implement runtime-detected SIMD CLMUL CRC-24 acceleration",
+        "description": "Implement runtime-detected SIMD carryless multiplication (CLMUL/PMULL) for accelerated CRC-24 syndrome division in aerofoil-1090.",
+        "kind": "perf",
+        "status": "ready",
+        "priority": 3,
+        "scope": {
+          "repo": null,
+          "crate_name": "aerofoil-1090",
+          "module_path": null,
+          "target_files": [
+            "crates/1090/src/crc/simd.rs",
+            "crates/1090/src/crc/mod.rs"
+          ],
+          "target_symbols": [],
+          "labels": [
+            "m2",
+            "1090",
+            "simd"
+          ]
+        },
+        "edges": [],
+        "decisions": [],
+        "acceptance_criteria": [
+          "Runtime CPU detection for x86_64 pclmulqdq and aarch64 pmull",
+          "CRC-24 syndrome results match bit-for-bit with table-driven implementation",
+          "Clean fallback to table algorithm on CPUs without carryless multiplication"
+        ],
+        "plan": null,
+        "active_claim": null,
+        "latest_handoff": null,
+        "verification_receipt": null,
+        "created_at_epoch_ms": 1794275210974,
+        "updated_at_epoch_ms": 1794275210974
+      }
+    },
+    {
+      "event": "edge_added",
+      "task_id": "9c10351d-04dc-43a8-9622-0614057490de",
+      "edge": {
+        "kind": "parent_epic",
+        "target_id": "51030a94-fb0f-496f-bec3-f2bc4aae4c98",
+        "target_ticket_key": "AF-16",
+        "target_repo": "aerofoil"
+      },
+      "timestamp_ms": 1794275214092
+    },
+    {
+      "event": "edge_added",
+      "task_id": "9c10351d-04dc-43a8-9622-0614057490de",
+      "edge": {
+        "kind": "blocked_by",
+        "target_id": "8fc2c0d2-3e3e-47d8-8e90-cabe8ebf8462",
+        "target_ticket_key": "AF-28"
+      },
+      "timestamp_ms": 1794275217384
+    },
+    {
+      "event": "status_changed",
+      "task_id": "9c10351d-04dc-43a8-9622-0614057490de",
+      "from": "ready",
+      "to": "blocked",
+      "reason": "Blocked by unverified task AF-28",
+      "timestamp_ms": 1794275217384
+    },
+    {
+      "event": "status_changed",
+      "task_id": "9c10351d-04dc-43a8-9622-0614057490de",
+      "from": "blocked",
+      "to": "ready",
+      "reason": "Dependency AF-28 verified",
+      "timestamp_ms": 1794275558486
+    },
+    {
+      "event": "task_claimed",
+      "task_id": "9c10351d-04dc-43a8-9622-0614057490de",
+      "claim": {
+        "agent_id": "gemini",
+        "claimed_at_epoch_ms": 1794280357995,
+        "lease_expires_at_epoch_ms": 1794283957995,
+        "git_branch": "feat/af-31-simd-crc",
+        "base_commit_sha": null
+      }
+    },
+    {
+      "event": "status_changed",
+      "task_id": "9c10351d-04dc-43a8-9622-0614057490de",
+      "from": "ready",
+      "to": "in_progress",
+      "reason": "Claimed by gemini",
+      "timestamp_ms": 1794280357995
+    },
+    {
+      "event": "task_verified",
+      "task_id": "9c10351d-04dc-43a8-9622-0614057490de",
+      "receipt": {
+        "verifier": "storypole-verify",
+        "command": "cargo nextest run -p aerofoil-1090",
+        "exit_code": 0,
+        "diagnostic_count": null,
+        "summary": "[window: no base commit could be named, so this receipt covers HEAD only]\n",
+        "verified_at_epoch_ms": 1794280700781,
+        "git_branch": "main",
+        "base_commit_sha": null,
+        "head_commit_sha": "da5612064d1f1c485574138e14eef229f986b64a",
+        "commit_shas": [
+          "da5612064d1f1c485574138e14eef229f986b64a"
+        ],
+        "repo": null,
+        "chain_key": "aerofoil-1090"
+      }
+    }
+  ]
+}

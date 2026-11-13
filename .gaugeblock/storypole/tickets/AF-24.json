@@ -1,0 +1,174 @@
+{
+  "ticket": {
+    "id": "eb62f5ad-52f5-455b-875d-71dac41c9a16",
+    "ticket_key": "AF-24",
+    "slug": "add-the-recording-sink-and-a-self-describing-capture-format-eb62f5",
+    "title": "Add the recording sink and a self-describing capture format",
+    "description": "ROADMAP M3 requires a recorded capture to replay to identical JSON on two machines, and M4 requires end-to-end tests on recorded datasets, but nothing records a feed today. ADR-0009 fixes the seam: a RecordSink in a std-only aerofoil-persistence crate, with JSONL as implementation zero and no dependency beyond serde_json. The format has to be self-describing because the normal deployment is two bands from two dongles, so a recording must carry band, source and arrival time or a replay cannot reproduce what the tracker saw. The sink is a bounded drop-oldest subscriber with its own counters: recording must never backpressure the decoder.",
+    "kind": "feature",
+    "status": "verified",
+    "priority": 2,
+    "scope": {
+      "repo": "aerofoil",
+      "crate_name": "aerofoil-persistence",
+      "module_path": null,
+      "target_files": [
+        "crates/persistence/Cargo.toml",
+        "crates/persistence/src/lib.rs",
+        "crates/persistence/src/sink.rs",
+        "crates/persistence/src/jsonl.rs",
+        "crates/persistence/src/frame.rs",
+        "crates/persistence/src/replay.rs"
+      ],
+      "target_symbols": [
+        "aerofoil_persistence::RecordSink",
+        "aerofoil_persistence::JsonlRecordSink",
+        "aerofoil_persistence::RecordedFrame"
+      ],
+      "labels": [
+        "persistence,recording,replay"
+      ]
+    },
+    "edges": [],
+    "decisions": [],
+    "acceptance_criteria": [
+      "RecordSink trait in aerofoil-persistence with bounded drop-oldest subscriber and drop counters",
+      "Self-describing RecordedFrame with band, source, timestamp, and raw payload",
+      "Deterministic JSONL sink and replay iterator reproducing identical capture feeds",
+      "All source files strictly under 200 lines adhering to 250-line ceiling"
+    ],
+    "plan": null,
+    "active_claim": null,
+    "latest_handoff": null,
+    "verification_receipt": {
+      "verifier": "storypole-verify",
+      "command": "cargo nextest run -p aerofoil-persistence",
+      "exit_code": 0,
+      "diagnostic_count": null,
+      "summary": "[window: no base commit could be named, so this receipt covers HEAD only]\n",
+      "verified_at_epoch_ms": 1794294070191,
+      "git_branch": "main",
+      "base_commit_sha": null,
+      "head_commit_sha": "0782c657232a216703a3fec431e600aab74e72fd",
+      "commit_shas": [
+        "0782c657232a216703a3fec431e600aab74e72fd"
+      ],
+      "repo": "aerofoil",
+      "chain_key": "aerofoil-persistence"
+    },
+    "created_at_epoch_ms": 1793824641251,
+    "updated_at_epoch_ms": 1794294070191
+  },
+  "events": [
+    {
+      "event": "task_created",
+      "task": {
+        "id": "eb62f5ad-52f5-455b-875d-71dac41c9a16",
+        "ticket_key": "AF-24",
+        "slug": "add-the-recording-sink-and-a-self-describing-capture-format-eb62f5",
+        "title": "Add the recording sink and a self-describing capture format",
+        "description": "ROADMAP M3 requires a recorded capture to replay to identical JSON on two machines, and M4 requires end-to-end tests on recorded datasets, but nothing records a feed today. ADR-0009 fixes the seam: a RecordSink in a std-only aerofoil-persistence crate, with JSONL as implementation zero and no dependency beyond serde_json. The format has to be self-describing because the normal deployment is two bands from two dongles, so a recording must carry band, source and arrival time or a replay cannot reproduce what the tracker saw. The sink is a bounded drop-oldest subscriber with its own counters: recording must never backpressure the decoder.",
+        "kind": "feature",
+        "status": "ready",
+        "priority": 2,
+        "scope": {
+          "repo": "aerofoil",
+          "crate_name": null,
+          "module_path": null,
+          "target_files": [
+            "crates/persistence/src,.gaugeblock/config.toml"
+          ],
+          "target_symbols": [],
+          "labels": [
+            "persistence,recording,replay"
+          ]
+        },
+        "edges": [],
+        "decisions": [],
+        "acceptance_criteria": [
+          "aerofoil-persistence exists as a std-only integrator crate exposing a RecordSink trait plus a JSONL implementation, with no dependency beyond serde_json; every recorded frame carries band, source and arrival time so a two-source capture replays into one tracker deterministically; the sink is bounded and drop-oldest with counters surfaced in telemetry, and a saturated sink leaves decoder throughput unchanged; a recorded capture replays to byte-identical JSON output on two machines; the crate name is reserved on crates.io and added to .gaugeblock/config.toml allowed_crates before any ticket is scoped to it; miter deps --layers classifies the crate as an integrator and no foundation crate depends on it"
+        ],
+        "plan": null,
+        "active_claim": null,
+        "latest_handoff": null,
+        "verification_receipt": null,
+        "created_at_epoch_ms": 1793824641251,
+        "updated_at_epoch_ms": 1793824641251
+      }
+    },
+    {
+      "event": "task_updated",
+      "task_id": "eb62f5ad-52f5-455b-875d-71dac41c9a16",
+      "title": null,
+      "description": null,
+      "priority": null,
+      "scope": {
+        "repo": "aerofoil",
+        "crate_name": "aerofoil-persistence",
+        "module_path": null,
+        "target_files": [
+          "crates/persistence/Cargo.toml",
+          "crates/persistence/src/lib.rs",
+          "crates/persistence/src/sink.rs",
+          "crates/persistence/src/jsonl.rs",
+          "crates/persistence/src/frame.rs",
+          "crates/persistence/src/replay.rs"
+        ],
+        "target_symbols": [
+          "aerofoil_persistence::RecordSink",
+          "aerofoil_persistence::JsonlRecordSink",
+          "aerofoil_persistence::RecordedFrame"
+        ],
+        "labels": [
+          "persistence,recording,replay"
+        ]
+      },
+      "acceptance_criteria": [
+        "RecordSink trait in aerofoil-persistence with bounded drop-oldest subscriber and drop counters",
+        "Self-describing RecordedFrame with band, source, timestamp, and raw payload",
+        "Deterministic JSONL sink and replay iterator reproducing identical capture feeds",
+        "All source files strictly under 200 lines adhering to 250-line ceiling"
+      ],
+      "timestamp_ms": 1794293658681
+    },
+    {
+      "event": "task_claimed",
+      "task_id": "eb62f5ad-52f5-455b-875d-71dac41c9a16",
+      "claim": {
+        "agent_id": "gemini",
+        "claimed_at_epoch_ms": 1794293661896,
+        "lease_expires_at_epoch_ms": 1794297261896,
+        "git_branch": "feat/af-24-persistence",
+        "base_commit_sha": null
+      }
+    },
+    {
+      "event": "status_changed",
+      "task_id": "eb62f5ad-52f5-455b-875d-71dac41c9a16",
+      "from": "ready",
+      "to": "in_progress",
+      "reason": "Claimed by gemini",
+      "timestamp_ms": 1794293661896
+    },
+    {
+      "event": "task_verified",
+      "task_id": "eb62f5ad-52f5-455b-875d-71dac41c9a16",
+      "receipt": {
+        "verifier": "storypole-verify",
+        "command": "cargo nextest run -p aerofoil-persistence",
+        "exit_code": 0,
+        "diagnostic_count": null,
+        "summary": "[window: no base commit could be named, so this receipt covers HEAD only]\n",
+        "verified_at_epoch_ms": 1794294070191,
+        "git_branch": "main",
+        "base_commit_sha": null,
+        "head_commit_sha": "0782c657232a216703a3fec431e600aab74e72fd",
+        "commit_shas": [
+          "0782c657232a216703a3fec431e600aab74e72fd"
+        ],
+        "repo": "aerofoil",
+        "chain_key": "aerofoil-persistence"
+      }
+    }
+  ]
+}

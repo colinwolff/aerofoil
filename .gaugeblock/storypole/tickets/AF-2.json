@@ -1,0 +1,149 @@
+{
+  "ticket": {
+    "id": "758f80b2-8254-494a-b30a-cfa77727319f",
+    "ticket_key": "AF-2",
+    "slug": "add-the-virtual-workspace-manifest-with-edition-2024-msrv-1-99-and-shared-lints-758f80",
+    "title": "Add the virtual workspace manifest with edition 2024, MSRV 1.99 and shared lints",
+    "description": "",
+    "kind": "feature",
+    "status": "verified",
+    "priority": 1,
+    "scope": {
+      "repo": "aerofoil",
+      "crate_name": null,
+      "module_path": null,
+      "target_files": [
+        "Cargo.toml"
+      ],
+      "target_symbols": [
+        "workspace.package,workspace.lints"
+      ],
+      "labels": [
+        "m0,build"
+      ]
+    },
+    "edges": [
+      {
+        "kind": "parent_epic",
+        "target_id": "ac426770-b084-4d9d-a560-aa5090e7311c",
+        "target_ticket_key": "AF-1",
+        "target_repo": "aerofoil"
+      }
+    ],
+    "decisions": [],
+    "acceptance_criteria": [
+      "resolver 3; edition 2024; rust-version 1.99; version 0.1.0; deny unwrap_used, expect_used, unsafe_code; cargo metadata succeeds"
+    ],
+    "plan": null,
+    "active_claim": null,
+    "latest_handoff": null,
+    "verification_receipt": {
+      "verifier": "manual",
+      "command": "n/a",
+      "exit_code": 0,
+      "diagnostic_count": null,
+      "summary": "Tier 2: cargo fmt --check, clippy -D warnings, cargo test, miter audit 250, chalkline docs check (9 present, 0 missing, 0 drifted). Tier 3: workspace fmt, clippy all-features, tests, doc tests, miter audit 200, miter deps --unused, docs check. nextest reported no tests to run; documented cargo test fallback used pending AF-6.",
+      "verified_at_epoch_ms": 1793819584786,
+      "git_branch": "main",
+      "base_commit_sha": "4bed3ece98c8890851f14a09efe8e3c976f23a0a",
+      "head_commit_sha": "4bed3ece98c8890851f14a09efe8e3c976f23a0a",
+      "commit_shas": [
+        "4bed3ece98c8890851f14a09efe8e3c976f23a0a"
+      ],
+      "repo": null,
+      "chain_key": null
+    },
+    "created_at_epoch_ms": 1793818849425,
+    "updated_at_epoch_ms": 1793819584786
+  },
+  "events": [
+    {
+      "event": "task_created",
+      "task": {
+        "id": "758f80b2-8254-494a-b30a-cfa77727319f",
+        "ticket_key": "AF-2",
+        "slug": "add-the-virtual-workspace-manifest-with-edition-2024-msrv-1-99-and-shared-lints-758f80",
+        "title": "Add the virtual workspace manifest with edition 2024, MSRV 1.99 and shared lints",
+        "description": "",
+        "kind": "feature",
+        "status": "ready",
+        "priority": 1,
+        "scope": {
+          "repo": "aerofoil",
+          "crate_name": null,
+          "module_path": null,
+          "target_files": [
+            "Cargo.toml"
+          ],
+          "target_symbols": [
+            "workspace.package,workspace.lints"
+          ],
+          "labels": [
+            "m0,build"
+          ]
+        },
+        "edges": [],
+        "decisions": [],
+        "acceptance_criteria": [
+          "resolver 3; edition 2024; rust-version 1.99; version 0.1.0; deny unwrap_used, expect_used, unsafe_code; cargo metadata succeeds"
+        ],
+        "plan": null,
+        "active_claim": null,
+        "latest_handoff": null,
+        "verification_receipt": null,
+        "created_at_epoch_ms": 1793818849425,
+        "updated_at_epoch_ms": 1793818849425
+      }
+    },
+    {
+      "event": "edge_added",
+      "task_id": "758f80b2-8254-494a-b30a-cfa77727319f",
+      "edge": {
+        "kind": "parent_epic",
+        "target_id": "ac426770-b084-4d9d-a560-aa5090e7311c",
+        "target_ticket_key": "AF-1",
+        "target_repo": "aerofoil"
+      },
+      "timestamp_ms": 1793818893652
+    },
+    {
+      "event": "task_claimed",
+      "task_id": "758f80b2-8254-494a-b30a-cfa77727319f",
+      "claim": {
+        "agent_id": "cline",
+        "claimed_at_epoch_ms": 1793819344101,
+        "lease_expires_at_epoch_ms": 1793822944101,
+        "git_branch": "feat/af-2-workspace-manifest",
+        "base_commit_sha": null
+      }
+    },
+    {
+      "event": "status_changed",
+      "task_id": "758f80b2-8254-494a-b30a-cfa77727319f",
+      "from": "ready",
+      "to": "in_progress",
+      "reason": "Claimed by cline",
+      "timestamp_ms": 1793819344101
+    },
+    {
+      "event": "task_verified",
+      "task_id": "758f80b2-8254-494a-b30a-cfa77727319f",
+      "receipt": {
+        "verifier": "manual",
+        "command": "n/a",
+        "exit_code": 0,
+        "diagnostic_count": null,
+        "summary": "Tier 2: cargo fmt --check, clippy -D warnings, cargo test, miter audit 250, chalkline docs check (9 present, 0 missing, 0 drifted). Tier 3: workspace fmt, clippy all-features, tests, doc tests, miter audit 200, miter deps --unused, docs check. nextest reported no tests to run; documented cargo test fallback used pending AF-6.",
+        "verified_at_epoch_ms": 1793819584786,
+        "git_branch": "main",
+        "base_commit_sha": "4bed3ece98c8890851f14a09efe8e3c976f23a0a",
+        "head_commit_sha": "4bed3ece98c8890851f14a09efe8e3c976f23a0a",
+        "commit_shas": [
+          "4bed3ece98c8890851f14a09efe8e3c976f23a0a"
+        ],
+        "repo": null,
+        "chain_key": null
+      }
+    }
+  ]
+}

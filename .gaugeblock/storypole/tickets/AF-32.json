@@ -1,0 +1,184 @@
+{
+  "ticket": {
+    "id": "d2d0f057-94f0-4aa5-9435-361fc1d6f0c5",
+    "ticket_key": "AF-32",
+    "slug": "add-throughput-benchmarks-and-zero-allocation-assertions-for-aerofoil-1090-d2d0f0",
+    "title": "Add throughput benchmarks and zero-allocation assertions for aerofoil-1090",
+    "description": "Add Divan/Criterion benchmarks and zero-allocation counting allocator test harness for aerofoil-1090.",
+    "kind": "test",
+    "status": "verified",
+    "priority": 3,
+    "scope": {
+      "repo": null,
+      "crate_name": "aerofoil-1090",
+      "module_path": null,
+      "target_files": [
+        "crates/1090/benches/",
+        "crates/1090/tests/alloc.rs"
+      ],
+      "target_symbols": [],
+      "labels": [
+        "m2",
+        "1090",
+        "benchmarks"
+      ]
+    },
+    "edges": [
+      {
+        "kind": "parent_epic",
+        "target_id": "51030a94-fb0f-496f-bec3-f2bc4aae4c98",
+        "target_ticket_key": "AF-16",
+        "target_repo": "aerofoil"
+      },
+      {
+        "kind": "blocked_by",
+        "target_id": "a20a7920-895c-4db6-8484-2789c751950a",
+        "target_ticket_key": "AF-29"
+      }
+    ],
+    "decisions": [],
+    "acceptance_criteria": [
+      "Micro-benchmarks measuring packet throughput targeting > 2M frames/sec/core",
+      "Zero-allocation test harness verifying zero heap traffic on decode and FEC hot paths"
+    ],
+    "plan": null,
+    "active_claim": null,
+    "latest_handoff": null,
+    "verification_receipt": {
+      "verifier": "storypole-verify",
+      "command": "cargo nextest run -p aerofoil-1090",
+      "exit_code": 0,
+      "diagnostic_count": null,
+      "summary": "[window: no base commit could be named, so this receipt covers HEAD only]\n",
+      "verified_at_epoch_ms": 1794288637567,
+      "git_branch": "main",
+      "base_commit_sha": null,
+      "head_commit_sha": "7760093d7bbc9d663131824ad7a22fddadb2cfc8",
+      "commit_shas": [
+        "7760093d7bbc9d663131824ad7a22fddadb2cfc8"
+      ],
+      "repo": null,
+      "chain_key": "aerofoil-1090"
+    },
+    "created_at_epoch_ms": 1794275221489,
+    "updated_at_epoch_ms": 1794288637567
+  },
+  "events": [
+    {
+      "event": "task_created",
+      "task": {
+        "id": "d2d0f057-94f0-4aa5-9435-361fc1d6f0c5",
+        "ticket_key": "AF-32",
+        "slug": "add-throughput-benchmarks-and-zero-allocation-assertions-for-aerofoil-1090-d2d0f0",
+        "title": "Add throughput benchmarks and zero-allocation assertions for aerofoil-1090",
+        "description": "Add Divan/Criterion benchmarks and zero-allocation counting allocator test harness for aerofoil-1090.",
+        "kind": "test",
+        "status": "ready",
+        "priority": 3,
+        "scope": {
+          "repo": null,
+          "crate_name": "aerofoil-1090",
+          "module_path": null,
+          "target_files": [
+            "crates/1090/benches/",
+            "crates/1090/tests/alloc.rs"
+          ],
+          "target_symbols": [],
+          "labels": [
+            "m2",
+            "1090",
+            "benchmarks"
+          ]
+        },
+        "edges": [],
+        "decisions": [],
+        "acceptance_criteria": [
+          "Micro-benchmarks measuring packet throughput targeting > 2M frames/sec/core",
+          "Zero-allocation test harness verifying zero heap traffic on decode and FEC hot paths"
+        ],
+        "plan": null,
+        "active_claim": null,
+        "latest_handoff": null,
+        "verification_receipt": null,
+        "created_at_epoch_ms": 1794275221489,
+        "updated_at_epoch_ms": 1794275221489
+      }
+    },
+    {
+      "event": "edge_added",
+      "task_id": "d2d0f057-94f0-4aa5-9435-361fc1d6f0c5",
+      "edge": {
+        "kind": "parent_epic",
+        "target_id": "51030a94-fb0f-496f-bec3-f2bc4aae4c98",
+        "target_ticket_key": "AF-16",
+        "target_repo": "aerofoil"
+      },
+      "timestamp_ms": 1794275224489
+    },
+    {
+      "event": "edge_added",
+      "task_id": "d2d0f057-94f0-4aa5-9435-361fc1d6f0c5",
+      "edge": {
+        "kind": "blocked_by",
+        "target_id": "a20a7920-895c-4db6-8484-2789c751950a",
+        "target_ticket_key": "AF-29"
+      },
+      "timestamp_ms": 1794275227407
+    },
+    {
+      "event": "status_changed",
+      "task_id": "d2d0f057-94f0-4aa5-9435-361fc1d6f0c5",
+      "from": "ready",
+      "to": "blocked",
+      "reason": "Blocked by unverified task AF-29",
+      "timestamp_ms": 1794275227407
+    },
+    {
+      "event": "status_changed",
+      "task_id": "d2d0f057-94f0-4aa5-9435-361fc1d6f0c5",
+      "from": "blocked",
+      "to": "ready",
+      "reason": "Dependency AF-29 verified",
+      "timestamp_ms": 1794279202569
+    },
+    {
+      "event": "task_claimed",
+      "task_id": "d2d0f057-94f0-4aa5-9435-361fc1d6f0c5",
+      "claim": {
+        "agent_id": "gemini",
+        "claimed_at_epoch_ms": 1794287919314,
+        "lease_expires_at_epoch_ms": 1794291519314,
+        "git_branch": "feat/af-32-bench-alloc",
+        "base_commit_sha": null
+      }
+    },
+    {
+      "event": "status_changed",
+      "task_id": "d2d0f057-94f0-4aa5-9435-361fc1d6f0c5",
+      "from": "ready",
+      "to": "in_progress",
+      "reason": "Claimed by gemini",
+      "timestamp_ms": 1794287919314
+    },
+    {
+      "event": "task_verified",
+      "task_id": "d2d0f057-94f0-4aa5-9435-361fc1d6f0c5",
+      "receipt": {
+        "verifier": "storypole-verify",
+        "command": "cargo nextest run -p aerofoil-1090",
+        "exit_code": 0,
+        "diagnostic_count": null,
+        "summary": "[window: no base commit could be named, so this receipt covers HEAD only]\n",
+        "verified_at_epoch_ms": 1794288637567,
+        "git_branch": "main",
+        "base_commit_sha": null,
+        "head_commit_sha": "7760093d7bbc9d663131824ad7a22fddadb2cfc8",
+        "commit_shas": [
+          "7760093d7bbc9d663131824ad7a22fddadb2cfc8"
+        ],
+        "repo": null,
+        "chain_key": "aerofoil-1090"
+      }
+    }
+  ]
+}

@@ -1,0 +1,141 @@
+{
+  "ticket": {
+    "id": "e7a9bc71-04dc-46ba-945e-85c066971e2b",
+    "ticket_key": "AF-94",
+    "slug": "webgl2-instanced-3d-aircraft-rendering-terrain-elevation-cache-and-dirty-flagged-line-vbos-e7a9bc",
+    "title": "WebGL2 instanced 3D aircraft rendering, terrain elevation cache, and dirty-flagged line VBOs",
+    "description": "",
+    "kind": "refactor",
+    "status": "verified",
+    "priority": 1,
+    "scope": {
+      "repo": null,
+      "crate_name": "aerofoil-server",
+      "module_path": null,
+      "target_files": [
+        "apps/web/src/layers/MapLibre3dModelLayer.ts,apps/web/src/layers/MapLibre3dLinesRenderer.ts,apps/web/src/layers/MapLibre3dMath.ts"
+      ],
+      "target_symbols": [],
+      "labels": []
+    },
+    "edges": [
+      {
+        "kind": "parent_epic",
+        "target_id": "7ba6f871-0091-4681-ba22-5fc7dc7cc7bd",
+        "target_ticket_key": "AF-68"
+      }
+    ],
+    "decisions": [],
+    "acceptance_criteria": [
+      "Group 3D aircraft by category via gl.drawElementsInstanced and per-category VAOs; cache terrain groundElev on coordinate move; dirty-flag 3D line VBO uploads"
+    ],
+    "plan": null,
+    "active_claim": null,
+    "latest_handoff": null,
+    "verification_receipt": {
+      "verifier": "storypole-verify",
+      "command": "cargo nextest run -p aerofoil-server",
+      "exit_code": 0,
+      "diagnostic_count": null,
+      "summary": "[window: no base commit could be named, so this receipt covers HEAD only]\n",
+      "verified_at_epoch_ms": 1794518386730,
+      "git_branch": "feat/af-94-instanced-webgl",
+      "base_commit_sha": null,
+      "head_commit_sha": "3466c70bfdb426dd1c5cd2fdad3871fe046b3a66",
+      "commit_shas": [
+        "3466c70bfdb426dd1c5cd2fdad3871fe046b3a66"
+      ],
+      "repo": null,
+      "chain_key": "aerofoil-server",
+      "window_intact": true
+    },
+    "created_at_epoch_ms": 1794517796890,
+    "updated_at_epoch_ms": 1794518386730
+  },
+  "events": [
+    {
+      "event": "task_created",
+      "task": {
+        "id": "e7a9bc71-04dc-46ba-945e-85c066971e2b",
+        "ticket_key": "AF-94",
+        "slug": "webgl2-instanced-3d-aircraft-rendering-terrain-elevation-cache-and-dirty-flagged-line-vbos-e7a9bc",
+        "title": "WebGL2 instanced 3D aircraft rendering, terrain elevation cache, and dirty-flagged line VBOs",
+        "description": "",
+        "kind": "refactor",
+        "status": "ready",
+        "priority": 1,
+        "scope": {
+          "repo": null,
+          "crate_name": "aerofoil-server",
+          "module_path": null,
+          "target_files": [
+            "apps/web/src/layers/MapLibre3dModelLayer.ts,apps/web/src/layers/MapLibre3dLinesRenderer.ts,apps/web/src/layers/MapLibre3dMath.ts"
+          ],
+          "target_symbols": [],
+          "labels": []
+        },
+        "edges": [],
+        "decisions": [],
+        "acceptance_criteria": [
+          "Group 3D aircraft by category via gl.drawElementsInstanced and per-category VAOs; cache terrain groundElev on coordinate move; dirty-flag 3D line VBO uploads"
+        ],
+        "plan": null,
+        "active_claim": null,
+        "latest_handoff": null,
+        "verification_receipt": null,
+        "created_at_epoch_ms": 1794517796890,
+        "updated_at_epoch_ms": 1794517796890
+      }
+    },
+    {
+      "event": "edge_added",
+      "task_id": "e7a9bc71-04dc-46ba-945e-85c066971e2b",
+      "edge": {
+        "kind": "parent_epic",
+        "target_id": "7ba6f871-0091-4681-ba22-5fc7dc7cc7bd",
+        "target_ticket_key": "AF-68"
+      },
+      "timestamp_ms": 1794517798476
+    },
+    {
+      "event": "task_claimed",
+      "task_id": "e7a9bc71-04dc-46ba-945e-85c066971e2b",
+      "claim": {
+        "agent_id": "antigravity",
+        "claimed_at_epoch_ms": 1794518168429,
+        "lease_expires_at_epoch_ms": 1794521768429,
+        "git_branch": "feat/af-94-instanced-webgl",
+        "base_commit_sha": null
+      }
+    },
+    {
+      "event": "status_changed",
+      "task_id": "e7a9bc71-04dc-46ba-945e-85c066971e2b",
+      "from": "ready",
+      "to": "in_progress",
+      "reason": "Claimed by antigravity",
+      "timestamp_ms": 1794518168429
+    },
+    {
+      "event": "task_verified",
+      "task_id": "e7a9bc71-04dc-46ba-945e-85c066971e2b",
+      "receipt": {
+        "verifier": "storypole-verify",
+        "command": "cargo nextest run -p aerofoil-server",
+        "exit_code": 0,
+        "diagnostic_count": null,
+        "summary": "[window: no base commit could be named, so this receipt covers HEAD only]\n",
+        "verified_at_epoch_ms": 1794518386730,
+        "git_branch": "feat/af-94-instanced-webgl",
+        "base_commit_sha": null,
+        "head_commit_sha": "3466c70bfdb426dd1c5cd2fdad3871fe046b3a66",
+        "commit_shas": [
+          "3466c70bfdb426dd1c5cd2fdad3871fe046b3a66"
+        ],
+        "repo": null,
+        "chain_key": "aerofoil-server",
+        "window_intact": true
+      }
+    }
+  ]
+}

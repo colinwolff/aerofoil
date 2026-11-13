@@ -1,0 +1,178 @@
+{
+  "ticket": {
+    "id": "a8c99c71-b6c1-4d09-aee7-017728ade18a",
+    "ticket_key": "AF-11",
+    "slug": "scaffold-aerofoil-978-with-gf-2-8-arithmetic-over-0x11d-a8c99c",
+    "title": "Scaffold aerofoil-978 with GF(2^8) arithmetic over 0x11D",
+    "description": "",
+    "kind": "feature",
+    "status": "verified",
+    "priority": 2,
+    "scope": {
+      "repo": "aerofoil",
+      "crate_name": "aerofoil-978",
+      "module_path": null,
+      "target_files": [
+        "crates/978/src/gf.rs"
+      ],
+      "target_symbols": [],
+      "labels": [
+        "m1,978"
+      ]
+    },
+    "edges": [
+      {
+        "kind": "parent_epic",
+        "target_id": "fa37c8db-1bee-463e-8c0d-4f4746d5b8e8",
+        "target_ticket_key": "AF-5",
+        "target_repo": "aerofoil"
+      },
+      {
+        "kind": "blocked_by",
+        "target_id": "758f80b2-8254-494a-b30a-cfa77727319f",
+        "target_ticket_key": "AF-2",
+        "target_repo": "aerofoil"
+      }
+    ],
+    "decisions": [],
+    "acceptance_criteria": [
+      "field multiply, inverse and log/exp tables; exhaustive multiplication test; no_std"
+    ],
+    "plan": null,
+    "active_claim": null,
+    "latest_handoff": null,
+    "verification_receipt": {
+      "verifier": "storypole-verify",
+      "command": "cargo nextest run -p aerofoil-978",
+      "exit_code": 0,
+      "diagnostic_count": null,
+      "summary": "[window: no base commit could be named, so this receipt covers HEAD only]\n",
+      "verified_at_epoch_ms": 1794266311477,
+      "git_branch": "main",
+      "base_commit_sha": null,
+      "head_commit_sha": "0d158ce9a03ffc554fc5ac58a997685649d418af",
+      "commit_shas": [
+        "0d158ce9a03ffc554fc5ac58a997685649d418af"
+      ],
+      "repo": "aerofoil",
+      "chain_key": "aerofoil-978"
+    },
+    "created_at_epoch_ms": 1793818873937,
+    "updated_at_epoch_ms": 1794266311477
+  },
+  "events": [
+    {
+      "event": "task_created",
+      "task": {
+        "id": "a8c99c71-b6c1-4d09-aee7-017728ade18a",
+        "ticket_key": "AF-11",
+        "slug": "scaffold-aerofoil-978-with-gf-2-8-arithmetic-over-0x11d-a8c99c",
+        "title": "Scaffold aerofoil-978 with GF(2^8) arithmetic over 0x11D",
+        "description": "",
+        "kind": "feature",
+        "status": "ready",
+        "priority": 2,
+        "scope": {
+          "repo": "aerofoil",
+          "crate_name": "aerofoil-978",
+          "module_path": null,
+          "target_files": [
+            "crates/978/src/gf.rs"
+          ],
+          "target_symbols": [],
+          "labels": [
+            "m1,978"
+          ]
+        },
+        "edges": [],
+        "decisions": [],
+        "acceptance_criteria": [
+          "field multiply, inverse and log/exp tables; exhaustive multiplication test; no_std"
+        ],
+        "plan": null,
+        "active_claim": null,
+        "latest_handoff": null,
+        "verification_receipt": null,
+        "created_at_epoch_ms": 1793818873937,
+        "updated_at_epoch_ms": 1793818873937
+      }
+    },
+    {
+      "event": "edge_added",
+      "task_id": "a8c99c71-b6c1-4d09-aee7-017728ade18a",
+      "edge": {
+        "kind": "parent_epic",
+        "target_id": "fa37c8db-1bee-463e-8c0d-4f4746d5b8e8",
+        "target_ticket_key": "AF-5",
+        "target_repo": "aerofoil"
+      },
+      "timestamp_ms": 1793818893892
+    },
+    {
+      "event": "edge_added",
+      "task_id": "a8c99c71-b6c1-4d09-aee7-017728ade18a",
+      "edge": {
+        "kind": "blocked_by",
+        "target_id": "758f80b2-8254-494a-b30a-cfa77727319f",
+        "target_ticket_key": "AF-2",
+        "target_repo": "aerofoil"
+      },
+      "timestamp_ms": 1793818901801
+    },
+    {
+      "event": "status_changed",
+      "task_id": "a8c99c71-b6c1-4d09-aee7-017728ade18a",
+      "from": "ready",
+      "to": "blocked",
+      "reason": "Blocked by unverified task AF-2",
+      "timestamp_ms": 1793818901801
+    },
+    {
+      "event": "status_changed",
+      "task_id": "a8c99c71-b6c1-4d09-aee7-017728ade18a",
+      "from": "blocked",
+      "to": "ready",
+      "reason": "Dependency AF-2 verified",
+      "timestamp_ms": 1793819584786
+    },
+    {
+      "event": "task_claimed",
+      "task_id": "a8c99c71-b6c1-4d09-aee7-017728ade18a",
+      "claim": {
+        "agent_id": "gemini",
+        "claimed_at_epoch_ms": 1794266129316,
+        "lease_expires_at_epoch_ms": 1794269729316,
+        "git_branch": "feat/af-11-gf256",
+        "base_commit_sha": null
+      }
+    },
+    {
+      "event": "status_changed",
+      "task_id": "a8c99c71-b6c1-4d09-aee7-017728ade18a",
+      "from": "ready",
+      "to": "in_progress",
+      "reason": "Claimed by gemini",
+      "timestamp_ms": 1794266129316
+    },
+    {
+      "event": "task_verified",
+      "task_id": "a8c99c71-b6c1-4d09-aee7-017728ade18a",
+      "receipt": {
+        "verifier": "storypole-verify",
+        "command": "cargo nextest run -p aerofoil-978",
+        "exit_code": 0,
+        "diagnostic_count": null,
+        "summary": "[window: no base commit could be named, so this receipt covers HEAD only]\n",
+        "verified_at_epoch_ms": 1794266311477,
+        "git_branch": "main",
+        "base_commit_sha": null,
+        "head_commit_sha": "0d158ce9a03ffc554fc5ac58a997685649d418af",
+        "commit_shas": [
+          "0d158ce9a03ffc554fc5ac58a997685649d418af"
+        ],
+        "repo": "aerofoil",
+        "chain_key": "aerofoil-978"
+      }
+    }
+  ]
+}

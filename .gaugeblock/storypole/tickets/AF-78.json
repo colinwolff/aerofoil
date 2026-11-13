@@ -1,0 +1,96 @@
+{
+  "ticket": {
+    "id": "2e4b5018-5381-4236-875e-0e17867f8b55",
+    "ticket_key": "AF-78",
+    "slug": "comprehensive-end-to-end-test-suite-kinematic-airspace-simulation-live-capture-pipeline-2e4b50",
+    "title": "Comprehensive End-to-End Test Suite, Kinematic Airspace Simulation & Live Capture Pipeline",
+    "description": "Parent epic for comprehensive end-to-end verification: high-fidelity 50+ aircraft kinematic airspace generator, long-run flight kinematic trajectory tests, live network/Beast capture, full-stack SSE/WebSocket streaming tests, headless browser Playwright E2E automation, and RTL-SDR hardware DSP/IQ capture.",
+    "kind": "epic",
+    "status": "verified",
+    "priority": 1,
+    "scope": {
+      "repo": null,
+      "crate_name": "aerofoil-server",
+      "module_path": null,
+      "target_files": [],
+      "target_symbols": [],
+      "labels": []
+    },
+    "edges": [],
+    "decisions": [],
+    "acceptance_criteria": [],
+    "plan": null,
+    "active_claim": null,
+    "latest_handoff": null,
+    "verification_receipt": {
+      "verifier": "storypole-verify",
+      "command": "cargo nextest run -p aerofoil-server",
+      "exit_code": 0,
+      "diagnostic_count": null,
+      "summary": "[window: no base commit could be named, so this receipt covers HEAD only]\n",
+      "verified_at_epoch_ms": 1794438632227,
+      "git_branch": "main",
+      "base_commit_sha": null,
+      "head_commit_sha": "d9ef02feb74f2dfadf59a9afad1be10cdc1979c8",
+      "commit_shas": [
+        "d9ef02feb74f2dfadf59a9afad1be10cdc1979c8"
+      ],
+      "repo": null,
+      "chain_key": "aerofoil-server"
+    },
+    "created_at_epoch_ms": 1794427706327,
+    "updated_at_epoch_ms": 1794438632227
+  },
+  "events": [
+    {
+      "event": "task_created",
+      "task": {
+        "id": "2e4b5018-5381-4236-875e-0e17867f8b55",
+        "ticket_key": "AF-78",
+        "slug": "comprehensive-end-to-end-test-suite-kinematic-airspace-simulation-live-capture-pipeline-2e4b50",
+        "title": "Comprehensive End-to-End Test Suite, Kinematic Airspace Simulation & Live Capture Pipeline",
+        "description": "Parent epic for comprehensive end-to-end verification: high-fidelity 50+ aircraft kinematic airspace generator, long-run flight kinematic trajectory tests, live network/Beast capture, full-stack SSE/WebSocket streaming tests, headless browser Playwright E2E automation, and RTL-SDR hardware DSP/IQ capture.",
+        "kind": "epic",
+        "status": "ready",
+        "priority": 1,
+        "scope": {
+          "repo": null,
+          "crate_name": "aerofoil-server",
+          "module_path": null,
+          "target_files": [],
+          "target_symbols": [],
+          "labels": []
+        },
+        "edges": [],
+        "decisions": [],
+        "acceptance_criteria": [],
+        "plan": null,
+        "active_claim": null,
+        "latest_handoff": null,
+        "verification_receipt": null,
+        "created_at_epoch_ms": 1794427706327,
+        "updated_at_epoch_ms": 1794427706327
+      }
+    },
+    {
+      "event": "task_verified",
+      "task_id": "2e4b5018-5381-4236-875e-0e17867f8b55",
+      "receipt": {
+        "verifier": "storypole-verify",
+        "command": "cargo nextest run -p aerofoil-server",
+        "exit_code": 0,
+        "diagnostic_count": null,
+        "summary": "[window: no base commit could be named, so this receipt covers HEAD only]\n",
+        "verified_at_epoch_ms": 1794438632227,
+        "git_branch": "main",
+        "base_commit_sha": null,
+        "head_commit_sha": "d9ef02feb74f2dfadf59a9afad1be10cdc1979c8",
+        "commit_shas": [
+          "d9ef02feb74f2dfadf59a9afad1be10cdc1979c8"
+        ],
+        "repo": null,
+        "chain_key": "aerofoil-server"
+      }
+    }
+  ]
+}

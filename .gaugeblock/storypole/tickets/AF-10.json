@@ -1,0 +1,178 @@
+{
+  "ticket": {
+    "id": "8305bc39-27b5-437b-a71c-966461514413",
+    "ticket_key": "AF-10",
+    "slug": "implement-local-cpr-decoding-from-a-reference-position-8305bc",
+    "title": "Implement local CPR decoding from a reference position",
+    "description": "",
+    "kind": "feature",
+    "status": "verified",
+    "priority": 3,
+    "scope": {
+      "repo": "aerofoil",
+      "crate_name": "aerofoil-common",
+      "module_path": null,
+      "target_files": [
+        "crates/common/src/cpr/local.rs"
+      ],
+      "target_symbols": [],
+      "labels": [
+        "m1,common"
+      ]
+    },
+    "edges": [
+      {
+        "kind": "parent_epic",
+        "target_id": "fa37c8db-1bee-463e-8c0d-4f4746d5b8e8",
+        "target_ticket_key": "AF-5",
+        "target_repo": "aerofoil"
+      },
+      {
+        "kind": "blocked_by",
+        "target_id": "b066de0e-44b6-44d7-b38c-12d8bdc81459",
+        "target_ticket_key": "AF-8",
+        "target_repo": "aerofoil"
+      }
+    ],
+    "decisions": [],
+    "acceptance_criteria": [
+      "boundary behaviour defined at zone edges; no float drift; out-of-range reference positions rejected"
+    ],
+    "plan": null,
+    "active_claim": null,
+    "latest_handoff": null,
+    "verification_receipt": {
+      "verifier": "storypole-verify",
+      "command": "cargo nextest run -p aerofoil-common",
+      "exit_code": 0,
+      "diagnostic_count": null,
+      "summary": "[window: no base commit could be named, so this receipt covers HEAD only]\n",
+      "verified_at_epoch_ms": 1794270600906,
+      "git_branch": "main",
+      "base_commit_sha": null,
+      "head_commit_sha": "085220e4417252cc75d13acbe6d14bcaaffd63e9",
+      "commit_shas": [
+        "085220e4417252cc75d13acbe6d14bcaaffd63e9"
+      ],
+      "repo": "aerofoil",
+      "chain_key": "aerofoil-common"
+    },
+    "created_at_epoch_ms": 1793818857914,
+    "updated_at_epoch_ms": 1794270600906
+  },
+  "events": [
+    {
+      "event": "task_created",
+      "task": {
+        "id": "8305bc39-27b5-437b-a71c-966461514413",
+        "ticket_key": "AF-10",
+        "slug": "implement-local-cpr-decoding-from-a-reference-position-8305bc",
+        "title": "Implement local CPR decoding from a reference position",
+        "description": "",
+        "kind": "feature",
+        "status": "ready",
+        "priority": 3,
+        "scope": {
+          "repo": "aerofoil",
+          "crate_name": "aerofoil-common",
+          "module_path": null,
+          "target_files": [
+            "crates/common/src/cpr/local.rs"
+          ],
+          "target_symbols": [],
+          "labels": [
+            "m1,common"
+          ]
+        },
+        "edges": [],
+        "decisions": [],
+        "acceptance_criteria": [
+          "boundary behaviour defined at zone edges; no float drift; out-of-range reference positions rejected"
+        ],
+        "plan": null,
+        "active_claim": null,
+        "latest_handoff": null,
+        "verification_receipt": null,
+        "created_at_epoch_ms": 1793818857914,
+        "updated_at_epoch_ms": 1793818857914
+      }
+    },
+    {
+      "event": "edge_added",
+      "task_id": "8305bc39-27b5-437b-a71c-966461514413",
+      "edge": {
+        "kind": "parent_epic",
+        "target_id": "fa37c8db-1bee-463e-8c0d-4f4746d5b8e8",
+        "target_ticket_key": "AF-5",
+        "target_repo": "aerofoil"
+      },
+      "timestamp_ms": 1793818893839
+    },
+    {
+      "event": "edge_added",
+      "task_id": "8305bc39-27b5-437b-a71c-966461514413",
+      "edge": {
+        "kind": "blocked_by",
+        "target_id": "b066de0e-44b6-44d7-b38c-12d8bdc81459",
+        "target_ticket_key": "AF-8",
+        "target_repo": "aerofoil"
+      },
+      "timestamp_ms": 1793818901950
+    },
+    {
+      "event": "status_changed",
+      "task_id": "8305bc39-27b5-437b-a71c-966461514413",
+      "from": "ready",
+      "to": "blocked",
+      "reason": "Blocked by unverified task AF-8",
+      "timestamp_ms": 1793818901950
+    },
+    {
+      "event": "status_changed",
+      "task_id": "8305bc39-27b5-437b-a71c-966461514413",
+      "from": "blocked",
+      "to": "ready",
+      "reason": "Dependency AF-8 verified",
+      "timestamp_ms": 1794265605119
+    },
+    {
+      "event": "task_claimed",
+      "task_id": "8305bc39-27b5-437b-a71c-966461514413",
+      "claim": {
+        "agent_id": "gemini",
+        "claimed_at_epoch_ms": 1794270300577,
+        "lease_expires_at_epoch_ms": 1794273900577,
+        "git_branch": "feat/af-10-local-cpr",
+        "base_commit_sha": null
+      }
+    },
+    {
+      "event": "status_changed",
+      "task_id": "8305bc39-27b5-437b-a71c-966461514413",
+      "from": "ready",
+      "to": "in_progress",
+      "reason": "Claimed by gemini",
+      "timestamp_ms": 1794270300577
+    },
+    {
+      "event": "task_verified",
+      "task_id": "8305bc39-27b5-437b-a71c-966461514413",
+      "receipt": {
+        "verifier": "storypole-verify",
+        "command": "cargo nextest run -p aerofoil-common",
+        "exit_code": 0,
+        "diagnostic_count": null,
+        "summary": "[window: no base commit could be named, so this receipt covers HEAD only]\n",
+        "verified_at_epoch_ms": 1794270600906,
+        "git_branch": "main",
+        "base_commit_sha": null,
+        "head_commit_sha": "085220e4417252cc75d13acbe6d14bcaaffd63e9",
+        "commit_shas": [
+          "085220e4417252cc75d13acbe6d14bcaaffd63e9"
+        ],
+        "repo": "aerofoil",
+        "chain_key": "aerofoil-common"
+      }
+    }
+  ]
+}

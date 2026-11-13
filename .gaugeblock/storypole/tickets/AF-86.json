@@ -1,0 +1,121 @@
+{
+  "ticket": {
+    "id": "13cc6b29-03fb-4a27-8cb7-b46b63f1c5e7",
+    "ticket_key": "AF-86",
+    "slug": "fix-3d-mode-stuttering-dom-thrashing-and-webgl-overdraw-bottlenecks-13cc6b",
+    "title": "Fix 3D mode stuttering, DOM thrashing, and WebGL overdraw bottlenecks",
+    "description": "Eliminate 3D mode stuttering and UI freezes by throttling telemetry table DOM rebuilds, fixing the onViewChange feedback loop, caching marker innerHTML, converting 3D surveillance dome disks to hollow rings, and adding MapLibre style glyphs.",
+    "kind": "bug",
+    "status": "verified",
+    "priority": 1,
+    "scope": {
+      "repo": null,
+      "crate_name": "aerofoil-server",
+      "module_path": null,
+      "target_files": [
+        "apps/web/src/radar.ts,apps/web/src/layers/MapLibreMapEngine.ts,apps/web/src/layers/SurveillanceDome3dManager.ts,apps/web/src/layers/LeafletParametricManager.ts,apps/web/src/layers/AntennaCoverageLayer.ts"
+      ],
+      "target_symbols": [],
+      "labels": []
+    },
+    "edges": [],
+    "decisions": [],
+    "acceptance_criteria": [],
+    "plan": null,
+    "active_claim": null,
+    "latest_handoff": null,
+    "verification_receipt": {
+      "verifier": "storypole-verify",
+      "command": "cargo nextest run -p aerofoil-server",
+      "exit_code": 0,
+      "diagnostic_count": null,
+      "summary": "[window: no base commit could be named, so this receipt covers HEAD only]\n",
+      "verified_at_epoch_ms": 1794501608209,
+      "git_branch": "main",
+      "base_commit_sha": null,
+      "head_commit_sha": "65fca36568e629acaae978ff4f65d15d27e9c58d",
+      "commit_shas": [
+        "65fca36568e629acaae978ff4f65d15d27e9c58d"
+      ],
+      "repo": null,
+      "chain_key": "aerofoil-server",
+      "window_intact": true
+    },
+    "created_at_epoch_ms": 1794501025207,
+    "updated_at_epoch_ms": 1794501608209
+  },
+  "events": [
+    {
+      "event": "task_created",
+      "task": {
+        "id": "13cc6b29-03fb-4a27-8cb7-b46b63f1c5e7",
+        "ticket_key": "AF-86",
+        "slug": "fix-3d-mode-stuttering-dom-thrashing-and-webgl-overdraw-bottlenecks-13cc6b",
+        "title": "Fix 3D mode stuttering, DOM thrashing, and WebGL overdraw bottlenecks",
+        "description": "Eliminate 3D mode stuttering and UI freezes by throttling telemetry table DOM rebuilds, fixing the onViewChange feedback loop, caching marker innerHTML, converting 3D surveillance dome disks to hollow rings, and adding MapLibre style glyphs.",
+        "kind": "bug",
+        "status": "ready",
+        "priority": 1,
+        "scope": {
+          "repo": null,
+          "crate_name": "aerofoil-server",
+          "module_path": null,
+          "target_files": [
+            "apps/web/src/radar.ts,apps/web/src/layers/MapLibreMapEngine.ts,apps/web/src/layers/SurveillanceDome3dManager.ts,apps/web/src/layers/LeafletParametricManager.ts,apps/web/src/layers/AntennaCoverageLayer.ts"
+          ],
+          "target_symbols": [],
+          "labels": []
+        },
+        "edges": [],
+        "decisions": [],
+        "acceptance_criteria": [],
+        "plan": null,
+        "active_claim": null,
+        "latest_handoff": null,
+        "verification_receipt": null,
+        "created_at_epoch_ms": 1794501025207,
+        "updated_at_epoch_ms": 1794501025207
+      }
+    },
+    {
+      "event": "task_claimed",
+      "task_id": "13cc6b29-03fb-4a27-8cb7-b46b63f1c5e7",
+      "claim": {
+        "agent_id": "antigravity",
+        "claimed_at_epoch_ms": 1794501072868,
+        "lease_expires_at_epoch_ms": 1794504672868,
+        "git_branch": "feat/af-86-3d-perf",
+        "base_commit_sha": null
+      }
+    },
+    {
+      "event": "status_changed",
+      "task_id": "13cc6b29-03fb-4a27-8cb7-b46b63f1c5e7",
+      "from": "ready",
+      "to": "in_progress",
+      "reason": "Claimed by antigravity",
+      "timestamp_ms": 1794501072868
+    },
+    {
+      "event": "task_verified",
+      "task_id": "13cc6b29-03fb-4a27-8cb7-b46b63f1c5e7",
+      "receipt": {
+        "verifier": "storypole-verify",
+        "command": "cargo nextest run -p aerofoil-server",
+        "exit_code": 0,
+        "diagnostic_count": null,
+        "summary": "[window: no base commit could be named, so this receipt covers HEAD only]\n",
+        "verified_at_epoch_ms": 1794501608209,
+        "git_branch": "main",
+        "base_commit_sha": null,
+        "head_commit_sha": "65fca36568e629acaae978ff4f65d15d27e9c58d",
+        "commit_shas": [
+          "65fca36568e629acaae978ff4f65d15d27e9c58d"
+        ],
+        "repo": null,
+        "chain_key": "aerofoil-server",
+        "window_intact": true
+      }
+    }
+  ]
+}

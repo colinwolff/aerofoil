@@ -1,0 +1,123 @@
+{
+  "ticket": {
+    "id": "414ad68e-0ffb-49aa-89d4-27dc351840cd",
+    "ticket_key": "AF-33",
+    "slug": "scaffold-aerofoil-tracker-with-64-shard-striped-rwlock-table-and-addressfilter-414ad6",
+    "title": "Scaffold aerofoil-tracker with 64-shard striped RwLock table and AddressFilter",
+    "description": "Scaffold crates/tracker with 64-shard striped parking_lot::RwLock hash map partitioned by ICAO address (ADR-0005). Implement AddressFilter trait for zero-allocation address lookup on decode path.",
+    "kind": "feature",
+    "status": "verified",
+    "priority": 3,
+    "scope": {
+      "repo": "aerofoil",
+      "crate_name": "aerofoil-tracker",
+      "module_path": null,
+      "target_files": [],
+      "target_symbols": [],
+      "labels": [
+        "m3"
+      ]
+    },
+    "edges": [
+      {
+        "kind": "parent_epic",
+        "target_id": "1000b2e8-c8d2-4fc1-bcdf-6ac0d42b4ec3",
+        "target_ticket_key": "AF-17",
+        "target_repo": "aerofoil"
+      }
+    ],
+    "decisions": [],
+    "acceptance_criteria": [
+      "aerofoil-tracker is added to workspace Cargo.toml with edition 2024 and MSRV 1.99",
+      "Tracker struct exposes 64 striped parking_lot::RwLock shards partitioned by address modulo 64",
+      "Tracker implements aerofoil_common::filter::AddressFilter with zero allocation",
+      "Unit and integration tests prove concurrent shard read/write operations and verify memory footprint"
+    ],
+    "plan": null,
+    "active_claim": null,
+    "latest_handoff": null,
+    "verification_receipt": {
+      "verifier": "storypole-verify",
+      "command": "cargo nextest run -p aerofoil-tracker",
+      "exit_code": 0,
+      "diagnostic_count": null,
+      "summary": "[window: no base commit could be named, so this receipt covers HEAD only]\n",
+      "verified_at_epoch_ms": 1794289960787,
+      "git_branch": "main",
+      "base_commit_sha": null,
+      "head_commit_sha": "5d4c319e8a91382328465f39d73663851f761405",
+      "commit_shas": [
+        "5d4c319e8a91382328465f39d73663851f761405"
+      ],
+      "repo": "aerofoil",
+      "chain_key": "aerofoil-tracker"
+    },
+    "created_at_epoch_ms": 1794289540164,
+    "updated_at_epoch_ms": 1794289960787
+  },
+  "events": [
+    {
+      "event": "task_updated",
+      "task_id": "414ad68e-0ffb-49aa-89d4-27dc351840cd",
+      "title": null,
+      "description": "Scaffold crates/tracker with 64-shard striped parking_lot::RwLock hash map partitioned by ICAO address (ADR-0005). Implement AddressFilter trait for zero-allocation address lookup on decode path.",
+      "priority": null,
+      "scope": {
+        "repo": "aerofoil",
+        "crate_name": "aerofoil-tracker",
+        "module_path": null,
+        "target_files": [],
+        "target_symbols": [],
+        "labels": [
+          "m3"
+        ]
+      },
+      "acceptance_criteria": [
+        "aerofoil-tracker is added to workspace Cargo.toml with edition 2024 and MSRV 1.99",
+        "Tracker struct exposes 64 striped parking_lot::RwLock shards partitioned by address modulo 64",
+        "Tracker implements aerofoil_common::filter::AddressFilter with zero allocation",
+        "Unit and integration tests prove concurrent shard read/write operations and verify memory footprint"
+      ],
+      "timestamp_ms": 1794289551364
+    },
+    {
+      "event": "task_claimed",
+      "task_id": "414ad68e-0ffb-49aa-89d4-27dc351840cd",
+      "claim": {
+        "agent_id": "gemini",
+        "claimed_at_epoch_ms": 1794289563635,
+        "lease_expires_at_epoch_ms": 1794293163635,
+        "git_branch": "feat/af-33-tracker-scaffold",
+        "base_commit_sha": null
+      }
+    },
+    {
+      "event": "status_changed",
+      "task_id": "414ad68e-0ffb-49aa-89d4-27dc351840cd",
+      "from": "ready",
+      "to": "in_progress",
+      "reason": "Claimed by gemini",
+      "timestamp_ms": 1794289563635
+    },
+    {
+      "event": "task_verified",
+      "task_id": "414ad68e-0ffb-49aa-89d4-27dc351840cd",
+      "receipt": {
+        "verifier": "storypole-verify",
+        "command": "cargo nextest run -p aerofoil-tracker",
+        "exit_code": 0,
+        "diagnostic_count": null,
+        "summary": "[window: no base commit could be named, so this receipt covers HEAD only]\n",
+        "verified_at_epoch_ms": 1794289960787,
+        "git_branch": "main",
+        "base_commit_sha": null,
+        "head_commit_sha": "5d4c319e8a91382328465f39d73663851f761405",
+        "commit_shas": [
+          "5d4c319e8a91382328465f39d73663851f761405"
+        ],
+        "repo": "aerofoil",
+        "chain_key": "aerofoil-tracker"
+      }
+    }
+  ]
+}

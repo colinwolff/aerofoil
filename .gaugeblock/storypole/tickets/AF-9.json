@@ -1,0 +1,178 @@
+{
+  "ticket": {
+    "id": "c36c197e-fb93-491e-89a4-5ad924eee4e2",
+    "ticket_key": "AF-9",
+    "slug": "implement-global-cpr-decoding-with-the-10-second-pair-window-and-nl-mismatch-rejection-c36c19",
+    "title": "Implement global CPR decoding with the 10 second pair window and NL mismatch rejection",
+    "description": "",
+    "kind": "feature",
+    "status": "verified",
+    "priority": 2,
+    "scope": {
+      "repo": "aerofoil",
+      "crate_name": "aerofoil-common",
+      "module_path": null,
+      "target_files": [
+        "crates/common/src/cpr/global.rs"
+      ],
+      "target_symbols": [],
+      "labels": [
+        "m1,common"
+      ]
+    },
+    "edges": [
+      {
+        "kind": "parent_epic",
+        "target_id": "fa37c8db-1bee-463e-8c0d-4f4746d5b8e8",
+        "target_ticket_key": "AF-5",
+        "target_repo": "aerofoil"
+      },
+      {
+        "kind": "blocked_by",
+        "target_id": "b066de0e-44b6-44d7-b38c-12d8bdc81459",
+        "target_ticket_key": "AF-8",
+        "target_repo": "aerofoil"
+      }
+    ],
+    "decisions": [],
+    "acceptance_criteria": [
+      "reference positions reproduced; pairs older than 10 s rejected; NL mismatch rejected and never snapped (SPEC Invariant 9)"
+    ],
+    "plan": null,
+    "active_claim": null,
+    "latest_handoff": null,
+    "verification_receipt": {
+      "verifier": "storypole-verify",
+      "command": "cargo nextest run -p aerofoil-common",
+      "exit_code": 0,
+      "diagnostic_count": null,
+      "summary": "[window: no base commit could be named, so this receipt covers HEAD only]\n",
+      "verified_at_epoch_ms": 1794265993521,
+      "git_branch": "main",
+      "base_commit_sha": null,
+      "head_commit_sha": "ef206f43b2cf400bfa3afc649c2a5c4b9f41cb77",
+      "commit_shas": [
+        "ef206f43b2cf400bfa3afc649c2a5c4b9f41cb77"
+      ],
+      "repo": "aerofoil",
+      "chain_key": "aerofoil-common"
+    },
+    "created_at_epoch_ms": 1793818857884,
+    "updated_at_epoch_ms": 1794265993521
+  },
+  "events": [
+    {
+      "event": "task_created",
+      "task": {
+        "id": "c36c197e-fb93-491e-89a4-5ad924eee4e2",
+        "ticket_key": "AF-9",
+        "slug": "implement-global-cpr-decoding-with-the-10-second-pair-window-and-nl-mismatch-rejection-c36c19",
+        "title": "Implement global CPR decoding with the 10 second pair window and NL mismatch rejection",
+        "description": "",
+        "kind": "feature",
+        "status": "ready",
+        "priority": 2,
+        "scope": {
+          "repo": "aerofoil",
+          "crate_name": "aerofoil-common",
+          "module_path": null,
+          "target_files": [
+            "crates/common/src/cpr/global.rs"
+          ],
+          "target_symbols": [],
+          "labels": [
+            "m1,common"
+          ]
+        },
+        "edges": [],
+        "decisions": [],
+        "acceptance_criteria": [
+          "reference positions reproduced; pairs older than 10 s rejected; NL mismatch rejected and never snapped (SPEC Invariant 9)"
+        ],
+        "plan": null,
+        "active_claim": null,
+        "latest_handoff": null,
+        "verification_receipt": null,
+        "created_at_epoch_ms": 1793818857884,
+        "updated_at_epoch_ms": 1793818857884
+      }
+    },
+    {
+      "event": "edge_added",
+      "task_id": "c36c197e-fb93-491e-89a4-5ad924eee4e2",
+      "edge": {
+        "kind": "parent_epic",
+        "target_id": "fa37c8db-1bee-463e-8c0d-4f4746d5b8e8",
+        "target_ticket_key": "AF-5",
+        "target_repo": "aerofoil"
+      },
+      "timestamp_ms": 1793818893809
+    },
+    {
+      "event": "edge_added",
+      "task_id": "c36c197e-fb93-491e-89a4-5ad924eee4e2",
+      "edge": {
+        "kind": "blocked_by",
+        "target_id": "b066de0e-44b6-44d7-b38c-12d8bdc81459",
+        "target_ticket_key": "AF-8",
+        "target_repo": "aerofoil"
+      },
+      "timestamp_ms": 1793818901891
+    },
+    {
+      "event": "status_changed",
+      "task_id": "c36c197e-fb93-491e-89a4-5ad924eee4e2",
+      "from": "ready",
+      "to": "blocked",
+      "reason": "Blocked by unverified task AF-8",
+      "timestamp_ms": 1793818901891
+    },
+    {
+      "event": "status_changed",
+      "task_id": "c36c197e-fb93-491e-89a4-5ad924eee4e2",
+      "from": "blocked",
+      "to": "ready",
+      "reason": "Dependency AF-8 verified",
+      "timestamp_ms": 1794265605119
+    },
+    {
+      "event": "task_claimed",
+      "task_id": "c36c197e-fb93-491e-89a4-5ad924eee4e2",
+      "claim": {
+        "agent_id": "gemini",
+        "claimed_at_epoch_ms": 1794265811806,
+        "lease_expires_at_epoch_ms": 1794269411806,
+        "git_branch": "feat/af-9-global-cpr",
+        "base_commit_sha": null
+      }
+    },
+    {
+      "event": "status_changed",
+      "task_id": "c36c197e-fb93-491e-89a4-5ad924eee4e2",
+      "from": "ready",
+      "to": "in_progress",
+      "reason": "Claimed by gemini",
+      "timestamp_ms": 1794265811806
+    },
+    {
+      "event": "task_verified",
+      "task_id": "c36c197e-fb93-491e-89a4-5ad924eee4e2",
+      "receipt": {
+        "verifier": "storypole-verify",
+        "command": "cargo nextest run -p aerofoil-common",
+        "exit_code": 0,
+        "diagnostic_count": null,
+        "summary": "[window: no base commit could be named, so this receipt covers HEAD only]\n",
+        "verified_at_epoch_ms": 1794265993521,
+        "git_branch": "main",
+        "base_commit_sha": null,
+        "head_commit_sha": "ef206f43b2cf400bfa3afc649c2a5c4b9f41cb77",
+        "commit_shas": [
+          "ef206f43b2cf400bfa3afc649c2a5c4b9f41cb77"
+        ],
+        "repo": "aerofoil",
+        "chain_key": "aerofoil-common"
+      }
+    }
+  ]
+}
