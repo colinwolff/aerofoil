@@ -1,0 +1,141 @@
+{
+  "ticket": {
+    "id": "9af58c8f-ea43-4c4f-a1eb-c8513e2e1a4f",
+    "ticket_key": "AF-95",
+    "slug": "60-fps-client-side-kinematic-dead-reckoning-and-frame-synced-chase-camera-9af58c",
+    "title": "60 FPS client-side kinematic dead-reckoning and frame-synced Chase Camera",
+    "description": "",
+    "kind": "feature",
+    "status": "verified",
+    "priority": 1,
+    "scope": {
+      "repo": null,
+      "crate_name": "aerofoil-server",
+      "module_path": null,
+      "target_files": [
+        "apps/web/src/layers/MapLibre3dModelLayer.ts,apps/web/src/components/ChaseCameraManager.ts,apps/web/src/layers/MapLibreMapEngine.ts"
+      ],
+      "target_symbols": [],
+      "labels": []
+    },
+    "edges": [
+      {
+        "kind": "parent_epic",
+        "target_id": "7ba6f871-0091-4681-ba22-5fc7dc7cc7bd",
+        "target_ticket_key": "AF-68"
+      }
+    ],
+    "decisions": [],
+    "acceptance_criteria": [
+      "Interpolate aircraft coordinates in requestAnimationFrame from heading/speed/vertical rate clamped to 1.5s; sync ChaseCameraManager via jumpTo without easeTo restarts"
+    ],
+    "plan": null,
+    "active_claim": null,
+    "latest_handoff": null,
+    "verification_receipt": {
+      "verifier": "storypole-verify",
+      "command": "cargo nextest run -p aerofoil-server",
+      "exit_code": 0,
+      "diagnostic_count": null,
+      "summary": "[window: no base commit could be named, so this receipt covers HEAD only]\n",
+      "verified_at_epoch_ms": 1794518605452,
+      "git_branch": "feat/af-95-kinematic-interpolation",
+      "base_commit_sha": null,
+      "head_commit_sha": "e8fa0c50e88e276a79d6fe61d29b796845b60fdb",
+      "commit_shas": [
+        "e8fa0c50e88e276a79d6fe61d29b796845b60fdb"
+      ],
+      "repo": null,
+      "chain_key": "aerofoil-server",
+      "window_intact": true
+    },
+    "created_at_epoch_ms": 1794517797010,
+    "updated_at_epoch_ms": 1794518605452
+  },
+  "events": [
+    {
+      "event": "task_created",
+      "task": {
+        "id": "9af58c8f-ea43-4c4f-a1eb-c8513e2e1a4f",
+        "ticket_key": "AF-95",
+        "slug": "60-fps-client-side-kinematic-dead-reckoning-and-frame-synced-chase-camera-9af58c",
+        "title": "60 FPS client-side kinematic dead-reckoning and frame-synced Chase Camera",
+        "description": "",
+        "kind": "feature",
+        "status": "ready",
+        "priority": 1,
+        "scope": {
+          "repo": null,
+          "crate_name": "aerofoil-server",
+          "module_path": null,
+          "target_files": [
+            "apps/web/src/layers/MapLibre3dModelLayer.ts,apps/web/src/components/ChaseCameraManager.ts,apps/web/src/layers/MapLibreMapEngine.ts"
+          ],
+          "target_symbols": [],
+          "labels": []
+        },
+        "edges": [],
+        "decisions": [],
+        "acceptance_criteria": [
+          "Interpolate aircraft coordinates in requestAnimationFrame from heading/speed/vertical rate clamped to 1.5s; sync ChaseCameraManager via jumpTo without easeTo restarts"
+        ],
+        "plan": null,
+        "active_claim": null,
+        "latest_handoff": null,
+        "verification_receipt": null,
+        "created_at_epoch_ms": 1794517797010,
+        "updated_at_epoch_ms": 1794517797010
+      }
+    },
+    {
+      "event": "edge_added",
+      "task_id": "9af58c8f-ea43-4c4f-a1eb-c8513e2e1a4f",
+      "edge": {
+        "kind": "parent_epic",
+        "target_id": "7ba6f871-0091-4681-ba22-5fc7dc7cc7bd",
+        "target_ticket_key": "AF-68"
+      },
+      "timestamp_ms": 1794517798743
+    },
+    {
+      "event": "task_claimed",
+      "task_id": "9af58c8f-ea43-4c4f-a1eb-c8513e2e1a4f",
+      "claim": {
+        "agent_id": "antigravity",
+        "claimed_at_epoch_ms": 1794518413295,
+        "lease_expires_at_epoch_ms": 1794522013295,
+        "git_branch": "feat/af-95-kinematic-interpolation",
+        "base_commit_sha": null
+      }
+    },
+    {
+      "event": "status_changed",
+      "task_id": "9af58c8f-ea43-4c4f-a1eb-c8513e2e1a4f",
+      "from": "ready",
+      "to": "in_progress",
+      "reason": "Claimed by antigravity",
+      "timestamp_ms": 1794518413295
+    },
+    {
+      "event": "task_verified",
+      "task_id": "9af58c8f-ea43-4c4f-a1eb-c8513e2e1a4f",
+      "receipt": {
+        "verifier": "storypole-verify",
+        "command": "cargo nextest run -p aerofoil-server",
+        "exit_code": 0,
+        "diagnostic_count": null,
+        "summary": "[window: no base commit could be named, so this receipt covers HEAD only]\n",
+        "verified_at_epoch_ms": 1794518605452,
+        "git_branch": "feat/af-95-kinematic-interpolation",
+        "base_commit_sha": null,
+        "head_commit_sha": "e8fa0c50e88e276a79d6fe61d29b796845b60fdb",
+        "commit_shas": [
+          "e8fa0c50e88e276a79d6fe61d29b796845b60fdb"
+        ],
+        "repo": null,
+        "chain_key": "aerofoil-server",
+        "window_intact": true
+      }
+    }
+  ]
+}

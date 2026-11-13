@@ -1,0 +1,145 @@
+{
+  "ticket": {
+    "id": "2160b082-375f-4ce1-9f06-176dc42edc45",
+    "ticket_key": "AF-40",
+    "slug": "implement-aerofoil-mcp-model-context-protocol-server-over-stdio-2160b0",
+    "title": "Implement aerofoil-mcp Model Context Protocol server over stdio",
+    "description": "Implement JSON-RPC 2.0 MCP server in apps/mcp exposing get_airspace_summary, get_track, and find_closest over stdio with stderr logging (SPEC §5).",
+    "kind": "feature",
+    "status": "verified",
+    "priority": 3,
+    "scope": {
+      "repo": null,
+      "crate_name": "aerofoil-mcp",
+      "module_path": null,
+      "target_files": [],
+      "target_symbols": [],
+      "labels": [
+        "m4,mcp,ai"
+      ]
+    },
+    "edges": [
+      {
+        "kind": "parent_epic",
+        "target_id": "25360f73-c106-4f6a-91ff-7236b0079db3",
+        "target_ticket_key": "AF-18",
+        "target_repo": "aerofoil"
+      }
+    ],
+    "decisions": [],
+    "acceptance_criteria": [
+      "Tools get_airspace_summary, get_track, find_closest over JSON-RPC 2.0",
+      "Stdio protocol framing with all logging strictly on stderr",
+      "Strict 250-line file ceiling with all files under 200 lines"
+    ],
+    "plan": null,
+    "active_claim": null,
+    "latest_handoff": null,
+    "verification_receipt": {
+      "verifier": "storypole-verify",
+      "command": "cargo nextest run -p aerofoil-mcp",
+      "exit_code": 0,
+      "diagnostic_count": null,
+      "summary": "[window: no base commit could be named, so this receipt covers HEAD only]\n",
+      "verified_at_epoch_ms": 1794297064643,
+      "git_branch": "main",
+      "base_commit_sha": null,
+      "head_commit_sha": "2aee42416c91af85e53faa518b89b97537f48b17",
+      "commit_shas": [
+        "2aee42416c91af85e53faa518b89b97537f48b17"
+      ],
+      "repo": null,
+      "chain_key": "aerofoil-mcp"
+    },
+    "created_at_epoch_ms": 1794294839569,
+    "updated_at_epoch_ms": 1794297064643
+  },
+  "events": [
+    {
+      "event": "task_created",
+      "task": {
+        "id": "2160b082-375f-4ce1-9f06-176dc42edc45",
+        "ticket_key": "AF-40",
+        "slug": "implement-aerofoil-mcp-model-context-protocol-server-over-stdio-2160b0",
+        "title": "Implement aerofoil-mcp Model Context Protocol server over stdio",
+        "description": "Implement JSON-RPC 2.0 MCP server in apps/mcp exposing get_airspace_summary, get_track, and find_closest over stdio with stderr logging (SPEC §5).",
+        "kind": "feature",
+        "status": "ready",
+        "priority": 3,
+        "scope": {
+          "repo": null,
+          "crate_name": "aerofoil-mcp",
+          "module_path": null,
+          "target_files": [],
+          "target_symbols": [],
+          "labels": [
+            "m4,mcp,ai"
+          ]
+        },
+        "edges": [],
+        "decisions": [],
+        "acceptance_criteria": [
+          "Tools get_airspace_summary, get_track, find_closest over JSON-RPC 2.0",
+          "Stdio protocol framing with all logging strictly on stderr",
+          "Strict 250-line file ceiling with all files under 200 lines"
+        ],
+        "plan": null,
+        "active_claim": null,
+        "latest_handoff": null,
+        "verification_receipt": null,
+        "created_at_epoch_ms": 1794294839569,
+        "updated_at_epoch_ms": 1794294839569
+      }
+    },
+    {
+      "event": "edge_added",
+      "task_id": "2160b082-375f-4ce1-9f06-176dc42edc45",
+      "edge": {
+        "kind": "parent_epic",
+        "target_id": "25360f73-c106-4f6a-91ff-7236b0079db3",
+        "target_ticket_key": "AF-18",
+        "target_repo": "aerofoil"
+      },
+      "timestamp_ms": 1794294842896
+    },
+    {
+      "event": "task_claimed",
+      "task_id": "2160b082-375f-4ce1-9f06-176dc42edc45",
+      "claim": {
+        "agent_id": "gemini",
+        "claimed_at_epoch_ms": 1794296678503,
+        "lease_expires_at_epoch_ms": 1794300278503,
+        "git_branch": "feat/af-40-mcp-server",
+        "base_commit_sha": null
+      }
+    },
+    {
+      "event": "status_changed",
+      "task_id": "2160b082-375f-4ce1-9f06-176dc42edc45",
+      "from": "ready",
+      "to": "in_progress",
+      "reason": "Claimed by gemini",
+      "timestamp_ms": 1794296678503
+    },
+    {
+      "event": "task_verified",
+      "task_id": "2160b082-375f-4ce1-9f06-176dc42edc45",
+      "receipt": {
+        "verifier": "storypole-verify",
+        "command": "cargo nextest run -p aerofoil-mcp",
+        "exit_code": 0,
+        "diagnostic_count": null,
+        "summary": "[window: no base commit could be named, so this receipt covers HEAD only]\n",
+        "verified_at_epoch_ms": 1794297064643,
+        "git_branch": "main",
+        "base_commit_sha": null,
+        "head_commit_sha": "2aee42416c91af85e53faa518b89b97537f48b17",
+        "commit_shas": [
+          "2aee42416c91af85e53faa518b89b97537f48b17"
+        ],
+        "repo": null,
+        "chain_key": "aerofoil-mcp"
+      }
+    }
+  ]
+}

@@ -1,0 +1,183 @@
+{
+  "ticket": {
+    "id": "bcf20af4-7f65-4935-bede-faadce7f6f10",
+    "ticket_key": "AF-23",
+    "slug": "add-contracts-md-and-a-wire-contract-gate-for-the-four-egress-surfaces-bcf20a",
+    "title": "Add CONTRACTS.md and a wire-contract gate for the four egress surfaces",
+    "description": "Aerofoil serialises one aircraft record to four surfaces: JSON-lines, gRPC/protobuf, MCP tool schemas, and (later) a TypeScript web client. SPEC 5 fixes the semantics and the framing rules but not the fields, so drift between a Rust struct and its TypeScript or protobuf counterpart would be caught by nothing until a consumer breaks. The gaugeblock suite solves this with a CONTRACTS.md plus miter contracts --check; aerofoil needs the document and the gate, but only once a second representation exists, because a gate with nothing to compare is a gate that passes for the wrong reason.",
+    "kind": "feature",
+    "status": "verified",
+    "priority": 3,
+    "scope": {
+      "repo": "aerofoil",
+      "crate_name": null,
+      "module_path": null,
+      "target_files": [
+        "docs/CONTRACTS.md,docs/SPEC.md,.gaugeblock/miter/contracts-allowlist.toml"
+      ],
+      "target_symbols": [],
+      "labels": [
+        "contracts,wire,docs"
+      ]
+    },
+    "edges": [
+      {
+        "kind": "parent_epic",
+        "target_id": "25360f73-c106-4f6a-91ff-7236b0079db3",
+        "target_ticket_key": "AF-18",
+        "target_repo": "aerofoil"
+      }
+    ],
+    "decisions": [],
+    "acceptance_criteria": [
+      "docs/CONTRACTS.md exists with one section per surface, each field carrying name, type, optionality, units and schema version; wire types state their derives and any deliberate exception; SPEC 5 links to CONTRACTS.md rather than restating fields, so there is exactly one field-level source of truth; miter contracts --check joins Tier 3 only once the TypeScript client types exist, and the entry is added in the same commit as that client; protobuf compatibility is covered by a prost round-trip test or buf breaking check because miter contracts does not read .proto files; a breaking field change is a BREAKING CHANGE commit with a lockstep bump"
+    ],
+    "plan": null,
+    "active_claim": null,
+    "latest_handoff": null,
+    "verification_receipt": {
+      "verifier": "storypole-verify",
+      "command": "cargo nextest run --workspace",
+      "exit_code": 0,
+      "diagnostic_count": null,
+      "summary": "[window: no base commit could be named, so this receipt covers HEAD only]\n",
+      "verified_at_epoch_ms": 1794297241952,
+      "git_branch": "main",
+      "base_commit_sha": null,
+      "head_commit_sha": "b30d0bac4f2c9b4ece46f618e9da30bb863be163",
+      "commit_shas": [
+        "b30d0bac4f2c9b4ece46f618e9da30bb863be163"
+      ],
+      "repo": "aerofoil",
+      "chain_key": "aerofoil"
+    },
+    "created_at_epoch_ms": 1793823662915,
+    "updated_at_epoch_ms": 1794297241952
+  },
+  "events": [
+    {
+      "event": "task_created",
+      "task": {
+        "id": "bcf20af4-7f65-4935-bede-faadce7f6f10",
+        "ticket_key": "AF-23",
+        "slug": "add-contracts-md-and-a-wire-contract-gate-for-the-four-egress-surfaces-bcf20a",
+        "title": "Add CONTRACTS.md and a wire-contract gate for the four egress surfaces",
+        "description": "Aerofoil serialises one aircraft record to four surfaces: JSON-lines, gRPC/protobuf, MCP tool schemas, and (later) a TypeScript web client. SPEC 5 fixes the semantics and the framing rules but not the fields, so drift between a Rust struct and its TypeScript or protobuf counterpart would be caught by nothing until a consumer breaks. The gaugeblock suite solves this with a CONTRACTS.md plus miter contracts --check; aerofoil needs the document and the gate, but only once a second representation exists, because a gate with nothing to compare is a gate that passes for the wrong reason.",
+        "kind": "feature",
+        "status": "ready",
+        "priority": 3,
+        "scope": {
+          "repo": "aerofoil",
+          "crate_name": null,
+          "module_path": null,
+          "target_files": [
+            "docs/CONTRACTS.md,docs/SPEC.md,.gaugeblock/miter/contracts-allowlist.toml"
+          ],
+          "target_symbols": [],
+          "labels": [
+            "contracts,wire,docs"
+          ]
+        },
+        "edges": [],
+        "decisions": [],
+        "acceptance_criteria": [
+          "docs/CONTRACTS.md exists with one section per surface, each field carrying name, type, optionality, units and schema version; wire types state their derives and any deliberate exception; SPEC 5 links to CONTRACTS.md rather than restating fields, so there is exactly one field-level source of truth; miter contracts --check joins Tier 3 only once the TypeScript client types exist, and the entry is added in the same commit as that client; protobuf compatibility is covered by a prost round-trip test or buf breaking check because miter contracts does not read .proto files; a breaking field change is a BREAKING CHANGE commit with a lockstep bump"
+        ],
+        "plan": null,
+        "active_claim": null,
+        "latest_handoff": null,
+        "verification_receipt": null,
+        "created_at_epoch_ms": 1793823662915,
+        "updated_at_epoch_ms": 1793823662915
+      }
+    },
+    {
+      "event": "edge_added",
+      "task_id": "bcf20af4-7f65-4935-bede-faadce7f6f10",
+      "edge": {
+        "kind": "blocked_by",
+        "target_id": "25360f73-c106-4f6a-91ff-7236b0079db3",
+        "target_ticket_key": "AF-18",
+        "target_repo": "aerofoil"
+      },
+      "timestamp_ms": 1793823675085
+    },
+    {
+      "event": "status_changed",
+      "task_id": "bcf20af4-7f65-4935-bede-faadce7f6f10",
+      "from": "ready",
+      "to": "blocked",
+      "reason": "Blocked by unverified task AF-18",
+      "timestamp_ms": 1793823675085
+    },
+    {
+      "event": "edge_removed",
+      "task_id": "bcf20af4-7f65-4935-bede-faadce7f6f10",
+      "edge": {
+        "kind": "blocked_by",
+        "target_id": "25360f73-c106-4f6a-91ff-7236b0079db3",
+        "target_ticket_key": "AF-18",
+        "target_repo": "aerofoil"
+      },
+      "timestamp_ms": 1794297101263
+    },
+    {
+      "event": "edge_added",
+      "task_id": "bcf20af4-7f65-4935-bede-faadce7f6f10",
+      "edge": {
+        "kind": "parent_epic",
+        "target_id": "25360f73-c106-4f6a-91ff-7236b0079db3",
+        "target_ticket_key": "AF-18",
+        "target_repo": "aerofoil"
+      },
+      "timestamp_ms": 1794297101264
+    },
+    {
+      "event": "status_changed",
+      "task_id": "bcf20af4-7f65-4935-bede-faadce7f6f10",
+      "from": "blocked",
+      "to": "ready",
+      "reason": "Corrected parent epic edge",
+      "timestamp_ms": 1794297101265
+    },
+    {
+      "event": "task_claimed",
+      "task_id": "bcf20af4-7f65-4935-bede-faadce7f6f10",
+      "claim": {
+        "agent_id": "gemini",
+        "claimed_at_epoch_ms": 1794297121169,
+        "lease_expires_at_epoch_ms": 1794300721169,
+        "git_branch": "feat/af-23-contracts-gate",
+        "base_commit_sha": null
+      }
+    },
+    {
+      "event": "status_changed",
+      "task_id": "bcf20af4-7f65-4935-bede-faadce7f6f10",
+      "from": "ready",
+      "to": "in_progress",
+      "reason": "Claimed by gemini",
+      "timestamp_ms": 1794297121169
+    },
+    {
+      "event": "task_verified",
+      "task_id": "bcf20af4-7f65-4935-bede-faadce7f6f10",
+      "receipt": {
+        "verifier": "storypole-verify",
+        "command": "cargo nextest run --workspace",
+        "exit_code": 0,
+        "diagnostic_count": null,
+        "summary": "[window: no base commit could be named, so this receipt covers HEAD only]\n",
+        "verified_at_epoch_ms": 1794297241952,
+        "git_branch": "main",
+        "base_commit_sha": null,
+        "head_commit_sha": "b30d0bac4f2c9b4ece46f618e9da30bb863be163",
+        "commit_shas": [
+          "b30d0bac4f2c9b4ece46f618e9da30bb863be163"
+        ],
+        "repo": "aerofoil",
+        "chain_key": "aerofoil"
+      }
+    }
+  ]
+}

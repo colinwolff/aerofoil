@@ -1,0 +1,81 @@
+{
+  "ticket": {
+    "id": "b7dd7642-73dd-48ed-a218-b79fa53d8c26",
+    "ticket_key": "AF-19",
+    "slug": "make-the-gaugeblock-suite-gates-installable-in-ci-b7dd76",
+    "title": "Make the gaugeblock suite gates installable in CI",
+    "description": "CI runs the cargo gates and the no_std target build, but miter audit, miter deps and chalkline docs check cannot run there: the tools are built from local sibling checkouts under ~/dev2026/neurosymbolic-suite and are not on crates.io, so a runner has no way to obtain them. The suite-gates job exists but is disabled so the omission is visible rather than implied coverage. Close by publishing the tools or by documenting a git-based install pinned to a release tag, then flip the job on.",
+    "kind": "tech_debt",
+    "status": "triage",
+    "priority": 3,
+    "scope": {
+      "repo": null,
+      "crate_name": null,
+      "module_path": null,
+      "target_files": [
+        ".github/workflows/ci.yml"
+      ],
+      "target_symbols": [],
+      "labels": [
+        "ci,suite"
+      ]
+    },
+    "edges": [
+      {
+        "kind": "discovered_from",
+        "target_id": "9e26c463-84ea-4cf7-ab09-6a5891ddc43d"
+      }
+    ],
+    "decisions": [],
+    "acceptance_criteria": [],
+    "plan": null,
+    "active_claim": null,
+    "latest_handoff": null,
+    "verification_receipt": null,
+    "created_at_epoch_ms": 1793820108375,
+    "updated_at_epoch_ms": 1793820108375
+  },
+  "events": [
+    {
+      "event": "deferred_item_captured",
+      "task": {
+        "id": "b7dd7642-73dd-48ed-a218-b79fa53d8c26",
+        "ticket_key": "AF-19",
+        "slug": "make-the-gaugeblock-suite-gates-installable-in-ci-b7dd76",
+        "title": "Make the gaugeblock suite gates installable in CI",
+        "description": "CI runs the cargo gates and the no_std target build, but miter audit, miter deps and chalkline docs check cannot run there: the tools are built from local sibling checkouts under ~/dev2026/neurosymbolic-suite and are not on crates.io, so a runner has no way to obtain them. The suite-gates job exists but is disabled so the omission is visible rather than implied coverage. Close by publishing the tools or by documenting a git-based install pinned to a release tag, then flip the job on.",
+        "kind": "tech_debt",
+        "status": "triage",
+        "priority": 3,
+        "scope": {
+          "repo": null,
+          "crate_name": null,
+          "module_path": null,
+          "target_files": [
+            ".github/workflows/ci.yml"
+          ],
+          "target_symbols": [],
+          "labels": [
+            "ci,suite"
+          ]
+        },
+        "edges": [
+          {
+            "kind": "discovered_from",
+            "target_id": "9e26c463-84ea-4cf7-ab09-6a5891ddc43d"
+          }
+        ],
+        "decisions": [],
+        "acceptance_criteria": [],
+        "plan": null,
+        "active_claim": null,
+        "latest_handoff": null,
+        "verification_receipt": null,
+        "created_at_epoch_ms": 1793820108375,
+        "updated_at_epoch_ms": 1793820108375
+      },
+      "captured_by_agent": "cline",
+      "discovered_from_task_id": "9e26c463-84ea-4cf7-ab09-6a5891ddc43d"
+    }
+  ]
+}

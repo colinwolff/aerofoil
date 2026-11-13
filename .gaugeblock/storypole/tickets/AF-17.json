@@ -1,0 +1,421 @@
+{
+  "ticket": {
+    "id": "1000b2e8-c8d2-4fc1-bcdf-6ac0d42b4ec3",
+    "ticket_key": "AF-17",
+    "slug": "m3-fusion-tracker-and-unix-cli-1000b2",
+    "title": "M3: fusion tracker and Unix CLI",
+    "description": "Sharded track table, TTL lifecycle, ADS-R deduplication, Beast and AVR ingestion, JSON-lines egress. Children added when M2 closes.",
+    "kind": "epic",
+    "status": "verified",
+    "priority": 3,
+    "scope": {
+      "repo": "aerofoil",
+      "crate_name": null,
+      "module_path": null,
+      "target_files": [],
+      "target_symbols": [],
+      "labels": [
+        "m3"
+      ]
+    },
+    "edges": [
+      {
+        "kind": "blocked_by",
+        "target_id": "51030a94-fb0f-496f-bec3-f2bc4aae4c98",
+        "target_ticket_key": "AF-16",
+        "target_repo": "aerofoil"
+      }
+    ],
+    "decisions": [
+      {
+        "decision_id": "2492020d-b401-4b4f-af61-3bc881c15515",
+        "parent_decision_id": null,
+        "status": "resolved",
+        "category": "architecture",
+        "question": "Which concurrency model does aerofoil-tracker use? Decided by ADR-0005; flip the record to Accepted in the same commit as the decision.",
+        "proposed_options": [
+          "striped parking_lot::RwLock shards",
+          "lock-free map with epoch reclamation",
+          "single-writer actor with arc-swap snapshots",
+          "per-field atomics over a seqlock"
+        ],
+        "chosen_option": "striped parking_lot::RwLock shards",
+        "rationale": "Zero-allocation read path for AddressFilter hot path, 64-way partitioned write concurrency without cross-aircraft contention, pure safe Rust without seqlock tearing risks or copy-on-write allocation overhead, decoupled from asynchronous frame recording sink (ADR-0009).",
+        "resolved_by": "user",
+        "updated_at_epoch_ms": 1794289275938
+      }
+    ],
+    "acceptance_criteria": [
+      "Children added on milestone entry; ADR-0005 accepted before the tracker is scaffolded"
+    ],
+    "plan": null,
+    "active_claim": null,
+    "latest_handoff": null,
+    "verification_receipt": {
+      "verifier": "storypole-verify",
+      "command": "cargo nextest run --workspace",
+      "exit_code": 0,
+      "diagnostic_count": null,
+      "summary": "[window: no base commit could be named, so this receipt covers HEAD only]\n",
+      "verified_at_epoch_ms": 1794293437242,
+      "git_branch": "main",
+      "base_commit_sha": null,
+      "head_commit_sha": "8ac41197f790554efb1962ccd15908491aaab8da",
+      "commit_shas": [
+        "8ac41197f790554efb1962ccd15908491aaab8da"
+      ],
+      "repo": "aerofoil",
+      "chain_key": "aerofoil"
+    },
+    "created_at_epoch_ms": 1793818881484,
+    "updated_at_epoch_ms": 1794293437242
+  },
+  "events": [
+    {
+      "event": "task_created",
+      "task": {
+        "id": "1000b2e8-c8d2-4fc1-bcdf-6ac0d42b4ec3",
+        "ticket_key": "AF-17",
+        "slug": "m3-fusion-tracker-and-unix-cli-1000b2",
+        "title": "M3: fusion tracker and Unix CLI",
+        "description": "Sharded track table, TTL lifecycle, ADS-R deduplication, Beast and AVR ingestion, JSON-lines egress. Children added when M2 closes.",
+        "kind": "epic",
+        "status": "ready",
+        "priority": 2,
+        "scope": {
+          "repo": "aerofoil",
+          "crate_name": null,
+          "module_path": null,
+          "target_files": [],
+          "target_symbols": [],
+          "labels": [
+            "m3"
+          ]
+        },
+        "edges": [],
+        "decisions": [],
+        "acceptance_criteria": [
+          "Children added on milestone entry; ADR-0005 accepted before the tracker is scaffolded"
+        ],
+        "plan": null,
+        "active_claim": null,
+        "latest_handoff": null,
+        "verification_receipt": null,
+        "created_at_epoch_ms": 1793818881484,
+        "updated_at_epoch_ms": 1793818881484
+      }
+    },
+    {
+      "event": "edge_added",
+      "task_id": "1000b2e8-c8d2-4fc1-bcdf-6ac0d42b4ec3",
+      "edge": {
+        "kind": "blocked_by",
+        "target_id": "51030a94-fb0f-496f-bec3-f2bc4aae4c98",
+        "target_ticket_key": "AF-16",
+        "target_repo": "aerofoil"
+      },
+      "timestamp_ms": 1793818902415
+    },
+    {
+      "event": "status_changed",
+      "task_id": "1000b2e8-c8d2-4fc1-bcdf-6ac0d42b4ec3",
+      "from": "ready",
+      "to": "blocked",
+      "reason": "Blocked by unverified task AF-16",
+      "timestamp_ms": 1793818902415
+    },
+    {
+      "event": "task_updated",
+      "task_id": "1000b2e8-c8d2-4fc1-bcdf-6ac0d42b4ec3",
+      "title": null,
+      "description": null,
+      "priority": 3,
+      "scope": null,
+      "acceptance_criteria": null,
+      "timestamp_ms": 1793818927206
+    },
+    {
+      "event": "decision_raised",
+      "task_id": "1000b2e8-c8d2-4fc1-bcdf-6ac0d42b4ec3",
+      "decision": {
+        "decision_id": "2492020d-b401-4b4f-af61-3bc881c15515",
+        "parent_decision_id": null,
+        "status": "pending",
+        "category": "architecture",
+        "question": "Which concurrency model does aerofoil-tracker use? Decided by ADR-0005; flip the record to Accepted in the same commit as the decision.",
+        "proposed_options": [
+          "striped parking_lot::RwLock shards",
+          "lock-free map with epoch reclamation",
+          "single-writer actor with arc-swap snapshots",
+          "per-field atomics over a seqlock"
+        ],
+        "chosen_option": null,
+        "rationale": null,
+        "resolved_by": null,
+        "updated_at_epoch_ms": 1793818985718
+      },
+      "timestamp_ms": 1793818985718
+    },
+    {
+      "event": "decision_resolved",
+      "task_id": "1000b2e8-c8d2-4fc1-bcdf-6ac0d42b4ec3",
+      "decision_id": "2492020d-b401-4b4f-af61-3bc881c15515",
+      "chosen_option": "striped parking_lot::RwLock shards",
+      "rationale": "Zero-allocation read path for AddressFilter hot path, 64-way partitioned write concurrency without cross-aircraft contention, pure safe Rust without seqlock tearing risks or copy-on-write allocation overhead, decoupled from asynchronous frame recording sink (ADR-0009).",
+      "resolved_by": "user",
+      "spawned_followup": null,
+      "appended_criterion": null,
+      "timestamp_ms": 1794289275938
+    },
+    {
+      "event": "status_changed",
+      "task_id": "1000b2e8-c8d2-4fc1-bcdf-6ac0d42b4ec3",
+      "from": "blocked",
+      "to": "ready",
+      "reason": "All pending decisions and dependencies satisfied",
+      "timestamp_ms": 1794289275938
+    },
+    {
+      "event": "task_split",
+      "parent_task_id": "1000b2e8-c8d2-4fc1-bcdf-6ac0d42b4ec3",
+      "spawned_children": [
+        {
+          "id": "414ad68e-0ffb-49aa-89d4-27dc351840cd",
+          "ticket_key": "AF-33",
+          "slug": "scaffold-aerofoil-tracker-with-64-shard-striped-rwlock-table-and-addressfilter-414ad6",
+          "title": "Scaffold aerofoil-tracker with 64-shard striped RwLock table and AddressFilter",
+          "description": "Subtask of Epic AF-17",
+          "kind": "feature",
+          "status": "ready",
+          "priority": 3,
+          "scope": {
+            "repo": "aerofoil",
+            "crate_name": null,
+            "module_path": null,
+            "target_files": [],
+            "target_symbols": [],
+            "labels": [
+              "m3"
+            ]
+          },
+          "edges": [
+            {
+              "kind": "parent_epic",
+              "target_id": "1000b2e8-c8d2-4fc1-bcdf-6ac0d42b4ec3",
+              "target_ticket_key": "AF-17",
+              "target_repo": "aerofoil"
+            }
+          ],
+          "decisions": [],
+          "acceptance_criteria": [],
+          "plan": null,
+          "active_claim": null,
+          "latest_handoff": null,
+          "verification_receipt": null,
+          "created_at_epoch_ms": 1794289540164,
+          "updated_at_epoch_ms": 1794289540164
+        },
+        {
+          "id": "e905b111-0bc2-4102-b35a-aea0526bdda1",
+          "ticket_key": "AF-34",
+          "slug": "implement-track-state-models-monotonic-field-merging-and-ttl-expiry-lifecycle-e905b1",
+          "title": "Implement track state models, monotonic field merging, and TTL expiry lifecycle",
+          "description": "Subtask of Epic AF-17",
+          "kind": "feature",
+          "status": "blocked",
+          "priority": 3,
+          "scope": {
+            "repo": "aerofoil",
+            "crate_name": null,
+            "module_path": null,
+            "target_files": [],
+            "target_symbols": [],
+            "labels": [
+              "m3"
+            ]
+          },
+          "edges": [
+            {
+              "kind": "parent_epic",
+              "target_id": "1000b2e8-c8d2-4fc1-bcdf-6ac0d42b4ec3",
+              "target_ticket_key": "AF-17",
+              "target_repo": "aerofoil"
+            },
+            {
+              "kind": "blocked_by",
+              "target_id": "414ad68e-0ffb-49aa-89d4-27dc351840cd"
+            }
+          ],
+          "decisions": [],
+          "acceptance_criteria": [],
+          "plan": null,
+          "active_claim": null,
+          "latest_handoff": null,
+          "verification_receipt": null,
+          "created_at_epoch_ms": 1794289540164,
+          "updated_at_epoch_ms": 1794289540164
+        },
+        {
+          "id": "d4e97321-e630-4533-8671-f248305749b0",
+          "ticket_key": "AF-35",
+          "slug": "implement-dual-band-ads-r-cross-band-deduplication-d4e973",
+          "title": "Implement dual-band ADS-R cross-band deduplication",
+          "description": "Subtask of Epic AF-17",
+          "kind": "feature",
+          "status": "blocked",
+          "priority": 3,
+          "scope": {
+            "repo": "aerofoil",
+            "crate_name": null,
+            "module_path": null,
+            "target_files": [],
+            "target_symbols": [],
+            "labels": [
+              "m3"
+            ]
+          },
+          "edges": [
+            {
+              "kind": "parent_epic",
+              "target_id": "1000b2e8-c8d2-4fc1-bcdf-6ac0d42b4ec3",
+              "target_ticket_key": "AF-17",
+              "target_repo": "aerofoil"
+            },
+            {
+              "kind": "blocked_by",
+              "target_id": "e905b111-0bc2-4102-b35a-aea0526bdda1"
+            }
+          ],
+          "decisions": [],
+          "acceptance_criteria": [],
+          "plan": null,
+          "active_claim": null,
+          "latest_handoff": null,
+          "verification_receipt": null,
+          "created_at_epoch_ms": 1794289540164,
+          "updated_at_epoch_ms": 1794289540164
+        },
+        {
+          "id": "ba1d5d4d-3c0d-4aba-a08b-4026080ed1d2",
+          "ticket_key": "AF-36",
+          "slug": "implement-aerofoil-cli-with-beast-and-avr-stream-parsing-on-stdin-and-json-lines-on-stdout-ba1d5d",
+          "title": "Implement aerofoil-cli with Beast and AVR stream parsing on stdin and JSON-lines on stdout",
+          "description": "Subtask of Epic AF-17",
+          "kind": "feature",
+          "status": "blocked",
+          "priority": 3,
+          "scope": {
+            "repo": "aerofoil",
+            "crate_name": null,
+            "module_path": null,
+            "target_files": [],
+            "target_symbols": [],
+            "labels": [
+              "m3"
+            ]
+          },
+          "edges": [
+            {
+              "kind": "parent_epic",
+              "target_id": "1000b2e8-c8d2-4fc1-bcdf-6ac0d42b4ec3",
+              "target_ticket_key": "AF-17",
+              "target_repo": "aerofoil"
+            },
+            {
+              "kind": "blocked_by",
+              "target_id": "d4e97321-e630-4533-8671-f248305749b0"
+            }
+          ],
+          "decisions": [],
+          "acceptance_criteria": [],
+          "plan": null,
+          "active_claim": null,
+          "latest_handoff": null,
+          "verification_receipt": null,
+          "created_at_epoch_ms": 1794289540164,
+          "updated_at_epoch_ms": 1794289540164
+        },
+        {
+          "id": "456faf4e-d81c-46db-a956-278233af53ec",
+          "ticket_key": "AF-37",
+          "slug": "implement-aerofoil-tui-terminal-ui-dashboard-with-ratatui-ppi-radar-and-telemetry-tables-456faf",
+          "title": "Implement aerofoil-tui Terminal UI dashboard with Ratatui PPI radar and telemetry tables",
+          "description": "Subtask of Epic AF-17",
+          "kind": "feature",
+          "status": "blocked",
+          "priority": 3,
+          "scope": {
+            "repo": "aerofoil",
+            "crate_name": null,
+            "module_path": null,
+            "target_files": [],
+            "target_symbols": [],
+            "labels": [
+              "m3"
+            ]
+          },
+          "edges": [
+            {
+              "kind": "parent_epic",
+              "target_id": "1000b2e8-c8d2-4fc1-bcdf-6ac0d42b4ec3",
+              "target_ticket_key": "AF-17",
+              "target_repo": "aerofoil"
+            },
+            {
+              "kind": "blocked_by",
+              "target_id": "ba1d5d4d-3c0d-4aba-a08b-4026080ed1d2"
+            }
+          ],
+          "decisions": [],
+          "acceptance_criteria": [],
+          "plan": null,
+          "active_claim": null,
+          "latest_handoff": null,
+          "verification_receipt": null,
+          "created_at_epoch_ms": 1794289540164,
+          "updated_at_epoch_ms": 1794289540164
+        }
+      ],
+      "timestamp_ms": 1794289540164
+    },
+    {
+      "event": "task_claimed",
+      "task_id": "1000b2e8-c8d2-4fc1-bcdf-6ac0d42b4ec3",
+      "claim": {
+        "agent_id": "gemini",
+        "claimed_at_epoch_ms": 1794293432267,
+        "lease_expires_at_epoch_ms": 1794297032267,
+        "git_branch": "main",
+        "base_commit_sha": null
+      }
+    },
+    {
+      "event": "status_changed",
+      "task_id": "1000b2e8-c8d2-4fc1-bcdf-6ac0d42b4ec3",
+      "from": "ready",
+      "to": "in_progress",
+      "reason": "Claimed by gemini",
+      "timestamp_ms": 1794293432267
+    },
+    {
+      "event": "task_verified",
+      "task_id": "1000b2e8-c8d2-4fc1-bcdf-6ac0d42b4ec3",
+      "receipt": {
+        "verifier": "storypole-verify",
+        "command": "cargo nextest run --workspace",
+        "exit_code": 0,
+        "diagnostic_count": null,
+        "summary": "[window: no base commit could be named, so this receipt covers HEAD only]\n",
+        "verified_at_epoch_ms": 1794293437242,
+        "git_branch": "main",
+        "base_commit_sha": null,
+        "head_commit_sha": "8ac41197f790554efb1962ccd15908491aaab8da",
+        "commit_shas": [
+          "8ac41197f790554efb1962ccd15908491aaab8da"
+        ],
+        "repo": "aerofoil",
+        "chain_key": "aerofoil"
+      }
+    }
+  ]
+}

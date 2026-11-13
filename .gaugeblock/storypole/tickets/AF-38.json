@@ -1,0 +1,186 @@
+{
+  "ticket": {
+    "id": "b7a1abea-6d47-48f5-b00d-1a2c684b6a67",
+    "ticket_key": "AF-38",
+    "slug": "scaffold-aerofoil-server-and-implement-dual-source-tcp-beast-ingest-b7a1ab",
+    "title": "Scaffold aerofoil-server and implement dual-source TCP Beast ingest",
+    "description": "Scaffold crates/server and implement TCP Beast ingest listening on 30005 (1090 MHz) and 30978 (978 MHz) fused into the shared tracker (ADR-0010).",
+    "kind": "feature",
+    "status": "verified",
+    "priority": 3,
+    "scope": {
+      "repo": null,
+      "crate_name": "aerofoil-server",
+      "module_path": null,
+      "target_files": [
+        "crates/server/Cargo.toml",
+        "crates/server/src/lib.rs",
+        "crates/server/src/ingest.rs",
+        "crates/server/src/source.rs",
+        "crates/server/src/main.rs"
+      ],
+      "target_symbols": [
+        "aerofoil_server::ingest::DualBandIngest",
+        "aerofoil_server::source::BandSource"
+      ],
+      "labels": [
+        "m4,server,ingest"
+      ]
+    },
+    "edges": [
+      {
+        "kind": "parent_epic",
+        "target_id": "25360f73-c106-4f6a-91ff-7236b0079db3",
+        "target_ticket_key": "AF-18",
+        "target_repo": "aerofoil"
+      }
+    ],
+    "decisions": [],
+    "acceptance_criteria": [
+      "TCP Beast ingest server listening on dual ports (30005 for 1090 MHz, 30978 for 978 MHz) fusing into shared tracker",
+      "BandSource tagging each ingest stream with arrival timestamp and RF band provenance",
+      "All source files strictly under 200 lines adhering to 250-line ceiling"
+    ],
+    "plan": null,
+    "active_claim": null,
+    "latest_handoff": null,
+    "verification_receipt": {
+      "verifier": "storypole-verify",
+      "command": "cargo nextest run -p aerofoil-server",
+      "exit_code": 0,
+      "diagnostic_count": null,
+      "summary": "[window: no base commit could be named, so this receipt covers HEAD only]\n",
+      "verified_at_epoch_ms": 1794295353074,
+      "git_branch": "main",
+      "base_commit_sha": null,
+      "head_commit_sha": "089ae3788f937eb62b492a242b71f5e5eb2c6d88",
+      "commit_shas": [
+        "089ae3788f937eb62b492a242b71f5e5eb2c6d88"
+      ],
+      "repo": null,
+      "chain_key": "aerofoil-server"
+    },
+    "created_at_epoch_ms": 1794294819002,
+    "updated_at_epoch_ms": 1794295353074
+  },
+  "events": [
+    {
+      "event": "task_created",
+      "task": {
+        "id": "b7a1abea-6d47-48f5-b00d-1a2c684b6a67",
+        "ticket_key": "AF-38",
+        "slug": "scaffold-aerofoil-server-and-implement-dual-source-tcp-beast-ingest-b7a1ab",
+        "title": "Scaffold aerofoil-server and implement dual-source TCP Beast ingest",
+        "description": "Scaffold crates/server and implement TCP Beast ingest listening on 30005 (1090 MHz) and 30978 (978 MHz) fused into the shared tracker (ADR-0010).",
+        "kind": "feature",
+        "status": "ready",
+        "priority": 3,
+        "scope": {
+          "repo": null,
+          "crate_name": "aerofoil-server",
+          "module_path": null,
+          "target_files": [],
+          "target_symbols": [],
+          "labels": [
+            "m4,server,ingest"
+          ]
+        },
+        "edges": [],
+        "decisions": [],
+        "acceptance_criteria": [
+          "Listen on TCP 30005 (1090) and 30978 (978) in one process",
+          "Feed decoded frames and target updates into shared Tracker",
+          "Strict 250-line file ceiling with all files under 200 lines"
+        ],
+        "plan": null,
+        "active_claim": null,
+        "latest_handoff": null,
+        "verification_receipt": null,
+        "created_at_epoch_ms": 1794294819002,
+        "updated_at_epoch_ms": 1794294819002
+      }
+    },
+    {
+      "event": "edge_added",
+      "task_id": "b7a1abea-6d47-48f5-b00d-1a2c684b6a67",
+      "edge": {
+        "kind": "parent_epic",
+        "target_id": "25360f73-c106-4f6a-91ff-7236b0079db3",
+        "target_ticket_key": "AF-18",
+        "target_repo": "aerofoil"
+      },
+      "timestamp_ms": 1794294823271
+    },
+    {
+      "event": "task_updated",
+      "task_id": "b7a1abea-6d47-48f5-b00d-1a2c684b6a67",
+      "title": null,
+      "description": null,
+      "priority": null,
+      "scope": {
+        "repo": null,
+        "crate_name": "aerofoil-server",
+        "module_path": null,
+        "target_files": [
+          "crates/server/Cargo.toml",
+          "crates/server/src/lib.rs",
+          "crates/server/src/ingest.rs",
+          "crates/server/src/source.rs",
+          "crates/server/src/main.rs"
+        ],
+        "target_symbols": [
+          "aerofoil_server::ingest::DualBandIngest",
+          "aerofoil_server::source::BandSource"
+        ],
+        "labels": [
+          "m4,server,ingest"
+        ]
+      },
+      "acceptance_criteria": [
+        "TCP Beast ingest server listening on dual ports (30005 for 1090 MHz, 30978 for 978 MHz) fusing into shared tracker",
+        "BandSource tagging each ingest stream with arrival timestamp and RF band provenance",
+        "All source files strictly under 200 lines adhering to 250-line ceiling"
+      ],
+      "timestamp_ms": 1794294862700
+    },
+    {
+      "event": "task_claimed",
+      "task_id": "b7a1abea-6d47-48f5-b00d-1a2c684b6a67",
+      "claim": {
+        "agent_id": "gemini",
+        "claimed_at_epoch_ms": 1794294866793,
+        "lease_expires_at_epoch_ms": 1794298466793,
+        "git_branch": "feat/af-38-server-ingest",
+        "base_commit_sha": null
+      }
+    },
+    {
+      "event": "status_changed",
+      "task_id": "b7a1abea-6d47-48f5-b00d-1a2c684b6a67",
+      "from": "ready",
+      "to": "in_progress",
+      "reason": "Claimed by gemini",
+      "timestamp_ms": 1794294866793
+    },
+    {
+      "event": "task_verified",
+      "task_id": "b7a1abea-6d47-48f5-b00d-1a2c684b6a67",
+      "receipt": {
+        "verifier": "storypole-verify",
+        "command": "cargo nextest run -p aerofoil-server",
+        "exit_code": 0,
+        "diagnostic_count": null,
+        "summary": "[window: no base commit could be named, so this receipt covers HEAD only]\n",
+        "verified_at_epoch_ms": 1794295353074,
+        "git_branch": "main",
+        "base_commit_sha": null,
+        "head_commit_sha": "089ae3788f937eb62b492a242b71f5e5eb2c6d88",
+        "commit_shas": [
+          "089ae3788f937eb62b492a242b71f5e5eb2c6d88"
+        ],
+        "repo": null,
+        "chain_key": "aerofoil-server"
+      }
+    }
+  ]
+}

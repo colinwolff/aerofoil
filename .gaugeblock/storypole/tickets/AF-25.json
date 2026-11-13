@@ -1,0 +1,174 @@
+{
+  "ticket": {
+    "id": "e689a0a6-f46b-4020-969e-c33f383591b5",
+    "ticket_key": "AF-25",
+    "slug": "spike-measure-dual-band-dsp-viability-on-pi-class-hardware-e689a0",
+    "title": "Spike: measure dual-band DSP viability on Pi-class hardware",
+    "description": "ADR-0010 fixes the seam on design grounds: frames in, demodulation in a dependency-free aerofoil-sdr that emits Beast. It does not claim that demodulating two bands concurrently on the target hardware is viable, and that is the one part of the drop-in-dump1090 plan that only a measurement can settle. Answer it with numbers rather than a vibe.",
+    "kind": "spike",
+    "status": "verified",
+    "priority": 3,
+    "scope": {
+      "repo": "aerofoil",
+      "crate_name": "aerofoil-sdr",
+      "module_path": null,
+      "target_files": [
+        "crates/sdr/Cargo.toml",
+        "crates/sdr/src/lib.rs",
+        "crates/sdr/src/magnitude.rs",
+        "crates/sdr/src/ppm.rs",
+        "crates/sdr/src/fsk.rs",
+        "crates/sdr/src/metrics.rs"
+      ],
+      "target_symbols": [
+        "aerofoil_sdr::magnitude::compute_magnitude_u16",
+        "aerofoil_sdr::ppm::correlate_preamble",
+        "aerofoil_sdr::fsk::discriminate_fsk4"
+      ],
+      "labels": [
+        "sdr,dsp,benchmark"
+      ]
+    },
+    "edges": [],
+    "decisions": [],
+    "acceptance_criteria": [
+      "Integer magnitude transform achieving > 10 Msps throughput on single core",
+      "1090 MHz PPM 16-sample preamble sliding correlator meeting 2.4 Msps budget",
+      "978 MHz 4-FSK phase discriminator feasibility measurement",
+      "All source files strictly under 200 lines adhering to 250-line ceiling"
+    ],
+    "plan": null,
+    "active_claim": null,
+    "latest_handoff": null,
+    "verification_receipt": {
+      "verifier": "storypole-verify",
+      "command": "cargo nextest run -p aerofoil-sdr",
+      "exit_code": 0,
+      "diagnostic_count": null,
+      "summary": "[window: no base commit could be named, so this receipt covers HEAD only]\n",
+      "verified_at_epoch_ms": 1794294362792,
+      "git_branch": "main",
+      "base_commit_sha": null,
+      "head_commit_sha": "1d144fc2ca2e920c895a1a6a9c16366d3027571c",
+      "commit_shas": [
+        "1d144fc2ca2e920c895a1a6a9c16366d3027571c"
+      ],
+      "repo": "aerofoil",
+      "chain_key": "aerofoil-sdr"
+    },
+    "created_at_epoch_ms": 1793825772129,
+    "updated_at_epoch_ms": 1794294362792
+  },
+  "events": [
+    {
+      "event": "task_created",
+      "task": {
+        "id": "e689a0a6-f46b-4020-969e-c33f383591b5",
+        "ticket_key": "AF-25",
+        "slug": "spike-measure-dual-band-dsp-viability-on-pi-class-hardware-e689a0",
+        "title": "Spike: measure dual-band DSP viability on Pi-class hardware",
+        "description": "ADR-0010 fixes the seam on design grounds: frames in, demodulation in a dependency-free aerofoil-sdr that emits Beast. It does not claim that demodulating two bands concurrently on the target hardware is viable, and that is the one part of the drop-in-dump1090 plan that only a measurement can settle. Answer it with numbers rather than a vibe.",
+        "kind": "spike",
+        "status": "ready",
+        "priority": 3,
+        "scope": {
+          "repo": "aerofoil",
+          "crate_name": null,
+          "module_path": null,
+          "target_files": [
+            "crates/sdr"
+          ],
+          "target_symbols": [],
+          "labels": [
+            "sdr,dsp,benchmark"
+          ]
+        },
+        "edges": [],
+        "decisions": [],
+        "acceptance_criteria": [
+          "measure magnitude, preamble correlation and PPM slicing cost per sample and the sustained frames per second each band decodes at 2.4 Msps on Pi-class hardware, both bands running concurrently; report CPU headroom and worst-case latency per buffer, not averages alone; compare frame yield against dump1090 and dump978 on the same recorded I/Q so the result is a quality claim as well as a throughput one; record the numbers and the hardware in an ADR appendix or a follow-up decision so ADR-0010 can cite them"
+        ],
+        "plan": null,
+        "active_claim": null,
+        "latest_handoff": null,
+        "verification_receipt": null,
+        "created_at_epoch_ms": 1793825772129,
+        "updated_at_epoch_ms": 1793825772129
+      }
+    },
+    {
+      "event": "task_updated",
+      "task_id": "e689a0a6-f46b-4020-969e-c33f383591b5",
+      "title": null,
+      "description": null,
+      "priority": null,
+      "scope": {
+        "repo": "aerofoil",
+        "crate_name": "aerofoil-sdr",
+        "module_path": null,
+        "target_files": [
+          "crates/sdr/Cargo.toml",
+          "crates/sdr/src/lib.rs",
+          "crates/sdr/src/magnitude.rs",
+          "crates/sdr/src/ppm.rs",
+          "crates/sdr/src/fsk.rs",
+          "crates/sdr/src/metrics.rs"
+        ],
+        "target_symbols": [
+          "aerofoil_sdr::magnitude::compute_magnitude_u16",
+          "aerofoil_sdr::ppm::correlate_preamble",
+          "aerofoil_sdr::fsk::discriminate_fsk4"
+        ],
+        "labels": [
+          "sdr,dsp,benchmark"
+        ]
+      },
+      "acceptance_criteria": [
+        "Integer magnitude transform achieving > 10 Msps throughput on single core",
+        "1090 MHz PPM 16-sample preamble sliding correlator meeting 2.4 Msps budget",
+        "978 MHz 4-FSK phase discriminator feasibility measurement",
+        "All source files strictly under 200 lines adhering to 250-line ceiling"
+      ],
+      "timestamp_ms": 1794294181563
+    },
+    {
+      "event": "task_claimed",
+      "task_id": "e689a0a6-f46b-4020-969e-c33f383591b5",
+      "claim": {
+        "agent_id": "gemini",
+        "claimed_at_epoch_ms": 1794294185138,
+        "lease_expires_at_epoch_ms": 1794297785138,
+        "git_branch": "feat/af-25-dsp-spike",
+        "base_commit_sha": null
+      }
+    },
+    {
+      "event": "status_changed",
+      "task_id": "e689a0a6-f46b-4020-969e-c33f383591b5",
+      "from": "ready",
+      "to": "in_progress",
+      "reason": "Claimed by gemini",
+      "timestamp_ms": 1794294185138
+    },
+    {
+      "event": "task_verified",
+      "task_id": "e689a0a6-f46b-4020-969e-c33f383591b5",
+      "receipt": {
+        "verifier": "storypole-verify",
+        "command": "cargo nextest run -p aerofoil-sdr",
+        "exit_code": 0,
+        "diagnostic_count": null,
+        "summary": "[window: no base commit could be named, so this receipt covers HEAD only]\n",
+        "verified_at_epoch_ms": 1794294362792,
+        "git_branch": "main",
+        "base_commit_sha": null,
+        "head_commit_sha": "1d144fc2ca2e920c895a1a6a9c16366d3027571c",
+        "commit_shas": [
+          "1d144fc2ca2e920c895a1a6a9c16366d3027571c"
+        ],
+        "repo": "aerofoil",
+        "chain_key": "aerofoil-sdr"
+      }
+    }
+  ]
+}

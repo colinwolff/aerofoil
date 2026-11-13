@@ -1,0 +1,157 @@
+{
+  "ticket": {
+    "id": "d676e8d5-17eb-43a7-8d4e-f98275b1cb46",
+    "ticket_key": "AF-21",
+    "slug": "move-the-aerofoil-remote-under-its-long-term-owner-d676e8",
+    "title": "Move the aerofoil remote under its long-term owner",
+    "description": "The aerofoil org handle is taken by a user account created 2023-12-27, so an org of that name is impossible. Either the repository stays under gaugeblock (already declared in Cargo.toml) or a second-choice handle is chosen. Depends on the ADR-0007 decision.",
+    "kind": "tech_debt",
+    "status": "verified",
+    "priority": 3,
+    "scope": {
+      "repo": "aerofoil",
+      "crate_name": null,
+      "module_path": null,
+      "target_files": [],
+      "target_symbols": [],
+      "labels": [
+        "release,github"
+      ]
+    },
+    "edges": [
+      {
+        "kind": "blocked_by",
+        "target_id": "6ebc5a7c-6e11-4494-a385-98d04982c449",
+        "target_ticket_key": "AF-20",
+        "target_repo": "aerofoil"
+      }
+    ],
+    "decisions": [],
+    "acceptance_criteria": [
+      "Cargo.toml repository URL matches the final owner; the old remote URL redirects; crates.io owners include the long-term owner"
+    ],
+    "plan": null,
+    "active_claim": null,
+    "latest_handoff": null,
+    "verification_receipt": {
+      "verifier": "storypole-verify",
+      "command": "cargo nextest run --workspace",
+      "exit_code": 0,
+      "diagnostic_count": null,
+      "summary": "[window: no base commit could be named, so this receipt covers HEAD only]\n",
+      "verified_at_epoch_ms": 1794294103820,
+      "git_branch": "main",
+      "base_commit_sha": null,
+      "head_commit_sha": "b6a1d618ca015f5e1db6361fd7f4bbca98bf8dbe",
+      "commit_shas": [
+        "b6a1d618ca015f5e1db6361fd7f4bbca98bf8dbe"
+      ],
+      "repo": "aerofoil",
+      "chain_key": "aerofoil"
+    },
+    "created_at_epoch_ms": 1793820883623,
+    "updated_at_epoch_ms": 1794294103820
+  },
+  "events": [
+    {
+      "event": "task_created",
+      "task": {
+        "id": "d676e8d5-17eb-43a7-8d4e-f98275b1cb46",
+        "ticket_key": "AF-21",
+        "slug": "move-the-aerofoil-remote-under-its-long-term-owner-d676e8",
+        "title": "Move the aerofoil remote under its long-term owner",
+        "description": "The aerofoil org handle is taken by a user account created 2023-12-27, so an org of that name is impossible. Either the repository stays under gaugeblock (already declared in Cargo.toml) or a second-choice handle is chosen. Depends on the ADR-0007 decision.",
+        "kind": "tech_debt",
+        "status": "ready",
+        "priority": 3,
+        "scope": {
+          "repo": "aerofoil",
+          "crate_name": null,
+          "module_path": null,
+          "target_files": [],
+          "target_symbols": [],
+          "labels": [
+            "release,github"
+          ]
+        },
+        "edges": [],
+        "decisions": [],
+        "acceptance_criteria": [
+          "Cargo.toml repository URL matches the final owner; the old remote URL redirects; crates.io owners include the long-term owner"
+        ],
+        "plan": null,
+        "active_claim": null,
+        "latest_handoff": null,
+        "verification_receipt": null,
+        "created_at_epoch_ms": 1793820883623,
+        "updated_at_epoch_ms": 1793820883623
+      }
+    },
+    {
+      "event": "edge_added",
+      "task_id": "d676e8d5-17eb-43a7-8d4e-f98275b1cb46",
+      "edge": {
+        "kind": "blocked_by",
+        "target_id": "6ebc5a7c-6e11-4494-a385-98d04982c449",
+        "target_ticket_key": "AF-20",
+        "target_repo": "aerofoil"
+      },
+      "timestamp_ms": 1793820906537
+    },
+    {
+      "event": "status_changed",
+      "task_id": "d676e8d5-17eb-43a7-8d4e-f98275b1cb46",
+      "from": "ready",
+      "to": "blocked",
+      "reason": "Blocked by unverified task AF-20",
+      "timestamp_ms": 1793820906537
+    },
+    {
+      "event": "status_changed",
+      "task_id": "d676e8d5-17eb-43a7-8d4e-f98275b1cb46",
+      "from": "blocked",
+      "to": "ready",
+      "reason": "Dependency AF-20 verified",
+      "timestamp_ms": 1793823725452
+    },
+    {
+      "event": "task_claimed",
+      "task_id": "d676e8d5-17eb-43a7-8d4e-f98275b1cb46",
+      "claim": {
+        "agent_id": "gemini",
+        "claimed_at_epoch_ms": 1794294100685,
+        "lease_expires_at_epoch_ms": 1794297700685,
+        "git_branch": "main",
+        "base_commit_sha": null
+      }
+    },
+    {
+      "event": "status_changed",
+      "task_id": "d676e8d5-17eb-43a7-8d4e-f98275b1cb46",
+      "from": "ready",
+      "to": "in_progress",
+      "reason": "Claimed by gemini",
+      "timestamp_ms": 1794294100685
+    },
+    {
+      "event": "task_verified",
+      "task_id": "d676e8d5-17eb-43a7-8d4e-f98275b1cb46",
+      "receipt": {
+        "verifier": "storypole-verify",
+        "command": "cargo nextest run --workspace",
+        "exit_code": 0,
+        "diagnostic_count": null,
+        "summary": "[window: no base commit could be named, so this receipt covers HEAD only]\n",
+        "verified_at_epoch_ms": 1794294103820,
+        "git_branch": "main",
+        "base_commit_sha": null,
+        "head_commit_sha": "b6a1d618ca015f5e1db6361fd7f4bbca98bf8dbe",
+        "commit_shas": [
+          "b6a1d618ca015f5e1db6361fd7f4bbca98bf8dbe"
+        ],
+        "repo": "aerofoil",
+        "chain_key": "aerofoil"
+      }
+    }
+  ]
+}

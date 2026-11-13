@@ -1,0 +1,119 @@
+{
+  "ticket": {
+    "id": "9bd6c93b-f9f9-48bd-983a-acb3c31f8aca",
+    "ticket_key": "AF-84",
+    "slug": "rtl-sdr-dsp-demodulation-pipeline-and-direct-hardware-receiver-interface-9bd6c9",
+    "title": "RTL-SDR DSP demodulation pipeline and direct hardware receiver interface",
+    "description": "Bridge the aerofoil-sdr PPM (1090 MHz) and FSK (978 MHz) demodulators to a direct hardware receiver interface (RTL-SDR USB and rtl_tcp network streaming), enabling aerofoil-cli and aerofoil-server to demodulate live RF down to decoded ADS-B frames without external dump1090/readsb dependencies.",
+    "kind": "feature",
+    "status": "verified",
+    "priority": 2,
+    "scope": {
+      "repo": null,
+      "crate_name": "aerofoil-sdr",
+      "module_path": null,
+      "target_files": [
+        "crates/sdr/src/receiver.rs,crates/sdr/src/rtl_tcp.rs,crates/sdr/src/lib.rs"
+      ],
+      "target_symbols": [],
+      "labels": []
+    },
+    "edges": [],
+    "decisions": [],
+    "acceptance_criteria": [],
+    "plan": null,
+    "active_claim": null,
+    "latest_handoff": null,
+    "verification_receipt": {
+      "verifier": "storypole-verify",
+      "command": "cargo nextest run -p aerofoil-sdr",
+      "exit_code": 0,
+      "diagnostic_count": null,
+      "summary": "",
+      "verified_at_epoch_ms": 1794438429052,
+      "git_branch": "feat/AF-84-rtl-sdr-dsp-demodulator",
+      "base_commit_sha": "bcf04889508b4388a1b3a8d1036cf020af4e907a",
+      "head_commit_sha": "7b296dbcdb39a7b435c1effb57124c40714574c4",
+      "commit_shas": [
+        "7b296dbcdb39a7b435c1effb57124c40714574c4"
+      ],
+      "repo": null,
+      "chain_key": "aerofoil-sdr"
+    },
+    "created_at_epoch_ms": 1794427736053,
+    "updated_at_epoch_ms": 1794438429052
+  },
+  "events": [
+    {
+      "event": "task_created",
+      "task": {
+        "id": "9bd6c93b-f9f9-48bd-983a-acb3c31f8aca",
+        "ticket_key": "AF-84",
+        "slug": "rtl-sdr-dsp-demodulation-pipeline-and-direct-hardware-receiver-interface-9bd6c9",
+        "title": "RTL-SDR DSP demodulation pipeline and direct hardware receiver interface",
+        "description": "Bridge the aerofoil-sdr PPM (1090 MHz) and FSK (978 MHz) demodulators to a direct hardware receiver interface (RTL-SDR USB and rtl_tcp network streaming), enabling aerofoil-cli and aerofoil-server to demodulate live RF down to decoded ADS-B frames without external dump1090/readsb dependencies.",
+        "kind": "feature",
+        "status": "ready",
+        "priority": 2,
+        "scope": {
+          "repo": null,
+          "crate_name": "aerofoil-sdr",
+          "module_path": null,
+          "target_files": [
+            "crates/sdr/src/receiver.rs,crates/sdr/src/rtl_tcp.rs,crates/sdr/src/lib.rs"
+          ],
+          "target_symbols": [],
+          "labels": []
+        },
+        "edges": [],
+        "decisions": [],
+        "acceptance_criteria": [],
+        "plan": null,
+        "active_claim": null,
+        "latest_handoff": null,
+        "verification_receipt": null,
+        "created_at_epoch_ms": 1794427736053,
+        "updated_at_epoch_ms": 1794427736053
+      }
+    },
+    {
+      "event": "task_claimed",
+      "task_id": "9bd6c93b-f9f9-48bd-983a-acb3c31f8aca",
+      "claim": {
+        "agent_id": "aerofoil-agent",
+        "claimed_at_epoch_ms": 1794438268310,
+        "lease_expires_at_epoch_ms": 1794441868310,
+        "git_branch": "feat/AF-84-rtl-sdr-dsp-demodulator",
+        "base_commit_sha": null
+      }
+    },
+    {
+      "event": "status_changed",
+      "task_id": "9bd6c93b-f9f9-48bd-983a-acb3c31f8aca",
+      "from": "ready",
+      "to": "in_progress",
+      "reason": "Claimed by aerofoil-agent",
+      "timestamp_ms": 1794438268310
+    },
+    {
+      "event": "task_verified",
+      "task_id": "9bd6c93b-f9f9-48bd-983a-acb3c31f8aca",
+      "receipt": {
+        "verifier": "storypole-verify",
+        "command": "cargo nextest run -p aerofoil-sdr",
+        "exit_code": 0,
+        "diagnostic_count": null,
+        "summary": "",
+        "verified_at_epoch_ms": 1794438429052,
+        "git_branch": "feat/AF-84-rtl-sdr-dsp-demodulator",
+        "base_commit_sha": "bcf04889508b4388a1b3a8d1036cf020af4e907a",
+        "head_commit_sha": "7b296dbcdb39a7b435c1effb57124c40714574c4",
+        "commit_shas": [
+          "7b296dbcdb39a7b435c1effb57124c40714574c4"
+        ],
+        "repo": null,
+        "chain_key": "aerofoil-sdr"
+      }
+    }
+  ]
+}

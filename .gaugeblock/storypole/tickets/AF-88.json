@@ -1,0 +1,121 @@
+{
+  "ticket": {
+    "id": "4bed6c54-8019-440f-ae74-ff7995cdb102",
+    "ticket_key": "AF-88",
+    "slug": "restore-interactive-airspace-section-selection-and-popup-labels-in-2d-and-3d-4bed6c",
+    "title": "Restore interactive airspace section selection and popup labels in 2D and 3D",
+    "description": "Fix 2D airspace polygon click interception caused by interactive range ring circles in antennaPane, preserve onEachFeature popup bindings across 2D/3D engine toggles in VectorOverlayManager, and add interactive click popups for 3D airspace volumes and boundaries in MapLibre GL.",
+    "kind": "bug",
+    "status": "verified",
+    "priority": 2,
+    "scope": {
+      "repo": null,
+      "crate_name": "aerofoil-server",
+      "module_path": null,
+      "target_files": [
+        "apps/web/src/layers/LeafletParametricManager.ts,apps/web/src/layers/LeafletPanes.ts,apps/web/src/layers/VectorOverlayManager.ts,apps/web/src/layers/AirspaceVolume3dManager.ts,apps/web/src/layers/MapLibreVectorManager.ts"
+      ],
+      "target_symbols": [],
+      "labels": []
+    },
+    "edges": [],
+    "decisions": [],
+    "acceptance_criteria": [],
+    "plan": null,
+    "active_claim": null,
+    "latest_handoff": null,
+    "verification_receipt": {
+      "verifier": "storypole-verify",
+      "command": "cargo nextest run -p aerofoil-server",
+      "exit_code": 0,
+      "diagnostic_count": null,
+      "summary": "[window: no base commit could be named, so this receipt covers HEAD only]\n",
+      "verified_at_epoch_ms": 1794502422657,
+      "git_branch": "main",
+      "base_commit_sha": null,
+      "head_commit_sha": "75d0c2d49e91b8d7ade9de7b125f0e6b307cbf5a",
+      "commit_shas": [
+        "75d0c2d49e91b8d7ade9de7b125f0e6b307cbf5a"
+      ],
+      "repo": null,
+      "chain_key": "aerofoil-server",
+      "window_intact": true
+    },
+    "created_at_epoch_ms": 1794501025795,
+    "updated_at_epoch_ms": 1794502422657
+  },
+  "events": [
+    {
+      "event": "task_created",
+      "task": {
+        "id": "4bed6c54-8019-440f-ae74-ff7995cdb102",
+        "ticket_key": "AF-88",
+        "slug": "restore-interactive-airspace-section-selection-and-popup-labels-in-2d-and-3d-4bed6c",
+        "title": "Restore interactive airspace section selection and popup labels in 2D and 3D",
+        "description": "Fix 2D airspace polygon click interception caused by interactive range ring circles in antennaPane, preserve onEachFeature popup bindings across 2D/3D engine toggles in VectorOverlayManager, and add interactive click popups for 3D airspace volumes and boundaries in MapLibre GL.",
+        "kind": "bug",
+        "status": "ready",
+        "priority": 2,
+        "scope": {
+          "repo": null,
+          "crate_name": "aerofoil-server",
+          "module_path": null,
+          "target_files": [
+            "apps/web/src/layers/LeafletParametricManager.ts,apps/web/src/layers/LeafletPanes.ts,apps/web/src/layers/VectorOverlayManager.ts,apps/web/src/layers/AirspaceVolume3dManager.ts,apps/web/src/layers/MapLibreVectorManager.ts"
+          ],
+          "target_symbols": [],
+          "labels": []
+        },
+        "edges": [],
+        "decisions": [],
+        "acceptance_criteria": [],
+        "plan": null,
+        "active_claim": null,
+        "latest_handoff": null,
+        "verification_receipt": null,
+        "created_at_epoch_ms": 1794501025795,
+        "updated_at_epoch_ms": 1794501025795
+      }
+    },
+    {
+      "event": "task_claimed",
+      "task_id": "4bed6c54-8019-440f-ae74-ff7995cdb102",
+      "claim": {
+        "agent_id": "antigravity",
+        "claimed_at_epoch_ms": 1794501930125,
+        "lease_expires_at_epoch_ms": 1794505530125,
+        "git_branch": "feat/af-88-airspace-popups",
+        "base_commit_sha": null
+      }
+    },
+    {
+      "event": "status_changed",
+      "task_id": "4bed6c54-8019-440f-ae74-ff7995cdb102",
+      "from": "ready",
+      "to": "in_progress",
+      "reason": "Claimed by antigravity",
+      "timestamp_ms": 1794501930125
+    },
+    {
+      "event": "task_verified",
+      "task_id": "4bed6c54-8019-440f-ae74-ff7995cdb102",
+      "receipt": {
+        "verifier": "storypole-verify",
+        "command": "cargo nextest run -p aerofoil-server",
+        "exit_code": 0,
+        "diagnostic_count": null,
+        "summary": "[window: no base commit could be named, so this receipt covers HEAD only]\n",
+        "verified_at_epoch_ms": 1794502422657,
+        "git_branch": "main",
+        "base_commit_sha": null,
+        "head_commit_sha": "75d0c2d49e91b8d7ade9de7b125f0e6b307cbf5a",
+        "commit_shas": [
+          "75d0c2d49e91b8d7ade9de7b125f0e6b307cbf5a"
+        ],
+        "repo": null,
+        "chain_key": "aerofoil-server",
+        "window_intact": true
+      }
+    }
+  ]
+}

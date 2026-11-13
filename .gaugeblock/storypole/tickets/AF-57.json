@@ -1,0 +1,166 @@
+{
+  "ticket": {
+    "id": "4c849df0-09a6-431d-9177-1c517b0d74c1",
+    "ticket_key": "AF-57",
+    "slug": "implement-outbound-mlat-client-and-streaming-feeder-protocol-for-community-mlat-server-networks-4c849d",
+    "title": "Implement outbound MLAT client and streaming feeder protocol for community mlat-server networks",
+    "description": "",
+    "kind": "feature",
+    "status": "verified",
+    "priority": 2,
+    "scope": {
+      "repo": null,
+      "crate_name": "aerofoil-server",
+      "module_path": null,
+      "target_files": [],
+      "target_symbols": [],
+      "labels": [
+        "mlat,feeder,client,m5"
+      ]
+    },
+    "edges": [
+      {
+        "kind": "parent_epic",
+        "target_id": "a3add8bf-f367-412d-8216-a24a8efc1aa9",
+        "target_ticket_key": "AF-50"
+      },
+      {
+        "kind": "blocked_by",
+        "target_id": "9e3953dc-6bd5-42ce-bf5a-04f34ad9bfd3",
+        "target_ticket_key": "AF-56"
+      }
+    ],
+    "decisions": [],
+    "acceptance_criteria": [],
+    "plan": null,
+    "active_claim": null,
+    "latest_handoff": null,
+    "verification_receipt": {
+      "verifier": "storypole-verify",
+      "command": "cargo nextest run -p aerofoil-server",
+      "exit_code": 0,
+      "diagnostic_count": null,
+      "summary": "[window: no base commit could be named, so this receipt covers HEAD only]\n",
+      "verified_at_epoch_ms": 1794374897037,
+      "git_branch": "main",
+      "base_commit_sha": null,
+      "head_commit_sha": "5b309cf84696e5da82857b71bb11809db3e2929d",
+      "commit_shas": [
+        "5b309cf84696e5da82857b71bb11809db3e2929d"
+      ],
+      "repo": null,
+      "chain_key": "aerofoil-server"
+    },
+    "created_at_epoch_ms": 1794367081768,
+    "updated_at_epoch_ms": 1794374897037
+  },
+  "events": [
+    {
+      "event": "task_created",
+      "task": {
+        "id": "4c849df0-09a6-431d-9177-1c517b0d74c1",
+        "ticket_key": "AF-57",
+        "slug": "implement-outbound-mlat-client-and-streaming-feeder-protocol-for-community-mlat-server-networks-4c849d",
+        "title": "Implement outbound MLAT client and streaming feeder protocol for community mlat-server networks",
+        "description": "",
+        "kind": "feature",
+        "status": "ready",
+        "priority": 2,
+        "scope": {
+          "repo": null,
+          "crate_name": "aerofoil-server",
+          "module_path": null,
+          "target_files": [],
+          "target_symbols": [],
+          "labels": [
+            "mlat,feeder,client,m5"
+          ]
+        },
+        "edges": [],
+        "decisions": [],
+        "acceptance_criteria": [],
+        "plan": null,
+        "active_claim": null,
+        "latest_handoff": null,
+        "verification_receipt": null,
+        "created_at_epoch_ms": 1794367081768,
+        "updated_at_epoch_ms": 1794367081768
+      }
+    },
+    {
+      "event": "edge_added",
+      "task_id": "4c849df0-09a6-431d-9177-1c517b0d74c1",
+      "edge": {
+        "kind": "parent_epic",
+        "target_id": "a3add8bf-f367-412d-8216-a24a8efc1aa9",
+        "target_ticket_key": "AF-50"
+      },
+      "timestamp_ms": 1794367089744
+    },
+    {
+      "event": "edge_added",
+      "task_id": "4c849df0-09a6-431d-9177-1c517b0d74c1",
+      "edge": {
+        "kind": "blocked_by",
+        "target_id": "9e3953dc-6bd5-42ce-bf5a-04f34ad9bfd3",
+        "target_ticket_key": "AF-56"
+      },
+      "timestamp_ms": 1794367089898
+    },
+    {
+      "event": "status_changed",
+      "task_id": "4c849df0-09a6-431d-9177-1c517b0d74c1",
+      "from": "ready",
+      "to": "blocked",
+      "reason": "Blocked by unverified task AF-56",
+      "timestamp_ms": 1794367089898
+    },
+    {
+      "event": "status_changed",
+      "task_id": "4c849df0-09a6-431d-9177-1c517b0d74c1",
+      "from": "blocked",
+      "to": "ready",
+      "reason": "Dependency AF-56 verified",
+      "timestamp_ms": 1794374768295
+    },
+    {
+      "event": "task_claimed",
+      "task_id": "4c849df0-09a6-431d-9177-1c517b0d74c1",
+      "claim": {
+        "agent_id": "antigravity",
+        "claimed_at_epoch_ms": 1794374784529,
+        "lease_expires_at_epoch_ms": 1794378384529,
+        "git_branch": "feat/mlat-feeder",
+        "base_commit_sha": null
+      }
+    },
+    {
+      "event": "status_changed",
+      "task_id": "4c849df0-09a6-431d-9177-1c517b0d74c1",
+      "from": "ready",
+      "to": "in_progress",
+      "reason": "Claimed by antigravity",
+      "timestamp_ms": 1794374784529
+    },
+    {
+      "event": "task_verified",
+      "task_id": "4c849df0-09a6-431d-9177-1c517b0d74c1",
+      "receipt": {
+        "verifier": "storypole-verify",
+        "command": "cargo nextest run -p aerofoil-server",
+        "exit_code": 0,
+        "diagnostic_count": null,
+        "summary": "[window: no base commit could be named, so this receipt covers HEAD only]\n",
+        "verified_at_epoch_ms": 1794374897037,
+        "git_branch": "main",
+        "base_commit_sha": null,
+        "head_commit_sha": "5b309cf84696e5da82857b71bb11809db3e2929d",
+        "commit_shas": [
+          "5b309cf84696e5da82857b71bb11809db3e2929d"
+        ],
+        "repo": null,
+        "chain_key": "aerofoil-server"
+      }
+    }
+  ]
+}

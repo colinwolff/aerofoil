@@ -1,0 +1,227 @@
+{
+  "ticket": {
+    "id": "c4b458cf-817d-43ea-8f1a-e069ba6fc8cc",
+    "ticket_key": "AF-39",
+    "slug": "implement-sse-and-websocket-egress-streaming-in-aerofoil-server-c4b458",
+    "title": "Implement SSE and WebSocket egress streaming in aerofoil-server",
+    "description": "Implement HTTP/1.1 SSE (/events) and WebSocket (/ws) egress streaming with backpressure and Last-Event-ID reconnection (ADR-0006).",
+    "kind": "feature",
+    "status": "verified",
+    "priority": 3,
+    "scope": {
+      "repo": null,
+      "crate_name": "aerofoil-server",
+      "module_path": null,
+      "target_files": [
+        "crates/server/Cargo.toml",
+        "crates/server/src/lib.rs",
+        "crates/server/src/egress.rs",
+        "crates/server/src/sse.rs",
+        "crates/server/src/ws.rs",
+        "crates/server/src/json.rs",
+        "crates/server/src/main.rs"
+      ],
+      "target_symbols": [
+        "aerofoil_server::egress::EgressServer",
+        "aerofoil_server::sse::handle_sse_stream",
+        "aerofoil_server::ws::handle_ws_client"
+      ],
+      "labels": [
+        "m4,server,egress,sse,websocket"
+      ]
+    },
+    "edges": [
+      {
+        "kind": "parent_epic",
+        "target_id": "25360f73-c106-4f6a-91ff-7236b0079db3",
+        "target_ticket_key": "AF-18",
+        "target_repo": "aerofoil"
+      },
+      {
+        "kind": "blocked_by",
+        "target_id": "b7a1abea-6d47-48f5-b00d-1a2c684b6a67",
+        "target_ticket_key": "AF-38"
+      }
+    ],
+    "decisions": [],
+    "acceptance_criteria": [
+      "HTTP/1.1 EgressServer dispatching GET /events (SSE), GET /ws (WebSocket), and GET /health",
+      "SSE stream text/event-stream with Last-Event-ID resume and periodic keepalive comments",
+      "WebSocket stream RFC 6455 with JSON target events, ping/pong, and subscription filters",
+      "Bounded per-client queues with drop-oldest policy preventing slow consumers from blocking the tracker",
+      "All source files strictly under 200 lines adhering to 250-line ceiling"
+    ],
+    "plan": null,
+    "active_claim": null,
+    "latest_handoff": null,
+    "verification_receipt": {
+      "verifier": "storypole-verify",
+      "command": "cargo nextest run -p aerofoil-server",
+      "exit_code": 0,
+      "diagnostic_count": null,
+      "summary": "[window: no base commit could be named, so this receipt covers HEAD only]\n",
+      "verified_at_epoch_ms": 1794296652366,
+      "git_branch": "main",
+      "base_commit_sha": null,
+      "head_commit_sha": "c59a2518f5f5c1229a50b2a136dadadfed0c8553",
+      "commit_shas": [
+        "c59a2518f5f5c1229a50b2a136dadadfed0c8553"
+      ],
+      "repo": null,
+      "chain_key": "aerofoil-server"
+    },
+    "created_at_epoch_ms": 1794294828836,
+    "updated_at_epoch_ms": 1794296652366
+  },
+  "events": [
+    {
+      "event": "task_created",
+      "task": {
+        "id": "c4b458cf-817d-43ea-8f1a-e069ba6fc8cc",
+        "ticket_key": "AF-39",
+        "slug": "implement-sse-and-websocket-egress-streaming-in-aerofoil-server-c4b458",
+        "title": "Implement SSE and WebSocket egress streaming in aerofoil-server",
+        "description": "Implement HTTP/1.1 SSE (/events) and WebSocket (/ws) egress streaming with backpressure and Last-Event-ID reconnection (ADR-0006).",
+        "kind": "feature",
+        "status": "ready",
+        "priority": 3,
+        "scope": {
+          "repo": null,
+          "crate_name": "aerofoil-server",
+          "module_path": null,
+          "target_files": [],
+          "target_symbols": [],
+          "labels": [
+            "m4,server,egress,sse,websocket"
+          ]
+        },
+        "edges": [],
+        "decisions": [],
+        "acceptance_criteria": [
+          "SSE endpoint text/event-stream with heartbeat keepalives and Last-Event-ID",
+          "WebSocket endpoint with client subscription filters and ping/pong keepalives",
+          "Strict 250-line file ceiling with all files under 200 lines"
+        ],
+        "plan": null,
+        "active_claim": null,
+        "latest_handoff": null,
+        "verification_receipt": null,
+        "created_at_epoch_ms": 1794294828836,
+        "updated_at_epoch_ms": 1794294828836
+      }
+    },
+    {
+      "event": "edge_added",
+      "task_id": "c4b458cf-817d-43ea-8f1a-e069ba6fc8cc",
+      "edge": {
+        "kind": "parent_epic",
+        "target_id": "25360f73-c106-4f6a-91ff-7236b0079db3",
+        "target_ticket_key": "AF-18",
+        "target_repo": "aerofoil"
+      },
+      "timestamp_ms": 1794294835633
+    },
+    {
+      "event": "edge_added",
+      "task_id": "c4b458cf-817d-43ea-8f1a-e069ba6fc8cc",
+      "edge": {
+        "kind": "blocked_by",
+        "target_id": "b7a1abea-6d47-48f5-b00d-1a2c684b6a67",
+        "target_ticket_key": "AF-38"
+      },
+      "timestamp_ms": 1794294835712
+    },
+    {
+      "event": "status_changed",
+      "task_id": "c4b458cf-817d-43ea-8f1a-e069ba6fc8cc",
+      "from": "ready",
+      "to": "blocked",
+      "reason": "Blocked by unverified task AF-38",
+      "timestamp_ms": 1794294835712
+    },
+    {
+      "event": "status_changed",
+      "task_id": "c4b458cf-817d-43ea-8f1a-e069ba6fc8cc",
+      "from": "blocked",
+      "to": "ready",
+      "reason": "Dependency AF-38 verified",
+      "timestamp_ms": 1794295353074
+    },
+    {
+      "event": "task_updated",
+      "task_id": "c4b458cf-817d-43ea-8f1a-e069ba6fc8cc",
+      "title": null,
+      "description": null,
+      "priority": null,
+      "scope": {
+        "repo": null,
+        "crate_name": "aerofoil-server",
+        "module_path": null,
+        "target_files": [
+          "crates/server/Cargo.toml",
+          "crates/server/src/lib.rs",
+          "crates/server/src/egress.rs",
+          "crates/server/src/sse.rs",
+          "crates/server/src/ws.rs",
+          "crates/server/src/json.rs",
+          "crates/server/src/main.rs"
+        ],
+        "target_symbols": [
+          "aerofoil_server::egress::EgressServer",
+          "aerofoil_server::sse::handle_sse_stream",
+          "aerofoil_server::ws::handle_ws_client"
+        ],
+        "labels": [
+          "m4,server,egress,sse,websocket"
+        ]
+      },
+      "acceptance_criteria": [
+        "HTTP/1.1 EgressServer dispatching GET /events (SSE), GET /ws (WebSocket), and GET /health",
+        "SSE stream text/event-stream with Last-Event-ID resume and periodic keepalive comments",
+        "WebSocket stream RFC 6455 with JSON target events, ping/pong, and subscription filters",
+        "Bounded per-client queues with drop-oldest policy preventing slow consumers from blocking the tracker",
+        "All source files strictly under 200 lines adhering to 250-line ceiling"
+      ],
+      "timestamp_ms": 1794295895640
+    },
+    {
+      "event": "task_claimed",
+      "task_id": "c4b458cf-817d-43ea-8f1a-e069ba6fc8cc",
+      "claim": {
+        "agent_id": "gemini",
+        "claimed_at_epoch_ms": 1794295899006,
+        "lease_expires_at_epoch_ms": 1794299499006,
+        "git_branch": "feat/af-39-server-egress",
+        "base_commit_sha": null
+      }
+    },
+    {
+      "event": "status_changed",
+      "task_id": "c4b458cf-817d-43ea-8f1a-e069ba6fc8cc",
+      "from": "ready",
+      "to": "in_progress",
+      "reason": "Claimed by gemini",
+      "timestamp_ms": 1794295899006
+    },
+    {
+      "event": "task_verified",
+      "task_id": "c4b458cf-817d-43ea-8f1a-e069ba6fc8cc",
+      "receipt": {
+        "verifier": "storypole-verify",
+        "command": "cargo nextest run -p aerofoil-server",
+        "exit_code": 0,
+        "diagnostic_count": null,
+        "summary": "[window: no base commit could be named, so this receipt covers HEAD only]\n",
+        "verified_at_epoch_ms": 1794296652366,
+        "git_branch": "main",
+        "base_commit_sha": null,
+        "head_commit_sha": "c59a2518f5f5c1229a50b2a136dadadfed0c8553",
+        "commit_shas": [
+          "c59a2518f5f5c1229a50b2a136dadadfed0c8553"
+        ],
+        "repo": null,
+        "chain_key": "aerofoil-server"
+      }
+    }
+  ]
+}

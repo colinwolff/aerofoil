@@ -1,0 +1,119 @@
+{
+  "ticket": {
+    "id": "7834163a-7e6e-4603-8619-60d9e48d27fb",
+    "ticket_key": "AF-65",
+    "slug": "fix-maplibre-3d-dem-terrain-black-screen-cors-tile-fallback-and-layer-rendering-order-783416",
+    "title": "Fix MapLibre 3D DEM terrain black screen, CORS tile fallback, and layer rendering order",
+    "description": "MapLibre 3D DEM renders a black/empty screen because AWS Terrarium S3 tiles lack CORS headers and hillshade layer blocks base tiles. Provide reliable CORS DEM source, graceful error fallback, and proper WebGL layer z-ordering.",
+    "kind": "bug",
+    "status": "verified",
+    "priority": 1,
+    "scope": {
+      "repo": null,
+      "crate_name": "aerofoil-server",
+      "module_path": null,
+      "target_files": [
+        "apps/web/src/layers/MapLibreTerrainHelper.ts,apps/web/src/layers/MapLibreMapEngine.ts"
+      ],
+      "target_symbols": [],
+      "labels": []
+    },
+    "edges": [],
+    "decisions": [],
+    "acceptance_criteria": [],
+    "plan": null,
+    "active_claim": null,
+    "latest_handoff": null,
+    "verification_receipt": {
+      "verifier": "storypole-verify",
+      "command": "cargo nextest run -p aerofoil-server",
+      "exit_code": 0,
+      "diagnostic_count": null,
+      "summary": "",
+      "verified_at_epoch_ms": 1794379828573,
+      "git_branch": "feat/af-65-fix-3d-dem",
+      "base_commit_sha": "62519d57896367aca0616e78e6c6c4d73d8f98ea",
+      "head_commit_sha": "b44031e79daddceef3ce084ecfcef7acd7a57deb",
+      "commit_shas": [
+        "b44031e79daddceef3ce084ecfcef7acd7a57deb"
+      ],
+      "repo": null,
+      "chain_key": "aerofoil-server"
+    },
+    "created_at_epoch_ms": 1794379518006,
+    "updated_at_epoch_ms": 1794379828573
+  },
+  "events": [
+    {
+      "event": "task_created",
+      "task": {
+        "id": "7834163a-7e6e-4603-8619-60d9e48d27fb",
+        "ticket_key": "AF-65",
+        "slug": "fix-maplibre-3d-dem-terrain-black-screen-cors-tile-fallback-and-layer-rendering-order-783416",
+        "title": "Fix MapLibre 3D DEM terrain black screen, CORS tile fallback, and layer rendering order",
+        "description": "MapLibre 3D DEM renders a black/empty screen because AWS Terrarium S3 tiles lack CORS headers and hillshade layer blocks base tiles. Provide reliable CORS DEM source, graceful error fallback, and proper WebGL layer z-ordering.",
+        "kind": "bug",
+        "status": "ready",
+        "priority": 1,
+        "scope": {
+          "repo": null,
+          "crate_name": "aerofoil-server",
+          "module_path": null,
+          "target_files": [
+            "apps/web/src/layers/MapLibreTerrainHelper.ts,apps/web/src/layers/MapLibreMapEngine.ts"
+          ],
+          "target_symbols": [],
+          "labels": []
+        },
+        "edges": [],
+        "decisions": [],
+        "acceptance_criteria": [],
+        "plan": null,
+        "active_claim": null,
+        "latest_handoff": null,
+        "verification_receipt": null,
+        "created_at_epoch_ms": 1794379518006,
+        "updated_at_epoch_ms": 1794379518006
+      }
+    },
+    {
+      "event": "task_claimed",
+      "task_id": "7834163a-7e6e-4603-8619-60d9e48d27fb",
+      "claim": {
+        "agent_id": "antigravity",
+        "claimed_at_epoch_ms": 1794379526010,
+        "lease_expires_at_epoch_ms": 1794383126010,
+        "git_branch": "feat/af-65-fix-3d-dem",
+        "base_commit_sha": null
+      }
+    },
+    {
+      "event": "status_changed",
+      "task_id": "7834163a-7e6e-4603-8619-60d9e48d27fb",
+      "from": "ready",
+      "to": "in_progress",
+      "reason": "Claimed by antigravity",
+      "timestamp_ms": 1794379526010
+    },
+    {
+      "event": "task_verified",
+      "task_id": "7834163a-7e6e-4603-8619-60d9e48d27fb",
+      "receipt": {
+        "verifier": "storypole-verify",
+        "command": "cargo nextest run -p aerofoil-server",
+        "exit_code": 0,
+        "diagnostic_count": null,
+        "summary": "",
+        "verified_at_epoch_ms": 1794379828573,
+        "git_branch": "feat/af-65-fix-3d-dem",
+        "base_commit_sha": "62519d57896367aca0616e78e6c6c4d73d8f98ea",
+        "head_commit_sha": "b44031e79daddceef3ce084ecfcef7acd7a57deb",
+        "commit_shas": [
+          "b44031e79daddceef3ce084ecfcef7acd7a57deb"
+        ],
+        "repo": null,
+        "chain_key": "aerofoil-server"
+      }
+    }
+  ]
+}

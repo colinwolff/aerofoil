@@ -1,0 +1,178 @@
+{
+  "ticket": {
+    "id": "b066de0e-44b6-44d7-b38c-12d8bdc81459",
+    "ticket_key": "AF-8",
+    "slug": "implement-the-cpr-nl-transition-table-and-even-odd-zone-math-b066de",
+    "title": "Implement the CPR NL transition table and even/odd zone math",
+    "description": "",
+    "kind": "feature",
+    "status": "verified",
+    "priority": 2,
+    "scope": {
+      "repo": "aerofoil",
+      "crate_name": "aerofoil-common",
+      "module_path": null,
+      "target_files": [
+        "crates/common/src/cpr/nl.rs"
+      ],
+      "target_symbols": [],
+      "labels": [
+        "m1,common"
+      ]
+    },
+    "edges": [
+      {
+        "kind": "parent_epic",
+        "target_id": "fa37c8db-1bee-463e-8c0d-4f4746d5b8e8",
+        "target_ticket_key": "AF-5",
+        "target_repo": "aerofoil"
+      },
+      {
+        "kind": "blocked_by",
+        "target_id": "62f81201-36c8-4203-b3fc-d010149d7445",
+        "target_ticket_key": "AF-7",
+        "target_repo": "aerofoil"
+      }
+    ],
+    "decisions": [],
+    "acceptance_criteria": [
+      "fixed 60-entry table; NL matches DO-260B 2.2.3.2.5 at every boundary latitude; zone widths 360/60 and 360/59"
+    ],
+    "plan": null,
+    "active_claim": null,
+    "latest_handoff": null,
+    "verification_receipt": {
+      "verifier": "storypole-verify",
+      "command": "cargo nextest run -p aerofoil-common",
+      "exit_code": 0,
+      "diagnostic_count": null,
+      "summary": "[window: no base commit could be named, so this receipt covers HEAD only]\n",
+      "verified_at_epoch_ms": 1794265605119,
+      "git_branch": "main",
+      "base_commit_sha": null,
+      "head_commit_sha": "fd43dad4bd24f9c77d7bc4825b39802c3ff7eb4a",
+      "commit_shas": [
+        "fd43dad4bd24f9c77d7bc4825b39802c3ff7eb4a"
+      ],
+      "repo": "aerofoil",
+      "chain_key": "aerofoil-common"
+    },
+    "created_at_epoch_ms": 1793818857857,
+    "updated_at_epoch_ms": 1794265605119
+  },
+  "events": [
+    {
+      "event": "task_created",
+      "task": {
+        "id": "b066de0e-44b6-44d7-b38c-12d8bdc81459",
+        "ticket_key": "AF-8",
+        "slug": "implement-the-cpr-nl-transition-table-and-even-odd-zone-math-b066de",
+        "title": "Implement the CPR NL transition table and even/odd zone math",
+        "description": "",
+        "kind": "feature",
+        "status": "ready",
+        "priority": 2,
+        "scope": {
+          "repo": "aerofoil",
+          "crate_name": "aerofoil-common",
+          "module_path": null,
+          "target_files": [
+            "crates/common/src/cpr/nl.rs"
+          ],
+          "target_symbols": [],
+          "labels": [
+            "m1,common"
+          ]
+        },
+        "edges": [],
+        "decisions": [],
+        "acceptance_criteria": [
+          "fixed 60-entry table; NL matches DO-260B 2.2.3.2.5 at every boundary latitude; zone widths 360/60 and 360/59"
+        ],
+        "plan": null,
+        "active_claim": null,
+        "latest_handoff": null,
+        "verification_receipt": null,
+        "created_at_epoch_ms": 1793818857857,
+        "updated_at_epoch_ms": 1793818857857
+      }
+    },
+    {
+      "event": "edge_added",
+      "task_id": "b066de0e-44b6-44d7-b38c-12d8bdc81459",
+      "edge": {
+        "kind": "parent_epic",
+        "target_id": "fa37c8db-1bee-463e-8c0d-4f4746d5b8e8",
+        "target_ticket_key": "AF-5",
+        "target_repo": "aerofoil"
+      },
+      "timestamp_ms": 1793818893784
+    },
+    {
+      "event": "edge_added",
+      "task_id": "b066de0e-44b6-44d7-b38c-12d8bdc81459",
+      "edge": {
+        "kind": "blocked_by",
+        "target_id": "62f81201-36c8-4203-b3fc-d010149d7445",
+        "target_ticket_key": "AF-7",
+        "target_repo": "aerofoil"
+      },
+      "timestamp_ms": 1793818901860
+    },
+    {
+      "event": "status_changed",
+      "task_id": "b066de0e-44b6-44d7-b38c-12d8bdc81459",
+      "from": "ready",
+      "to": "blocked",
+      "reason": "Blocked by unverified task AF-7",
+      "timestamp_ms": 1793818901860
+    },
+    {
+      "event": "status_changed",
+      "task_id": "b066de0e-44b6-44d7-b38c-12d8bdc81459",
+      "from": "blocked",
+      "to": "ready",
+      "reason": "Dependency AF-7 verified",
+      "timestamp_ms": 1794265190211
+    },
+    {
+      "event": "task_claimed",
+      "task_id": "b066de0e-44b6-44d7-b38c-12d8bdc81459",
+      "claim": {
+        "agent_id": "gemini",
+        "claimed_at_epoch_ms": 1794265467661,
+        "lease_expires_at_epoch_ms": 1794269067661,
+        "git_branch": "feat/af-8-cpr-nl",
+        "base_commit_sha": null
+      }
+    },
+    {
+      "event": "status_changed",
+      "task_id": "b066de0e-44b6-44d7-b38c-12d8bdc81459",
+      "from": "ready",
+      "to": "in_progress",
+      "reason": "Claimed by gemini",
+      "timestamp_ms": 1794265467661
+    },
+    {
+      "event": "task_verified",
+      "task_id": "b066de0e-44b6-44d7-b38c-12d8bdc81459",
+      "receipt": {
+        "verifier": "storypole-verify",
+        "command": "cargo nextest run -p aerofoil-common",
+        "exit_code": 0,
+        "diagnostic_count": null,
+        "summary": "[window: no base commit could be named, so this receipt covers HEAD only]\n",
+        "verified_at_epoch_ms": 1794265605119,
+        "git_branch": "main",
+        "base_commit_sha": null,
+        "head_commit_sha": "fd43dad4bd24f9c77d7bc4825b39802c3ff7eb4a",
+        "commit_shas": [
+          "fd43dad4bd24f9c77d7bc4825b39802c3ff7eb4a"
+        ],
+        "repo": "aerofoil",
+        "chain_key": "aerofoil-common"
+      }
+    }
+  ]
+}

@@ -1,0 +1,119 @@
+{
+  "ticket": {
+    "id": "84c7007f-84c3-4dd1-adc1-7ffdb9d92560",
+    "ticket_key": "AF-52",
+    "slug": "implement-unified-static-web-ui-serving-and-multi-topology-egress-in-aerofoil-server-84c700",
+    "title": "Implement unified static web UI serving and multi-topology egress in aerofoil-server",
+    "description": "",
+    "kind": "feature",
+    "status": "verified",
+    "priority": 2,
+    "scope": {
+      "repo": null,
+      "crate_name": "aerofoil-server",
+      "module_path": null,
+      "target_files": [],
+      "target_symbols": [],
+      "labels": [
+        "server,web"
+      ]
+    },
+    "edges": [],
+    "decisions": [],
+    "acceptance_criteria": [],
+    "plan": null,
+    "active_claim": null,
+    "latest_handoff": null,
+    "verification_receipt": {
+      "verifier": "storypole-verify",
+      "command": "cargo nextest run -p aerofoil-server",
+      "exit_code": 0,
+      "diagnostic_count": null,
+      "summary": "[window: no base commit could be named, so this receipt covers HEAD only]\n",
+      "verified_at_epoch_ms": 1794349112702,
+      "git_branch": "main",
+      "base_commit_sha": null,
+      "head_commit_sha": "927074b4e8feba4054f03d1cc22fdc393b292265",
+      "commit_shas": [
+        "927074b4e8feba4054f03d1cc22fdc393b292265"
+      ],
+      "repo": null,
+      "chain_key": "aerofoil-server"
+    },
+    "created_at_epoch_ms": 1794342975338,
+    "updated_at_epoch_ms": 1794349112702
+  },
+  "events": [
+    {
+      "event": "task_created",
+      "task": {
+        "id": "84c7007f-84c3-4dd1-adc1-7ffdb9d92560",
+        "ticket_key": "AF-52",
+        "slug": "implement-unified-static-web-ui-serving-and-multi-topology-egress-in-aerofoil-server-84c700",
+        "title": "Implement unified static web UI serving and multi-topology egress in aerofoil-server",
+        "description": "",
+        "kind": "feature",
+        "status": "ready",
+        "priority": 2,
+        "scope": {
+          "repo": null,
+          "crate_name": "aerofoil-server",
+          "module_path": null,
+          "target_files": [],
+          "target_symbols": [],
+          "labels": [
+            "server,web"
+          ]
+        },
+        "edges": [],
+        "decisions": [],
+        "acceptance_criteria": [],
+        "plan": null,
+        "active_claim": null,
+        "latest_handoff": null,
+        "verification_receipt": null,
+        "created_at_epoch_ms": 1794342975338,
+        "updated_at_epoch_ms": 1794342975338
+      }
+    },
+    {
+      "event": "task_claimed",
+      "task_id": "84c7007f-84c3-4dd1-adc1-7ffdb9d92560",
+      "claim": {
+        "agent_id": "antigravity",
+        "claimed_at_epoch_ms": 1794348707821,
+        "lease_expires_at_epoch_ms": 1794352307821,
+        "git_branch": "feat/server-web-serving",
+        "base_commit_sha": null
+      }
+    },
+    {
+      "event": "status_changed",
+      "task_id": "84c7007f-84c3-4dd1-adc1-7ffdb9d92560",
+      "from": "ready",
+      "to": "in_progress",
+      "reason": "Claimed by antigravity",
+      "timestamp_ms": 1794348707821
+    },
+    {
+      "event": "task_verified",
+      "task_id": "84c7007f-84c3-4dd1-adc1-7ffdb9d92560",
+      "receipt": {
+        "verifier": "storypole-verify",
+        "command": "cargo nextest run -p aerofoil-server",
+        "exit_code": 0,
+        "diagnostic_count": null,
+        "summary": "[window: no base commit could be named, so this receipt covers HEAD only]\n",
+        "verified_at_epoch_ms": 1794349112702,
+        "git_branch": "main",
+        "base_commit_sha": null,
+        "head_commit_sha": "927074b4e8feba4054f03d1cc22fdc393b292265",
+        "commit_shas": [
+          "927074b4e8feba4054f03d1cc22fdc393b292265"
+        ],
+        "repo": null,
+        "chain_key": "aerofoil-server"
+      }
+    }
+  ]
+}

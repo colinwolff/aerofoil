@@ -1,0 +1,121 @@
+{
+  "ticket": {
+    "id": "7ba6f871-0091-4681-ba22-5fc7dc7cc7bd",
+    "ticket_key": "AF-68",
+    "slug": "milestone-6-advanced-surveillance-avionics-clean-room-parity-3d-spatial-airspace-7ba6f8",
+    "title": "Milestone 6: Advanced Surveillance Avionics, Clean-Room Parity & 3D Spatial Airspace",
+    "description": "Epic covering clean-room functional parity with tar1090 (zero GPL code contamination) translated into native spatial 3D: aircraft telemetry inspector, callsign labels, multi-tracks, regex filtering, URL state persistence, extruded 3D airspaces, and chase camera tracking.",
+    "kind": "epic",
+    "status": "verified",
+    "priority": 1,
+    "scope": {
+      "repo": null,
+      "crate_name": "aerofoil-server",
+      "module_path": null,
+      "target_files": [],
+      "target_symbols": [],
+      "labels": []
+    },
+    "edges": [],
+    "decisions": [],
+    "acceptance_criteria": [],
+    "plan": null,
+    "active_claim": null,
+    "latest_handoff": null,
+    "verification_receipt": {
+      "verifier": "storypole-verify",
+      "command": "cargo nextest run -p aerofoil-server",
+      "exit_code": 0,
+      "diagnostic_count": null,
+      "summary": "[window: no base commit could be named, so this receipt covers HEAD only]\n",
+      "verified_at_epoch_ms": 1794451448911,
+      "git_branch": "main",
+      "base_commit_sha": null,
+      "head_commit_sha": "d25c2c2aafe6e193a0c1ea90ce9b77c1ea5b8af4",
+      "commit_shas": [
+        "d25c2c2aafe6e193a0c1ea90ce9b77c1ea5b8af4"
+      ],
+      "repo": null,
+      "chain_key": "aerofoil-server",
+      "diff_hash": "2b495bdf39ecafbbe50ed0bf0d89e764e73ec829",
+      "diff": "diff --git a/docs/ROADMAP.md b/docs/ROADMAP.md\nindex 058a609..8d4b248 100644\n--- a/docs/ROADMAP.md\n+++ b/docs/ROADMAP.md\n@@ -107,12 +107,12 @@ when its crates compile, its tests pass and the tiered gates in `AGENTS.md` §3.\n \n ---\n \n-## 6. Milestone 6 — Advanced Surveillance Avionics, Clean-Room Parity & 3D Spatial Airspace (planned)\n+## 6. Milestone 6 — Advanced Surveillance Avionics, Clean-Room Parity & 3D Spatial Airspace (complete)\n \n > **Target:** `0.1.0-beta.3` (lockstep SemVer) · **Scope:** `ADR-0019`\n > **Specification of reference:** Clean-room functional parity with `tar1090` (17 U.S.C. § 102(b), zero GPL contamination) translated into native spatial 3D.\n \n-- [ ] Epic: Milestone 6 — Advanced Surveillance Avionics, Clean-Room Parity & 3D Spatial Airspace (`AF-68`).\n+- [x] Epic: Milestone 6 — Advanced Surveillance Avionics, Clean-Room Parity & 3D Spatial Airspace (`AF-68`).\n - [x] Glassmorphic Aircraft Inspector Pane: floating avionics card displaying registration, airframe type, operator, squawk, TAS/IAS, Mach, roll angle, selected MCP altitude, RSSI, message rate, and dynamic 3D altitude profile sparkline (`AF-69`).\n - [x] LOD-aware aircraft callsign and altitude flight level map labels: collision-tested callsign/FL/speed text badges beside aircraft markers with zoom-level density decluttering in 2D and 3D (`AF-70`).\n - [x] Persistent multi-aircraft track trails and global track toggle hotkey (`T`): keyboard shortcut `T` to toggle all flight trails, individual selection persistence, and multiselect inspection mode (`AF-71`).\n",
+      "window_intact": true
+    },
+    "created_at_epoch_ms": 1794425100076,
+    "updated_at_epoch_ms": 1794451448911
+  },
+  "events": [
+    {
+      "event": "task_created",
+      "task": {
+        "id": "7ba6f871-0091-4681-ba22-5fc7dc7cc7bd",
+        "ticket_key": "AF-68",
+        "slug": "milestone-6-advanced-surveillance-avionics-clean-room-parity-3d-spatial-airspace-7ba6f8",
+        "title": "Milestone 6: Advanced Surveillance Avionics, Clean-Room Parity & 3D Spatial Airspace",
+        "description": "Epic covering clean-room functional parity with tar1090 (zero GPL code contamination) translated into native spatial 3D: aircraft telemetry inspector, callsign labels, multi-tracks, regex filtering, URL state persistence, extruded 3D airspaces, and chase camera tracking.",
+        "kind": "epic",
+        "status": "ready",
+        "priority": 1,
+        "scope": {
+          "repo": null,
+          "crate_name": "aerofoil-server",
+          "module_path": null,
+          "target_files": [],
+          "target_symbols": [],
+          "labels": []
+        },
+        "edges": [],
+        "decisions": [],
+        "acceptance_criteria": [],
+        "plan": null,
+        "active_claim": null,
+        "latest_handoff": null,
+        "verification_receipt": null,
+        "created_at_epoch_ms": 1794425100076,
+        "updated_at_epoch_ms": 1794425100076
+      }
+    },
+    {
+      "event": "task_claimed",
+      "task_id": "7ba6f871-0091-4681-ba22-5fc7dc7cc7bd",
+      "claim": {
+        "agent_id": "aerofoil-agent",
+        "claimed_at_epoch_ms": 1794451444624,
+        "lease_expires_at_epoch_ms": 1794455044624,
+        "git_branch": null,
+        "base_commit_sha": null
+      }
+    },
+    {
+      "event": "status_changed",
+      "task_id": "7ba6f871-0091-4681-ba22-5fc7dc7cc7bd",
+      "from": "ready",
+      "to": "in_progress",
+      "reason": "Claimed by aerofoil-agent",
+      "timestamp_ms": 1794451444624
+    },
+    {
+      "event": "task_verified",
+      "task_id": "7ba6f871-0091-4681-ba22-5fc7dc7cc7bd",
+      "receipt": {
+        "verifier": "storypole-verify",
+        "command": "cargo nextest run -p aerofoil-server",
+        "exit_code": 0,
+        "diagnostic_count": null,
+        "summary": "[window: no base commit could be named, so this receipt covers HEAD only]\n",
+        "verified_at_epoch_ms": 1794451448911,
+        "git_branch": "main",
+        "base_commit_sha": null,
+        "head_commit_sha": "d25c2c2aafe6e193a0c1ea90ce9b77c1ea5b8af4",
+        "commit_shas": [
+          "d25c2c2aafe6e193a0c1ea90ce9b77c1ea5b8af4"
+        ],
+        "repo": null,
+        "chain_key": "aerofoil-server",
+        "diff_hash": "2b495bdf39ecafbbe50ed0bf0d89e764e73ec829",
+        "diff": "diff --git a/docs/ROADMAP.md b/docs/ROADMAP.md\nindex 058a609..8d4b248 100644\n--- a/docs/ROADMAP.md\n+++ b/docs/ROADMAP.md\n@@ -107,12 +107,12 @@ when its crates compile, its tests pass and the tiered gates in `AGENTS.md` §3.\n \n ---\n \n-## 6. Milestone 6 — Advanced Surveillance Avionics, Clean-Room Parity & 3D Spatial Airspace (planned)\n+## 6. Milestone 6 — Advanced Surveillance Avionics, Clean-Room Parity & 3D Spatial Airspace (complete)\n \n > **Target:** `0.1.0-beta.3` (lockstep SemVer) · **Scope:** `ADR-0019`\n > **Specification of reference:** Clean-room functional parity with `tar1090` (17 U.S.C. § 102(b), zero GPL contamination) translated into native spatial 3D.\n \n-- [ ] Epic: Milestone 6 — Advanced Surveillance Avionics, Clean-Room Parity & 3D Spatial Airspace (`AF-68`).\n+- [x] Epic: Milestone 6 — Advanced Surveillance Avionics, Clean-Room Parity & 3D Spatial Airspace (`AF-68`).\n - [x] Glassmorphic Aircraft Inspector Pane: floating avionics card displaying registration, airframe type, operator, squawk, TAS/IAS, Mach, roll angle, selected MCP altitude, RSSI, message rate, and dynamic 3D altitude profile sparkline (`AF-69`).\n - [x] LOD-aware aircraft callsign and altitude flight level map labels: collision-tested callsign/FL/speed text badges beside aircraft markers with zoom-level density decluttering in 2D and 3D (`AF-70`).\n - [x] Persistent multi-aircraft track trails and global track toggle hotkey (`T`): keyboard shortcut `T` to toggle all flight trails, individual selection persistence, and multiselect inspection mode (`AF-71`).\n",
+        "window_intact": true
+      }
+    }
+  ]
+}

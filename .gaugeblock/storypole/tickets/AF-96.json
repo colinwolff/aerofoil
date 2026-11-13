@@ -1,0 +1,141 @@
+{
+  "ticket": {
+    "id": "6b8fcee5-48ee-4aec-9311-71b28befcb10",
+    "ticket_key": "AF-96",
+    "slug": "coalesced-batch-websocket-frames-keyed-telemetrytablerenderer-dom-updates-and-throttled-aircraftinspector-6b8fce",
+    "title": "Coalesced batch WebSocket frames, keyed TelemetryTableRenderer DOM updates, and throttled AircraftInspector",
+    "description": "",
+    "kind": "refactor",
+    "status": "verified",
+    "priority": 2,
+    "scope": {
+      "repo": null,
+      "crate_name": "aerofoil-server",
+      "module_path": null,
+      "target_files": [
+        "crates/server/src/ws.rs,apps/web/src/radar.ts,apps/web/src/components/TelemetryTableRenderer.ts,apps/web/src/components/AircraftInspector.ts"
+      ],
+      "target_symbols": [],
+      "labels": []
+    },
+    "edges": [
+      {
+        "kind": "parent_epic",
+        "target_id": "7ba6f871-0091-4681-ba22-5fc7dc7cc7bd",
+        "target_ticket_key": "AF-68"
+      }
+    ],
+    "decisions": [],
+    "acceptance_criteria": [
+      "Batch delta targets in ws.rs with rAF coalescing in frontend; keyed tr DOM updates in TelemetryTableRenderer; throttle AircraftInspector SVG updates"
+    ],
+    "plan": null,
+    "active_claim": null,
+    "latest_handoff": null,
+    "verification_receipt": {
+      "verifier": "storypole-verify",
+      "command": "cargo nextest run -p aerofoil-server",
+      "exit_code": 0,
+      "diagnostic_count": null,
+      "summary": "[window: no base commit could be named, so this receipt covers HEAD only]\n",
+      "verified_at_epoch_ms": 1794518816249,
+      "git_branch": "feat/af-96-batch-ws-keyed-dom",
+      "base_commit_sha": null,
+      "head_commit_sha": "9005e4545a37f14c01e1a33853567bc1083841a2",
+      "commit_shas": [
+        "9005e4545a37f14c01e1a33853567bc1083841a2"
+      ],
+      "repo": null,
+      "chain_key": "aerofoil-server",
+      "window_intact": true
+    },
+    "created_at_epoch_ms": 1794517797257,
+    "updated_at_epoch_ms": 1794518816249
+  },
+  "events": [
+    {
+      "event": "task_created",
+      "task": {
+        "id": "6b8fcee5-48ee-4aec-9311-71b28befcb10",
+        "ticket_key": "AF-96",
+        "slug": "coalesced-batch-websocket-frames-keyed-telemetrytablerenderer-dom-updates-and-throttled-aircraftinspector-6b8fce",
+        "title": "Coalesced batch WebSocket frames, keyed TelemetryTableRenderer DOM updates, and throttled AircraftInspector",
+        "description": "",
+        "kind": "refactor",
+        "status": "ready",
+        "priority": 2,
+        "scope": {
+          "repo": null,
+          "crate_name": "aerofoil-server",
+          "module_path": null,
+          "target_files": [
+            "crates/server/src/ws.rs,apps/web/src/radar.ts,apps/web/src/components/TelemetryTableRenderer.ts,apps/web/src/components/AircraftInspector.ts"
+          ],
+          "target_symbols": [],
+          "labels": []
+        },
+        "edges": [],
+        "decisions": [],
+        "acceptance_criteria": [
+          "Batch delta targets in ws.rs with rAF coalescing in frontend; keyed tr DOM updates in TelemetryTableRenderer; throttle AircraftInspector SVG updates"
+        ],
+        "plan": null,
+        "active_claim": null,
+        "latest_handoff": null,
+        "verification_receipt": null,
+        "created_at_epoch_ms": 1794517797257,
+        "updated_at_epoch_ms": 1794517797257
+      }
+    },
+    {
+      "event": "edge_added",
+      "task_id": "6b8fcee5-48ee-4aec-9311-71b28befcb10",
+      "edge": {
+        "kind": "parent_epic",
+        "target_id": "7ba6f871-0091-4681-ba22-5fc7dc7cc7bd",
+        "target_ticket_key": "AF-68"
+      },
+      "timestamp_ms": 1794517798941
+    },
+    {
+      "event": "task_claimed",
+      "task_id": "6b8fcee5-48ee-4aec-9311-71b28befcb10",
+      "claim": {
+        "agent_id": "antigravity",
+        "claimed_at_epoch_ms": 1794518634994,
+        "lease_expires_at_epoch_ms": 1794522234994,
+        "git_branch": "feat/af-96-batch-ws-keyed-dom",
+        "base_commit_sha": null
+      }
+    },
+    {
+      "event": "status_changed",
+      "task_id": "6b8fcee5-48ee-4aec-9311-71b28befcb10",
+      "from": "ready",
+      "to": "in_progress",
+      "reason": "Claimed by antigravity",
+      "timestamp_ms": 1794518634994
+    },
+    {
+      "event": "task_verified",
+      "task_id": "6b8fcee5-48ee-4aec-9311-71b28befcb10",
+      "receipt": {
+        "verifier": "storypole-verify",
+        "command": "cargo nextest run -p aerofoil-server",
+        "exit_code": 0,
+        "diagnostic_count": null,
+        "summary": "[window: no base commit could be named, so this receipt covers HEAD only]\n",
+        "verified_at_epoch_ms": 1794518816249,
+        "git_branch": "feat/af-96-batch-ws-keyed-dom",
+        "base_commit_sha": null,
+        "head_commit_sha": "9005e4545a37f14c01e1a33853567bc1083841a2",
+        "commit_shas": [
+          "9005e4545a37f14c01e1a33853567bc1083841a2"
+        ],
+        "repo": null,
+        "chain_key": "aerofoil-server",
+        "window_intact": true
+      }
+    }
+  ]
+}

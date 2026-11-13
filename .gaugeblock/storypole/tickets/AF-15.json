@@ -1,0 +1,203 @@
+{
+  "ticket": {
+    "id": "0bd9d9c3-33cc-412a-b447-7bc0805f0e5b",
+    "ticket_key": "AF-15",
+    "slug": "add-the-zero-allocation-proof-harness-with-a-counting-allocator-0bd9d9",
+    "title": "Add the zero-allocation proof harness with a counting allocator",
+    "description": "",
+    "kind": "feature",
+    "status": "verified",
+    "priority": 3,
+    "scope": {
+      "repo": "aerofoil",
+      "crate_name": "aerofoil-common",
+      "module_path": null,
+      "target_files": [
+        "crates/common/tests/alloc.rs"
+      ],
+      "target_symbols": [],
+      "labels": [
+        "m1,spec"
+      ]
+    },
+    "edges": [
+      {
+        "kind": "parent_epic",
+        "target_id": "fa37c8db-1bee-463e-8c0d-4f4746d5b8e8",
+        "target_ticket_key": "AF-5",
+        "target_repo": "aerofoil"
+      },
+      {
+        "kind": "blocked_by",
+        "target_id": "49319f0e-e542-4a08-ae40-a2fa807444b6",
+        "target_ticket_key": "AF-14",
+        "target_repo": "aerofoil"
+      },
+      {
+        "kind": "blocked_by",
+        "target_id": "62f81201-36c8-4203-b3fc-d010149d7445",
+        "target_ticket_key": "AF-7",
+        "target_repo": "aerofoil"
+      }
+    ],
+    "decisions": [],
+    "acceptance_criteria": [
+      "zero heap traffic per decoded frame across the 1090 and 978 paths (SPEC Invariant 1); runs in CI"
+    ],
+    "plan": null,
+    "active_claim": null,
+    "latest_handoff": null,
+    "verification_receipt": {
+      "verifier": "storypole-verify",
+      "command": "cargo nextest run -p aerofoil-common",
+      "exit_code": 0,
+      "diagnostic_count": null,
+      "summary": "[window: no base commit could be named, so this receipt covers HEAD only]\n",
+      "verified_at_epoch_ms": 1794270799786,
+      "git_branch": "main",
+      "base_commit_sha": null,
+      "head_commit_sha": "b3babd4e0284f5cfc7c25b391023014583ef3816",
+      "commit_shas": [
+        "b3babd4e0284f5cfc7c25b391023014583ef3816"
+      ],
+      "repo": "aerofoil",
+      "chain_key": "aerofoil-common"
+    },
+    "created_at_epoch_ms": 1793818874062,
+    "updated_at_epoch_ms": 1794270799786
+  },
+  "events": [
+    {
+      "event": "task_created",
+      "task": {
+        "id": "0bd9d9c3-33cc-412a-b447-7bc0805f0e5b",
+        "ticket_key": "AF-15",
+        "slug": "add-the-zero-allocation-proof-harness-with-a-counting-allocator-0bd9d9",
+        "title": "Add the zero-allocation proof harness with a counting allocator",
+        "description": "",
+        "kind": "feature",
+        "status": "ready",
+        "priority": 3,
+        "scope": {
+          "repo": "aerofoil",
+          "crate_name": "aerofoil-common",
+          "module_path": null,
+          "target_files": [
+            "crates/common/tests/alloc.rs"
+          ],
+          "target_symbols": [],
+          "labels": [
+            "m1,spec"
+          ]
+        },
+        "edges": [],
+        "decisions": [],
+        "acceptance_criteria": [
+          "zero heap traffic per decoded frame across the 1090 and 978 paths (SPEC Invariant 1); runs in CI"
+        ],
+        "plan": null,
+        "active_claim": null,
+        "latest_handoff": null,
+        "verification_receipt": null,
+        "created_at_epoch_ms": 1793818874062,
+        "updated_at_epoch_ms": 1793818874062
+      }
+    },
+    {
+      "event": "edge_added",
+      "task_id": "0bd9d9c3-33cc-412a-b447-7bc0805f0e5b",
+      "edge": {
+        "kind": "parent_epic",
+        "target_id": "fa37c8db-1bee-463e-8c0d-4f4746d5b8e8",
+        "target_ticket_key": "AF-5",
+        "target_repo": "aerofoil"
+      },
+      "timestamp_ms": 1793818894021
+    },
+    {
+      "event": "edge_added",
+      "task_id": "0bd9d9c3-33cc-412a-b447-7bc0805f0e5b",
+      "edge": {
+        "kind": "blocked_by",
+        "target_id": "49319f0e-e542-4a08-ae40-a2fa807444b6",
+        "target_ticket_key": "AF-14",
+        "target_repo": "aerofoil"
+      },
+      "timestamp_ms": 1793818902238
+    },
+    {
+      "event": "status_changed",
+      "task_id": "0bd9d9c3-33cc-412a-b447-7bc0805f0e5b",
+      "from": "ready",
+      "to": "blocked",
+      "reason": "Blocked by unverified task AF-14",
+      "timestamp_ms": 1793818902238
+    },
+    {
+      "event": "edge_added",
+      "task_id": "0bd9d9c3-33cc-412a-b447-7bc0805f0e5b",
+      "edge": {
+        "kind": "blocked_by",
+        "target_id": "62f81201-36c8-4203-b3fc-d010149d7445",
+        "target_ticket_key": "AF-7",
+        "target_repo": "aerofoil"
+      },
+      "timestamp_ms": 1793818902266
+    },
+    {
+      "event": "status_changed",
+      "task_id": "0bd9d9c3-33cc-412a-b447-7bc0805f0e5b",
+      "from": "blocked",
+      "to": "blocked",
+      "reason": "Blocked by unverified task AF-7",
+      "timestamp_ms": 1793818902266
+    },
+    {
+      "event": "status_changed",
+      "task_id": "0bd9d9c3-33cc-412a-b447-7bc0805f0e5b",
+      "from": "blocked",
+      "to": "ready",
+      "reason": "Dependency AF-14 verified",
+      "timestamp_ms": 1794269850402
+    },
+    {
+      "event": "task_claimed",
+      "task_id": "0bd9d9c3-33cc-412a-b447-7bc0805f0e5b",
+      "claim": {
+        "agent_id": "gemini",
+        "claimed_at_epoch_ms": 1794270643031,
+        "lease_expires_at_epoch_ms": 1794274243031,
+        "git_branch": "feat/af-15-zero-alloc-harness",
+        "base_commit_sha": null
+      }
+    },
+    {
+      "event": "status_changed",
+      "task_id": "0bd9d9c3-33cc-412a-b447-7bc0805f0e5b",
+      "from": "ready",
+      "to": "in_progress",
+      "reason": "Claimed by gemini",
+      "timestamp_ms": 1794270643031
+    },
+    {
+      "event": "task_verified",
+      "task_id": "0bd9d9c3-33cc-412a-b447-7bc0805f0e5b",
+      "receipt": {
+        "verifier": "storypole-verify",
+        "command": "cargo nextest run -p aerofoil-common",
+        "exit_code": 0,
+        "diagnostic_count": null,
+        "summary": "[window: no base commit could be named, so this receipt covers HEAD only]\n",
+        "verified_at_epoch_ms": 1794270799786,
+        "git_branch": "main",
+        "base_commit_sha": null,
+        "head_commit_sha": "b3babd4e0284f5cfc7c25b391023014583ef3816",
+        "commit_shas": [
+          "b3babd4e0284f5cfc7c25b391023014583ef3816"
+        ],
+        "repo": "aerofoil",
+        "chain_key": "aerofoil-common"
+      }
+    }
+  ]
+}

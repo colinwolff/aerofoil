@@ -1,0 +1,148 @@
+{
+  "ticket": {
+    "id": "51030a94-fb0f-496f-bec3-f2bc4aae4c98",
+    "ticket_key": "AF-16",
+    "slug": "m2-1090-mode-s-decoder-and-bounded-error-correction-51030a",
+    "title": "M2: 1090 Mode S decoder and bounded error correction",
+    "description": "DF0/4/5/11/17/18/20/21 parsing, table and CLMUL CRC-24, address-filtered single-bit correction, throughput baseline. Children added when M1 closes.",
+    "kind": "epic",
+    "status": "verified",
+    "priority": 3,
+    "scope": {
+      "repo": "aerofoil",
+      "crate_name": null,
+      "module_path": null,
+      "target_files": [],
+      "target_symbols": [],
+      "labels": [
+        "m2"
+      ]
+    },
+    "edges": [
+      {
+        "kind": "blocked_by",
+        "target_id": "fa37c8db-1bee-463e-8c0d-4f4746d5b8e8",
+        "target_ticket_key": "AF-5",
+        "target_repo": "aerofoil"
+      }
+    ],
+    "decisions": [],
+    "acceptance_criteria": [
+      "Children added on milestone entry; DF set parsed; throughput baseline committed"
+    ],
+    "plan": null,
+    "active_claim": null,
+    "latest_handoff": null,
+    "verification_receipt": {
+      "verifier": "storypole-verify",
+      "command": "cargo nextest run --workspace",
+      "exit_code": 0,
+      "diagnostic_count": null,
+      "summary": "[window: no base commit could be named, so this receipt covers HEAD only]\n",
+      "verified_at_epoch_ms": 1794288688665,
+      "git_branch": "main",
+      "base_commit_sha": null,
+      "head_commit_sha": "fa746d97f472fee274d3abb5a3952ce03123774c",
+      "commit_shas": [
+        "fa746d97f472fee274d3abb5a3952ce03123774c"
+      ],
+      "repo": "aerofoil",
+      "chain_key": "aerofoil"
+    },
+    "created_at_epoch_ms": 1793818881459,
+    "updated_at_epoch_ms": 1794288688665
+  },
+  "events": [
+    {
+      "event": "task_created",
+      "task": {
+        "id": "51030a94-fb0f-496f-bec3-f2bc4aae4c98",
+        "ticket_key": "AF-16",
+        "slug": "m2-1090-mode-s-decoder-and-bounded-error-correction-51030a",
+        "title": "M2: 1090 Mode S decoder and bounded error correction",
+        "description": "DF0/4/5/11/17/18/20/21 parsing, table and CLMUL CRC-24, address-filtered single-bit correction, throughput baseline. Children added when M1 closes.",
+        "kind": "epic",
+        "status": "ready",
+        "priority": 2,
+        "scope": {
+          "repo": "aerofoil",
+          "crate_name": null,
+          "module_path": null,
+          "target_files": [],
+          "target_symbols": [],
+          "labels": [
+            "m2"
+          ]
+        },
+        "edges": [],
+        "decisions": [],
+        "acceptance_criteria": [
+          "Children added on milestone entry; DF set parsed; throughput baseline committed"
+        ],
+        "plan": null,
+        "active_claim": null,
+        "latest_handoff": null,
+        "verification_receipt": null,
+        "created_at_epoch_ms": 1793818881459,
+        "updated_at_epoch_ms": 1793818881459
+      }
+    },
+    {
+      "event": "edge_added",
+      "task_id": "51030a94-fb0f-496f-bec3-f2bc4aae4c98",
+      "edge": {
+        "kind": "blocked_by",
+        "target_id": "fa37c8db-1bee-463e-8c0d-4f4746d5b8e8",
+        "target_ticket_key": "AF-5",
+        "target_repo": "aerofoil"
+      },
+      "timestamp_ms": 1793818902368
+    },
+    {
+      "event": "status_changed",
+      "task_id": "51030a94-fb0f-496f-bec3-f2bc4aae4c98",
+      "from": "ready",
+      "to": "blocked",
+      "reason": "Blocked by unverified task AF-5",
+      "timestamp_ms": 1793818902368
+    },
+    {
+      "event": "task_updated",
+      "task_id": "51030a94-fb0f-496f-bec3-f2bc4aae4c98",
+      "title": null,
+      "description": null,
+      "priority": 3,
+      "scope": null,
+      "acceptance_criteria": null,
+      "timestamp_ms": 1793818927179
+    },
+    {
+      "event": "status_changed",
+      "task_id": "51030a94-fb0f-496f-bec3-f2bc4aae4c98",
+      "from": "blocked",
+      "to": "ready",
+      "reason": "Dependency AF-5 verified",
+      "timestamp_ms": 1794271878681
+    },
+    {
+      "event": "task_verified",
+      "task_id": "51030a94-fb0f-496f-bec3-f2bc4aae4c98",
+      "receipt": {
+        "verifier": "storypole-verify",
+        "command": "cargo nextest run --workspace",
+        "exit_code": 0,
+        "diagnostic_count": null,
+        "summary": "[window: no base commit could be named, so this receipt covers HEAD only]\n",
+        "verified_at_epoch_ms": 1794288688665,
+        "git_branch": "main",
+        "base_commit_sha": null,
+        "head_commit_sha": "fa746d97f472fee274d3abb5a3952ce03123774c",
+        "commit_shas": [
+          "fa746d97f472fee274d3abb5a3952ce03123774c"
+        ],
+        "repo": "aerofoil",
+        "chain_key": "aerofoil"
+      }
+    }
+  ]
+}

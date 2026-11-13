@@ -1,0 +1,141 @@
+{
+  "ticket": {
+    "id": "454027a0-9dae-475f-80ff-f53c700d00d3",
+    "ticket_key": "AF-97",
+    "slug": "hide-redundant-2d-draped-vector-lines-in-3d-optimize-antennacoveragelayer-and-gzip-http-static-assets-454027",
+    "title": "Hide redundant 2D draped vector lines in 3D, optimize AntennaCoverageLayer, and gzip HTTP static assets",
+    "description": "",
+    "kind": "refactor",
+    "status": "verified",
+    "priority": 2,
+    "scope": {
+      "repo": null,
+      "crate_name": "aerofoil-server",
+      "module_path": null,
+      "target_files": [
+        "apps/web/src/layers/MapLibreVectorManager.ts,apps/web/src/layers/AntennaCoverageLayer.ts,crates/server/src/web.rs"
+      ],
+      "target_symbols": [],
+      "labels": []
+    },
+    "edges": [
+      {
+        "kind": "parent_epic",
+        "target_id": "7ba6f871-0091-4681-ba22-5fc7dc7cc7bd",
+        "target_ticket_key": "AF-68"
+      }
+    ],
+    "decisions": [],
+    "acceptance_criteria": [
+      "Suppress 2D draped vector-lyr-* when 3D volumes exist; update AntennaCoverageLayer contour in-place at >= 2000ms; gzip HTTP static assets in web.rs"
+    ],
+    "plan": null,
+    "active_claim": null,
+    "latest_handoff": null,
+    "verification_receipt": {
+      "verifier": "storypole-verify",
+      "command": "cargo nextest run -p aerofoil-server",
+      "exit_code": 0,
+      "diagnostic_count": null,
+      "summary": "[window: no base commit could be named, so this receipt covers HEAD only]\n",
+      "verified_at_epoch_ms": 1794520099665,
+      "git_branch": "feat/af-97-overlays-gzip",
+      "base_commit_sha": null,
+      "head_commit_sha": "b2fe1e6f2ac7c9a5445366028eb5fff7560f1c82",
+      "commit_shas": [
+        "b2fe1e6f2ac7c9a5445366028eb5fff7560f1c82"
+      ],
+      "repo": null,
+      "chain_key": "aerofoil-server",
+      "window_intact": true
+    },
+    "created_at_epoch_ms": 1794517797557,
+    "updated_at_epoch_ms": 1794520099665
+  },
+  "events": [
+    {
+      "event": "task_created",
+      "task": {
+        "id": "454027a0-9dae-475f-80ff-f53c700d00d3",
+        "ticket_key": "AF-97",
+        "slug": "hide-redundant-2d-draped-vector-lines-in-3d-optimize-antennacoveragelayer-and-gzip-http-static-assets-454027",
+        "title": "Hide redundant 2D draped vector lines in 3D, optimize AntennaCoverageLayer, and gzip HTTP static assets",
+        "description": "",
+        "kind": "refactor",
+        "status": "ready",
+        "priority": 2,
+        "scope": {
+          "repo": null,
+          "crate_name": "aerofoil-server",
+          "module_path": null,
+          "target_files": [
+            "apps/web/src/layers/MapLibreVectorManager.ts,apps/web/src/layers/AntennaCoverageLayer.ts,crates/server/src/web.rs"
+          ],
+          "target_symbols": [],
+          "labels": []
+        },
+        "edges": [],
+        "decisions": [],
+        "acceptance_criteria": [
+          "Suppress 2D draped vector-lyr-* when 3D volumes exist; update AntennaCoverageLayer contour in-place at >= 2000ms; gzip HTTP static assets in web.rs"
+        ],
+        "plan": null,
+        "active_claim": null,
+        "latest_handoff": null,
+        "verification_receipt": null,
+        "created_at_epoch_ms": 1794517797557,
+        "updated_at_epoch_ms": 1794517797557
+      }
+    },
+    {
+      "event": "edge_added",
+      "task_id": "454027a0-9dae-475f-80ff-f53c700d00d3",
+      "edge": {
+        "kind": "parent_epic",
+        "target_id": "7ba6f871-0091-4681-ba22-5fc7dc7cc7bd",
+        "target_ticket_key": "AF-68"
+      },
+      "timestamp_ms": 1794517799092
+    },
+    {
+      "event": "task_claimed",
+      "task_id": "454027a0-9dae-475f-80ff-f53c700d00d3",
+      "claim": {
+        "agent_id": "antigravity",
+        "claimed_at_epoch_ms": 1794518864070,
+        "lease_expires_at_epoch_ms": 1794522464070,
+        "git_branch": "feat/af-97-overlays-gzip",
+        "base_commit_sha": null
+      }
+    },
+    {
+      "event": "status_changed",
+      "task_id": "454027a0-9dae-475f-80ff-f53c700d00d3",
+      "from": "ready",
+      "to": "in_progress",
+      "reason": "Claimed by antigravity",
+      "timestamp_ms": 1794518864070
+    },
+    {
+      "event": "task_verified",
+      "task_id": "454027a0-9dae-475f-80ff-f53c700d00d3",
+      "receipt": {
+        "verifier": "storypole-verify",
+        "command": "cargo nextest run -p aerofoil-server",
+        "exit_code": 0,
+        "diagnostic_count": null,
+        "summary": "[window: no base commit could be named, so this receipt covers HEAD only]\n",
+        "verified_at_epoch_ms": 1794520099665,
+        "git_branch": "feat/af-97-overlays-gzip",
+        "base_commit_sha": null,
+        "head_commit_sha": "b2fe1e6f2ac7c9a5445366028eb5fff7560f1c82",
+        "commit_shas": [
+          "b2fe1e6f2ac7c9a5445366028eb5fff7560f1c82"
+        ],
+        "repo": null,
+        "chain_key": "aerofoil-server",
+        "window_intact": true
+      }
+    }
+  ]
+}

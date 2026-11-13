@@ -1,0 +1,178 @@
+{
+  "ticket": {
+    "id": "49319f0e-e542-4a08-ae40-a2fa807444b6",
+    "ticket_key": "AF-14",
+    "slug": "implement-uat-downlink-sv-and-ms-bitfield-parsing-49319f",
+    "title": "Implement UAT downlink SV and MS bitfield parsing",
+    "description": "",
+    "kind": "feature",
+    "status": "verified",
+    "priority": 3,
+    "scope": {
+      "repo": "aerofoil",
+      "crate_name": "aerofoil-978",
+      "module_path": null,
+      "target_files": [
+        "crates/978/src/downlink.rs"
+      ],
+      "target_symbols": [],
+      "labels": [
+        "m1,978"
+      ]
+    },
+    "edges": [
+      {
+        "kind": "parent_epic",
+        "target_id": "fa37c8db-1bee-463e-8c0d-4f4746d5b8e8",
+        "target_ticket_key": "AF-5",
+        "target_repo": "aerofoil"
+      },
+      {
+        "kind": "blocked_by",
+        "target_id": "5c6a3e64-52b1-405c-98a9-475e1df3e2cf",
+        "target_ticket_key": "AF-13",
+        "target_repo": "aerofoil"
+      }
+    ],
+    "decisions": [],
+    "acceptance_criteria": [
+      "DO-282B Appendix vectors; total accessors returning Option on wrong length; no placeholder values"
+    ],
+    "plan": null,
+    "active_claim": null,
+    "latest_handoff": null,
+    "verification_receipt": {
+      "verifier": "storypole-verify",
+      "command": "cargo nextest run -p aerofoil-978",
+      "exit_code": 0,
+      "diagnostic_count": null,
+      "summary": "[window: no base commit could be named, so this receipt covers HEAD only]\n",
+      "verified_at_epoch_ms": 1794269850402,
+      "git_branch": "main",
+      "base_commit_sha": null,
+      "head_commit_sha": "9c82e99c9756ad4598607a94995feee77dab9466",
+      "commit_shas": [
+        "9c82e99c9756ad4598607a94995feee77dab9466"
+      ],
+      "repo": "aerofoil",
+      "chain_key": "aerofoil-978"
+    },
+    "created_at_epoch_ms": 1793818874024,
+    "updated_at_epoch_ms": 1794269850402
+  },
+  "events": [
+    {
+      "event": "task_created",
+      "task": {
+        "id": "49319f0e-e542-4a08-ae40-a2fa807444b6",
+        "ticket_key": "AF-14",
+        "slug": "implement-uat-downlink-sv-and-ms-bitfield-parsing-49319f",
+        "title": "Implement UAT downlink SV and MS bitfield parsing",
+        "description": "",
+        "kind": "feature",
+        "status": "ready",
+        "priority": 3,
+        "scope": {
+          "repo": "aerofoil",
+          "crate_name": "aerofoil-978",
+          "module_path": null,
+          "target_files": [
+            "crates/978/src/downlink.rs"
+          ],
+          "target_symbols": [],
+          "labels": [
+            "m1,978"
+          ]
+        },
+        "edges": [],
+        "decisions": [],
+        "acceptance_criteria": [
+          "DO-282B Appendix vectors; total accessors returning Option on wrong length; no placeholder values"
+        ],
+        "plan": null,
+        "active_claim": null,
+        "latest_handoff": null,
+        "verification_receipt": null,
+        "created_at_epoch_ms": 1793818874024,
+        "updated_at_epoch_ms": 1793818874024
+      }
+    },
+    {
+      "event": "edge_added",
+      "task_id": "49319f0e-e542-4a08-ae40-a2fa807444b6",
+      "edge": {
+        "kind": "parent_epic",
+        "target_id": "fa37c8db-1bee-463e-8c0d-4f4746d5b8e8",
+        "target_ticket_key": "AF-5",
+        "target_repo": "aerofoil"
+      },
+      "timestamp_ms": 1793818893990
+    },
+    {
+      "event": "edge_added",
+      "task_id": "49319f0e-e542-4a08-ae40-a2fa807444b6",
+      "edge": {
+        "kind": "blocked_by",
+        "target_id": "5c6a3e64-52b1-405c-98a9-475e1df3e2cf",
+        "target_ticket_key": "AF-13",
+        "target_repo": "aerofoil"
+      },
+      "timestamp_ms": 1793818902209
+    },
+    {
+      "event": "status_changed",
+      "task_id": "49319f0e-e542-4a08-ae40-a2fa807444b6",
+      "from": "ready",
+      "to": "blocked",
+      "reason": "Blocked by unverified task AF-13",
+      "timestamp_ms": 1793818902209
+    },
+    {
+      "event": "status_changed",
+      "task_id": "49319f0e-e542-4a08-ae40-a2fa807444b6",
+      "from": "blocked",
+      "to": "ready",
+      "reason": "Dependency AF-13 verified",
+      "timestamp_ms": 1794268299535
+    },
+    {
+      "event": "task_claimed",
+      "task_id": "49319f0e-e542-4a08-ae40-a2fa807444b6",
+      "claim": {
+        "agent_id": "gemini",
+        "claimed_at_epoch_ms": 1794268423721,
+        "lease_expires_at_epoch_ms": 1794272023721,
+        "git_branch": "feat/af-14-uat-downlink",
+        "base_commit_sha": null
+      }
+    },
+    {
+      "event": "status_changed",
+      "task_id": "49319f0e-e542-4a08-ae40-a2fa807444b6",
+      "from": "ready",
+      "to": "in_progress",
+      "reason": "Claimed by gemini",
+      "timestamp_ms": 1794268423721
+    },
+    {
+      "event": "task_verified",
+      "task_id": "49319f0e-e542-4a08-ae40-a2fa807444b6",
+      "receipt": {
+        "verifier": "storypole-verify",
+        "command": "cargo nextest run -p aerofoil-978",
+        "exit_code": 0,
+        "diagnostic_count": null,
+        "summary": "[window: no base commit could be named, so this receipt covers HEAD only]\n",
+        "verified_at_epoch_ms": 1794269850402,
+        "git_branch": "main",
+        "base_commit_sha": null,
+        "head_commit_sha": "9c82e99c9756ad4598607a94995feee77dab9466",
+        "commit_shas": [
+          "9c82e99c9756ad4598607a94995feee77dab9466"
+        ],
+        "repo": "aerofoil",
+        "chain_key": "aerofoil-978"
+      }
+    }
+  ]
+}

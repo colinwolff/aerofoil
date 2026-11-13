@@ -1,0 +1,172 @@
+{
+  "ticket": {
+    "id": "8cfdbfd0-51e6-47b0-b022-525970e6aa5c",
+    "ticket_key": "AF-43",
+    "slug": "implement-dual-mode-beast-tcp-and-websocket-streaming-in-aerofoil-tui-8cfdbf",
+    "title": "Implement dual-mode Beast TCP and WebSocket streaming in aerofoil-tui",
+    "description": "",
+    "kind": "feature",
+    "status": "verified",
+    "priority": 2,
+    "scope": {
+      "repo": null,
+      "crate_name": "aerofoil-tui",
+      "module_path": null,
+      "target_files": [],
+      "target_symbols": [],
+      "labels": [
+        "tui,apps"
+      ]
+    },
+    "edges": [
+      {
+        "kind": "parent_epic",
+        "target_id": "25360f73-c106-4f6a-91ff-7236b0079db3",
+        "target_ticket_key": "AF-18",
+        "target_repo": "aerofoil"
+      },
+      {
+        "kind": "blocked_by",
+        "target_id": "d2106496-1271-4d1a-9d27-3d78cad382a8",
+        "target_ticket_key": "AF-42"
+      }
+    ],
+    "decisions": [],
+    "acceptance_criteria": [
+      "aerofoil-tui connects directly to Beast streams on 30005/30978 by default and connects to aerofoil-server via --ws <url>"
+    ],
+    "plan": null,
+    "active_claim": null,
+    "latest_handoff": null,
+    "verification_receipt": {
+      "verifier": "storypole-verify",
+      "command": "cargo nextest run -p aerofoil-tui",
+      "exit_code": 0,
+      "diagnostic_count": null,
+      "summary": "[window: no base commit could be named, so this receipt covers HEAD only]\n",
+      "verified_at_epoch_ms": 1794335095364,
+      "git_branch": "main",
+      "base_commit_sha": null,
+      "head_commit_sha": "7969637ac13c00943801d212e8588c7984c07e31",
+      "commit_shas": [
+        "7969637ac13c00943801d212e8588c7984c07e31"
+      ],
+      "repo": null,
+      "chain_key": "aerofoil-tui"
+    },
+    "created_at_epoch_ms": 1794332544406,
+    "updated_at_epoch_ms": 1794335095364
+  },
+  "events": [
+    {
+      "event": "task_created",
+      "task": {
+        "id": "8cfdbfd0-51e6-47b0-b022-525970e6aa5c",
+        "ticket_key": "AF-43",
+        "slug": "implement-dual-mode-beast-tcp-and-websocket-streaming-in-aerofoil-tui-8cfdbf",
+        "title": "Implement dual-mode Beast TCP and WebSocket streaming in aerofoil-tui",
+        "description": "",
+        "kind": "feature",
+        "status": "ready",
+        "priority": 2,
+        "scope": {
+          "repo": null,
+          "crate_name": "aerofoil-tui",
+          "module_path": null,
+          "target_files": [],
+          "target_symbols": [],
+          "labels": [
+            "tui,apps"
+          ]
+        },
+        "edges": [],
+        "decisions": [],
+        "acceptance_criteria": [
+          "aerofoil-tui connects directly to Beast streams on 30005/30978 by default and connects to aerofoil-server via --ws <url>"
+        ],
+        "plan": null,
+        "active_claim": null,
+        "latest_handoff": null,
+        "verification_receipt": null,
+        "created_at_epoch_ms": 1794332544406,
+        "updated_at_epoch_ms": 1794332544406
+      }
+    },
+    {
+      "event": "edge_added",
+      "task_id": "8cfdbfd0-51e6-47b0-b022-525970e6aa5c",
+      "edge": {
+        "kind": "parent_epic",
+        "target_id": "25360f73-c106-4f6a-91ff-7236b0079db3",
+        "target_ticket_key": "AF-18",
+        "target_repo": "aerofoil"
+      },
+      "timestamp_ms": 1794332606372
+    },
+    {
+      "event": "edge_added",
+      "task_id": "8cfdbfd0-51e6-47b0-b022-525970e6aa5c",
+      "edge": {
+        "kind": "blocked_by",
+        "target_id": "d2106496-1271-4d1a-9d27-3d78cad382a8",
+        "target_ticket_key": "AF-42"
+      },
+      "timestamp_ms": 1794332614712
+    },
+    {
+      "event": "status_changed",
+      "task_id": "8cfdbfd0-51e6-47b0-b022-525970e6aa5c",
+      "from": "ready",
+      "to": "blocked",
+      "reason": "Blocked by unverified task AF-42",
+      "timestamp_ms": 1794332614712
+    },
+    {
+      "event": "status_changed",
+      "task_id": "8cfdbfd0-51e6-47b0-b022-525970e6aa5c",
+      "from": "blocked",
+      "to": "ready",
+      "reason": "Dependency AF-42 verified",
+      "timestamp_ms": 1794334573656
+    },
+    {
+      "event": "task_claimed",
+      "task_id": "8cfdbfd0-51e6-47b0-b022-525970e6aa5c",
+      "claim": {
+        "agent_id": "antigravity",
+        "claimed_at_epoch_ms": 1794334606524,
+        "lease_expires_at_epoch_ms": 1794338206524,
+        "git_branch": "feat/af-43-tui-dual-mode",
+        "base_commit_sha": null
+      }
+    },
+    {
+      "event": "status_changed",
+      "task_id": "8cfdbfd0-51e6-47b0-b022-525970e6aa5c",
+      "from": "ready",
+      "to": "in_progress",
+      "reason": "Claimed by antigravity",
+      "timestamp_ms": 1794334606524
+    },
+    {
+      "event": "task_verified",
+      "task_id": "8cfdbfd0-51e6-47b0-b022-525970e6aa5c",
+      "receipt": {
+        "verifier": "storypole-verify",
+        "command": "cargo nextest run -p aerofoil-tui",
+        "exit_code": 0,
+        "diagnostic_count": null,
+        "summary": "[window: no base commit could be named, so this receipt covers HEAD only]\n",
+        "verified_at_epoch_ms": 1794335095364,
+        "git_branch": "main",
+        "base_commit_sha": null,
+        "head_commit_sha": "7969637ac13c00943801d212e8588c7984c07e31",
+        "commit_shas": [
+          "7969637ac13c00943801d212e8588c7984c07e31"
+        ],
+        "repo": null,
+        "chain_key": "aerofoil-tui"
+      }
+    }
+  ]
+}

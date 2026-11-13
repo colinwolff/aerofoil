@@ -1,0 +1,178 @@
+{
+  "ticket": {
+    "id": "5d30f8be-8968-4f04-81a4-0f20e78fab15",
+    "ticket_key": "AF-12",
+    "slug": "implement-the-rs-48-34-decoder-syndromes-berlekamp-massey-chien-and-forney-5d30f8",
+    "title": "Implement the RS(48,34) decoder: syndromes, Berlekamp-Massey, Chien and Forney",
+    "description": "",
+    "kind": "feature",
+    "status": "verified",
+    "priority": 1,
+    "scope": {
+      "repo": "aerofoil",
+      "crate_name": "aerofoil-978",
+      "module_path": null,
+      "target_files": [
+        "crates/978/src/rs.rs"
+      ],
+      "target_symbols": [],
+      "labels": [
+        "m1,978"
+      ]
+    },
+    "edges": [
+      {
+        "kind": "parent_epic",
+        "target_id": "fa37c8db-1bee-463e-8c0d-4f4746d5b8e8",
+        "target_ticket_key": "AF-5",
+        "target_repo": "aerofoil"
+      },
+      {
+        "kind": "blocked_by",
+        "target_id": "a8c99c71-b6c1-4d09-aee7-017728ade18a",
+        "target_ticket_key": "AF-11",
+        "target_repo": "aerofoil"
+      }
+    ],
+    "decisions": [],
+    "acceptance_criteria": [
+      "corrects up to t=7 byte errors; rejects t+1; zero allocations (SPEC Invariant 7); DO-282B Appendix vectors pass"
+    ],
+    "plan": null,
+    "active_claim": null,
+    "latest_handoff": null,
+    "verification_receipt": {
+      "verifier": "storypole-verify",
+      "command": "cargo nextest run -p aerofoil-978",
+      "exit_code": 0,
+      "diagnostic_count": null,
+      "summary": "[window: no base commit could be named, so this receipt covers HEAD only]\n",
+      "verified_at_epoch_ms": 1794267422816,
+      "git_branch": "main",
+      "base_commit_sha": null,
+      "head_commit_sha": "6008e9c7daf38b503858b00efad656b6484ae90a",
+      "commit_shas": [
+        "6008e9c7daf38b503858b00efad656b6484ae90a"
+      ],
+      "repo": "aerofoil",
+      "chain_key": "aerofoil-978"
+    },
+    "created_at_epoch_ms": 1793818873974,
+    "updated_at_epoch_ms": 1794267422816
+  },
+  "events": [
+    {
+      "event": "task_created",
+      "task": {
+        "id": "5d30f8be-8968-4f04-81a4-0f20e78fab15",
+        "ticket_key": "AF-12",
+        "slug": "implement-the-rs-48-34-decoder-syndromes-berlekamp-massey-chien-and-forney-5d30f8",
+        "title": "Implement the RS(48,34) decoder: syndromes, Berlekamp-Massey, Chien and Forney",
+        "description": "",
+        "kind": "feature",
+        "status": "ready",
+        "priority": 1,
+        "scope": {
+          "repo": "aerofoil",
+          "crate_name": "aerofoil-978",
+          "module_path": null,
+          "target_files": [
+            "crates/978/src/rs.rs"
+          ],
+          "target_symbols": [],
+          "labels": [
+            "m1,978"
+          ]
+        },
+        "edges": [],
+        "decisions": [],
+        "acceptance_criteria": [
+          "corrects up to t=7 byte errors; rejects t+1; zero allocations (SPEC Invariant 7); DO-282B Appendix vectors pass"
+        ],
+        "plan": null,
+        "active_claim": null,
+        "latest_handoff": null,
+        "verification_receipt": null,
+        "created_at_epoch_ms": 1793818873974,
+        "updated_at_epoch_ms": 1793818873974
+      }
+    },
+    {
+      "event": "edge_added",
+      "task_id": "5d30f8be-8968-4f04-81a4-0f20e78fab15",
+      "edge": {
+        "kind": "parent_epic",
+        "target_id": "fa37c8db-1bee-463e-8c0d-4f4746d5b8e8",
+        "target_ticket_key": "AF-5",
+        "target_repo": "aerofoil"
+      },
+      "timestamp_ms": 1793818893938
+    },
+    {
+      "event": "edge_added",
+      "task_id": "5d30f8be-8968-4f04-81a4-0f20e78fab15",
+      "edge": {
+        "kind": "blocked_by",
+        "target_id": "a8c99c71-b6c1-4d09-aee7-017728ade18a",
+        "target_ticket_key": "AF-11",
+        "target_repo": "aerofoil"
+      },
+      "timestamp_ms": 1793818902139
+    },
+    {
+      "event": "status_changed",
+      "task_id": "5d30f8be-8968-4f04-81a4-0f20e78fab15",
+      "from": "ready",
+      "to": "blocked",
+      "reason": "Blocked by unverified task AF-11",
+      "timestamp_ms": 1793818902139
+    },
+    {
+      "event": "status_changed",
+      "task_id": "5d30f8be-8968-4f04-81a4-0f20e78fab15",
+      "from": "blocked",
+      "to": "ready",
+      "reason": "Dependency AF-11 verified",
+      "timestamp_ms": 1794266311477
+    },
+    {
+      "event": "task_claimed",
+      "task_id": "5d30f8be-8968-4f04-81a4-0f20e78fab15",
+      "claim": {
+        "agent_id": "gemini",
+        "claimed_at_epoch_ms": 1794266635508,
+        "lease_expires_at_epoch_ms": 1794270235508,
+        "git_branch": "feat/af-12-rs4834",
+        "base_commit_sha": null
+      }
+    },
+    {
+      "event": "status_changed",
+      "task_id": "5d30f8be-8968-4f04-81a4-0f20e78fab15",
+      "from": "ready",
+      "to": "in_progress",
+      "reason": "Claimed by gemini",
+      "timestamp_ms": 1794266635508
+    },
+    {
+      "event": "task_verified",
+      "task_id": "5d30f8be-8968-4f04-81a4-0f20e78fab15",
+      "receipt": {
+        "verifier": "storypole-verify",
+        "command": "cargo nextest run -p aerofoil-978",
+        "exit_code": 0,
+        "diagnostic_count": null,
+        "summary": "[window: no base commit could be named, so this receipt covers HEAD only]\n",
+        "verified_at_epoch_ms": 1794267422816,
+        "git_branch": "main",
+        "base_commit_sha": null,
+        "head_commit_sha": "6008e9c7daf38b503858b00efad656b6484ae90a",
+        "commit_shas": [
+          "6008e9c7daf38b503858b00efad656b6484ae90a"
+        ],
+        "repo": "aerofoil",
+        "chain_key": "aerofoil-978"
+      }
+    }
+  ]
+}

@@ -1,0 +1,178 @@
+{
+  "ticket": {
+    "id": "62f81201-36c8-4203-b3fc-d010149d7445",
+    "ticket_key": "AF-7",
+    "slug": "implement-fixed-point-coordinate-and-unit-primitives-62f812",
+    "title": "Implement fixed-point coordinate and unit primitives",
+    "description": "",
+    "kind": "feature",
+    "status": "verified",
+    "priority": 2,
+    "scope": {
+      "repo": "aerofoil",
+      "crate_name": "aerofoil-common",
+      "module_path": null,
+      "target_files": [
+        "crates/common/src/units.rs"
+      ],
+      "target_symbols": [],
+      "labels": [
+        "m1,common"
+      ]
+    },
+    "edges": [
+      {
+        "kind": "parent_epic",
+        "target_id": "fa37c8db-1bee-463e-8c0d-4f4746d5b8e8",
+        "target_ticket_key": "AF-5",
+        "target_repo": "aerofoil"
+      },
+      {
+        "kind": "blocked_by",
+        "target_id": "92ff213a-0076-4c63-ae8f-e30923f9d75d",
+        "target_ticket_key": "AF-6",
+        "target_repo": "aerofoil"
+      }
+    ],
+    "decisions": [],
+    "acceptance_criteria": [
+      "micro-degree position type; no float is the stored form of a position (SPEC Invariant 9); unit conversions exhaustively tested"
+    ],
+    "plan": null,
+    "active_claim": null,
+    "latest_handoff": null,
+    "verification_receipt": {
+      "verifier": "storypole-verify",
+      "command": "cargo nextest run -p aerofoil-common",
+      "exit_code": 0,
+      "diagnostic_count": null,
+      "summary": "[window: no base commit could be named, so this receipt covers HEAD only]\n",
+      "verified_at_epoch_ms": 1794265190211,
+      "git_branch": "main",
+      "base_commit_sha": null,
+      "head_commit_sha": "9d2cc19dc53362df6e77611f46412966818b13d2",
+      "commit_shas": [
+        "9d2cc19dc53362df6e77611f46412966818b13d2"
+      ],
+      "repo": "aerofoil",
+      "chain_key": "aerofoil-common"
+    },
+    "created_at_epoch_ms": 1793818857831,
+    "updated_at_epoch_ms": 1794265190211
+  },
+  "events": [
+    {
+      "event": "task_created",
+      "task": {
+        "id": "62f81201-36c8-4203-b3fc-d010149d7445",
+        "ticket_key": "AF-7",
+        "slug": "implement-fixed-point-coordinate-and-unit-primitives-62f812",
+        "title": "Implement fixed-point coordinate and unit primitives",
+        "description": "",
+        "kind": "feature",
+        "status": "ready",
+        "priority": 2,
+        "scope": {
+          "repo": "aerofoil",
+          "crate_name": "aerofoil-common",
+          "module_path": null,
+          "target_files": [
+            "crates/common/src/units.rs"
+          ],
+          "target_symbols": [],
+          "labels": [
+            "m1,common"
+          ]
+        },
+        "edges": [],
+        "decisions": [],
+        "acceptance_criteria": [
+          "micro-degree position type; no float is the stored form of a position (SPEC Invariant 9); unit conversions exhaustively tested"
+        ],
+        "plan": null,
+        "active_claim": null,
+        "latest_handoff": null,
+        "verification_receipt": null,
+        "created_at_epoch_ms": 1793818857831,
+        "updated_at_epoch_ms": 1793818857831
+      }
+    },
+    {
+      "event": "edge_added",
+      "task_id": "62f81201-36c8-4203-b3fc-d010149d7445",
+      "edge": {
+        "kind": "parent_epic",
+        "target_id": "fa37c8db-1bee-463e-8c0d-4f4746d5b8e8",
+        "target_ticket_key": "AF-5",
+        "target_repo": "aerofoil"
+      },
+      "timestamp_ms": 1793818893752
+    },
+    {
+      "event": "edge_added",
+      "task_id": "62f81201-36c8-4203-b3fc-d010149d7445",
+      "edge": {
+        "kind": "blocked_by",
+        "target_id": "92ff213a-0076-4c63-ae8f-e30923f9d75d",
+        "target_ticket_key": "AF-6",
+        "target_repo": "aerofoil"
+      },
+      "timestamp_ms": 1793818901833
+    },
+    {
+      "event": "status_changed",
+      "task_id": "62f81201-36c8-4203-b3fc-d010149d7445",
+      "from": "ready",
+      "to": "blocked",
+      "reason": "Blocked by unverified task AF-6",
+      "timestamp_ms": 1793818901833
+    },
+    {
+      "event": "status_changed",
+      "task_id": "62f81201-36c8-4203-b3fc-d010149d7445",
+      "from": "blocked",
+      "to": "ready",
+      "reason": "Dependency AF-6 verified",
+      "timestamp_ms": 1793820031588
+    },
+    {
+      "event": "task_claimed",
+      "task_id": "62f81201-36c8-4203-b3fc-d010149d7445",
+      "claim": {
+        "agent_id": "gemini",
+        "claimed_at_epoch_ms": 1794264988172,
+        "lease_expires_at_epoch_ms": 1794268588172,
+        "git_branch": "feat/af-7-coordinates",
+        "base_commit_sha": null
+      }
+    },
+    {
+      "event": "status_changed",
+      "task_id": "62f81201-36c8-4203-b3fc-d010149d7445",
+      "from": "ready",
+      "to": "in_progress",
+      "reason": "Claimed by gemini",
+      "timestamp_ms": 1794264988172
+    },
+    {
+      "event": "task_verified",
+      "task_id": "62f81201-36c8-4203-b3fc-d010149d7445",
+      "receipt": {
+        "verifier": "storypole-verify",
+        "command": "cargo nextest run -p aerofoil-common",
+        "exit_code": 0,
+        "diagnostic_count": null,
+        "summary": "[window: no base commit could be named, so this receipt covers HEAD only]\n",
+        "verified_at_epoch_ms": 1794265190211,
+        "git_branch": "main",
+        "base_commit_sha": null,
+        "head_commit_sha": "9d2cc19dc53362df6e77611f46412966818b13d2",
+        "commit_shas": [
+          "9d2cc19dc53362df6e77611f46412966818b13d2"
+        ],
+        "repo": "aerofoil",
+        "chain_key": "aerofoil-common"
+      }
+    }
+  ]
+}

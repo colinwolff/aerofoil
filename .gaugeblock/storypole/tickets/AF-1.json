@@ -1,0 +1,114 @@
+{
+  "ticket": {
+    "id": "ac426770-b084-4d9d-a560-aa5090e7311c",
+    "ticket_key": "AF-1",
+    "slug": "close-out-m0-buildable-gated-workspace-ac4267",
+    "title": "Close out M0: buildable, gated workspace",
+    "description": "Manifest, CI and verification wiring that turn the tiered gates from discipline into enforcement.",
+    "kind": "epic",
+    "status": "verified",
+    "priority": 3,
+    "scope": {
+      "repo": "aerofoil",
+      "crate_name": null,
+      "module_path": null,
+      "target_files": [],
+      "target_symbols": [],
+      "labels": [
+        "m0"
+      ]
+    },
+    "edges": [],
+    "decisions": [],
+    "acceptance_criteria": [
+      "All children verified; cargo check --workspace --all-targets clean; chalkline docs check green"
+    ],
+    "plan": null,
+    "active_claim": null,
+    "latest_handoff": null,
+    "verification_receipt": {
+      "verifier": "manual",
+      "command": "n/a",
+      "exit_code": 0,
+      "diagnostic_count": null,
+      "summary": "All three children verified: AF-2 manifest, AF-3 CI, AF-4 verification_commands. cargo check --workspace clean, chalkline docs check 9 present / 0 missing / 0 drifted, miter audit passes.",
+      "verified_at_epoch_ms": 1793820906619,
+      "git_branch": "main",
+      "base_commit_sha": "369a03522dab193dd7942f0d962a67d366911480",
+      "head_commit_sha": "369a03522dab193dd7942f0d962a67d366911480",
+      "commit_shas": [
+        "369a03522dab193dd7942f0d962a67d366911480"
+      ],
+      "repo": null,
+      "chain_key": null
+    },
+    "created_at_epoch_ms": 1793818849388,
+    "updated_at_epoch_ms": 1793820906619
+  },
+  "events": [
+    {
+      "event": "task_created",
+      "task": {
+        "id": "ac426770-b084-4d9d-a560-aa5090e7311c",
+        "ticket_key": "AF-1",
+        "slug": "close-out-m0-buildable-gated-workspace-ac4267",
+        "title": "Close out M0: buildable, gated workspace",
+        "description": "Manifest, CI and verification wiring that turn the tiered gates from discipline into enforcement.",
+        "kind": "epic",
+        "status": "ready",
+        "priority": 1,
+        "scope": {
+          "repo": "aerofoil",
+          "crate_name": null,
+          "module_path": null,
+          "target_files": [],
+          "target_symbols": [],
+          "labels": [
+            "m0"
+          ]
+        },
+        "edges": [],
+        "decisions": [],
+        "acceptance_criteria": [
+          "All children verified; cargo check --workspace --all-targets clean; chalkline docs check green"
+        ],
+        "plan": null,
+        "active_claim": null,
+        "latest_handoff": null,
+        "verification_receipt": null,
+        "created_at_epoch_ms": 1793818849388,
+        "updated_at_epoch_ms": 1793818849388
+      }
+    },
+    {
+      "event": "task_updated",
+      "task_id": "ac426770-b084-4d9d-a560-aa5090e7311c",
+      "title": null,
+      "description": null,
+      "priority": 3,
+      "scope": null,
+      "acceptance_criteria": null,
+      "timestamp_ms": 1793818927135
+    },
+    {
+      "event": "task_verified",
+      "task_id": "ac426770-b084-4d9d-a560-aa5090e7311c",
+      "receipt": {
+        "verifier": "manual",
+        "command": "n/a",
+        "exit_code": 0,
+        "diagnostic_count": null,
+        "summary": "All three children verified: AF-2 manifest, AF-3 CI, AF-4 verification_commands. cargo check --workspace clean, chalkline docs check 9 present / 0 missing / 0 drifted, miter audit passes.",
+        "verified_at_epoch_ms": 1793820906619,
+        "git_branch": "main",
+        "base_commit_sha": "369a03522dab193dd7942f0d962a67d366911480",
+        "head_commit_sha": "369a03522dab193dd7942f0d962a67d366911480",
+        "commit_shas": [
+          "369a03522dab193dd7942f0d962a67d366911480"
+        ],
+        "repo": null,
+        "chain_key": null
+      }
+    }
+  ]
+}

@@ -1,0 +1,119 @@
+{
+  "ticket": {
+    "id": "59abef89-1796-4db0-863d-e0f8b7497c32",
+    "ticket_key": "AF-83",
+    "slug": "headless-browser-end-to-end-automation-test-suite-with-playwright-59abef",
+    "title": "Headless browser end-to-end automation test suite with Playwright",
+    "description": "Implement headless browser E2E test suite in apps/web using Playwright: verify clean Leaflet 2.0 and MapLibre GL 3D canvas mounting without WebGL/JS console errors, test 2D/3D mode toggling, CARTO/OSM basemap rendering, layer drawer controls, and aircraft marker click inspection.",
+    "kind": "feature",
+    "status": "verified",
+    "priority": 2,
+    "scope": {
+      "repo": null,
+      "crate_name": "aerofoil-server",
+      "module_path": null,
+      "target_files": [
+        "apps/web/e2e/radar.spec.ts,apps/web/playwright.config.ts,apps/web/package.json"
+      ],
+      "target_symbols": [],
+      "labels": []
+    },
+    "edges": [],
+    "decisions": [],
+    "acceptance_criteria": [],
+    "plan": null,
+    "active_claim": null,
+    "latest_handoff": null,
+    "verification_receipt": {
+      "verifier": "storypole-verify",
+      "command": "cargo nextest run -p aerofoil-server",
+      "exit_code": 0,
+      "diagnostic_count": null,
+      "summary": "",
+      "verified_at_epoch_ms": 1794437204880,
+      "git_branch": "feat/AF-83-playwright-headless-e2e-tests",
+      "base_commit_sha": "f24c0893aeb15a1309dbad1f3c849e0597476505",
+      "head_commit_sha": "0a75e289e1ffa4f148f973aaeb759949c2fdd569",
+      "commit_shas": [
+        "0a75e289e1ffa4f148f973aaeb759949c2fdd569"
+      ],
+      "repo": null,
+      "chain_key": "aerofoil-server"
+    },
+    "created_at_epoch_ms": 1794427732057,
+    "updated_at_epoch_ms": 1794437204880
+  },
+  "events": [
+    {
+      "event": "task_created",
+      "task": {
+        "id": "59abef89-1796-4db0-863d-e0f8b7497c32",
+        "ticket_key": "AF-83",
+        "slug": "headless-browser-end-to-end-automation-test-suite-with-playwright-59abef",
+        "title": "Headless browser end-to-end automation test suite with Playwright",
+        "description": "Implement headless browser E2E test suite in apps/web using Playwright: verify clean Leaflet 2.0 and MapLibre GL 3D canvas mounting without WebGL/JS console errors, test 2D/3D mode toggling, CARTO/OSM basemap rendering, layer drawer controls, and aircraft marker click inspection.",
+        "kind": "feature",
+        "status": "ready",
+        "priority": 2,
+        "scope": {
+          "repo": null,
+          "crate_name": "aerofoil-server",
+          "module_path": null,
+          "target_files": [
+            "apps/web/e2e/radar.spec.ts,apps/web/playwright.config.ts,apps/web/package.json"
+          ],
+          "target_symbols": [],
+          "labels": []
+        },
+        "edges": [],
+        "decisions": [],
+        "acceptance_criteria": [],
+        "plan": null,
+        "active_claim": null,
+        "latest_handoff": null,
+        "verification_receipt": null,
+        "created_at_epoch_ms": 1794427732057,
+        "updated_at_epoch_ms": 1794427732057
+      }
+    },
+    {
+      "event": "task_claimed",
+      "task_id": "59abef89-1796-4db0-863d-e0f8b7497c32",
+      "claim": {
+        "agent_id": "antigravity",
+        "claimed_at_epoch_ms": 1794436652817,
+        "lease_expires_at_epoch_ms": 1794440252817,
+        "git_branch": "feat/AF-83-playwright-headless-e2e-tests",
+        "base_commit_sha": null
+      }
+    },
+    {
+      "event": "status_changed",
+      "task_id": "59abef89-1796-4db0-863d-e0f8b7497c32",
+      "from": "ready",
+      "to": "in_progress",
+      "reason": "Claimed by antigravity",
+      "timestamp_ms": 1794436652817
+    },
+    {
+      "event": "task_verified",
+      "task_id": "59abef89-1796-4db0-863d-e0f8b7497c32",
+      "receipt": {
+        "verifier": "storypole-verify",
+        "command": "cargo nextest run -p aerofoil-server",
+        "exit_code": 0,
+        "diagnostic_count": null,
+        "summary": "",
+        "verified_at_epoch_ms": 1794437204880,
+        "git_branch": "feat/AF-83-playwright-headless-e2e-tests",
+        "base_commit_sha": "f24c0893aeb15a1309dbad1f3c849e0597476505",
+        "head_commit_sha": "0a75e289e1ffa4f148f973aaeb759949c2fdd569",
+        "commit_shas": [
+          "0a75e289e1ffa4f148f973aaeb759949c2fdd569"
+        ],
+        "repo": null,
+        "chain_key": "aerofoil-server"
+      }
+    }
+  ]
+}

@@ -1,0 +1,141 @@
+{
+  "ticket": {
+    "id": "2a800042-3922-4cfe-ad95-40b43ea9cc4d",
+    "ticket_key": "AF-99",
+    "slug": "migrate-the-store-to-one-file-per-ticket-2a8000",
+    "title": "Migrate the store to one file per ticket",
+    "description": "The store is still on the pre-GB-329 layout: storypole migrate --dry-run --json reports layout Ledger with 98 tickets, no tickets/ directory, and an 811 KB-scale append-only ledger.jsonl. Nothing is corrupt, but the newer commands cannot see it: refresh-projections scans 0 records, remint and relink are inert, and every branch that touches ticket state appends to one shared file, which is the conflict GB-329 exists to remove. Measured on the sibling repo colinwolff.dev, which completed this migration as CW-88: 88 tickets became 88 records, ledger-verify went from 62 orphan plans to 0 orphans and 0 dangling, and reconcile still agreed. Two hazards that repo hit and this one may too. First, the migration aborts on any store whose handed-off tickets were never verified, because handoff events sorted at timestamp zero; that is fixed upstream as SP-54 in storypole, so migrate with the rebuilt binary and not with an older one. Second, records that cite a plan path under the pre-rename .storypole/plans prefix survive the migration as dangling pointers that relink does not repair; this repo has no plans directory today, so expect none, but check. Also note verification_commands is keyed by crate, then repo, then the reserved default key, and this config declares no default, so any unscoped ticket falls back to cargo test rather than the configured chain.\n\nOUTCOME 2026-11-12 - completed on feat/af-99-store-records, measured after the run:\n\n  migrate --dry-run --json      layout Ledger -> staying 99, moving 0, adopted 0 (99 rows, no member\n                                destination, so no member store was created)\n  migrate                       wrote 99 records; ledger archived to ledger-archive/ledger-migrated.jsonl\n  migrate --dry-run --json      layout Records\n  ledger-verify                 542 events across 99 files: 0 unparsable, 0 duplicate; replay 99 tasks\n  ledger-reconcile              index and ledger agree\n  refresh-projections           99 record(s) scanned, none disagree with their events (was 0 scanned)\n  config check                  0 findings, 0 errors\n\nBoth recorded hazards did not apply, and this is now evidence rather than expectation: the 540-event\nledger held zero task_handoff events and zero of its task_created records carried a non-null\nlatest_handoff, so SP-54 had no path to trigger; and no record carried a plan or plan_file_path, so\nthere was no .storypole/plans pointer to dangle. The only string matching that prefix was this\nticket's own description, quoting the hazard.\n\nRan with the rebuilt binary (suite HEAD 6623ebf, target/release, 1m55s), not the installed 19:27\nbuild, per the instruction above. The count is 99 rather than the 98 named in the acceptance\ncriteria: this ticket is itself the 99th.\n\nThe default verification chain is now declared, so an unscoped ticket executes cargo nextest run\n--workspace through the reserved default key instead of falling through to the hardcoded cargo test.",
+    "kind": "chore",
+    "status": "in_progress",
+    "priority": 2,
+    "scope": {
+      "repo": null,
+      "crate_name": null,
+      "module_path": null,
+      "target_files": [
+        "AGENTS.md",
+        ".gaugeblock/config.toml",
+        ".gitignore",
+        ".gaugeblock/storypole/.gitignore",
+        "CHANGELOG.md"
+      ],
+      "target_symbols": [],
+      "labels": [
+        "storypole"
+      ]
+    },
+    "edges": [],
+    "decisions": [],
+    "acceptance_criteria": [
+      "storypole migrate --dry-run --json reports layout Records and tickets/ holds one record per ticket (99, this one included)",
+      "the superseded ledger is preserved under ledger-archive/ with nothing lost (542 events, 0 unparsable, 0 duplicate)",
+      "ledger-verify reports 0 unparsable and 0 duplicate, and ledger-reconcile agrees",
+      "verification_commands declares a reserved default chain so an unscoped ticket executes the configured gate",
+      "no document still describes the store as an append-only ledger (AGENTS.md section 4, the tracked-state list, and the root .gitignore comment)"
+    ],
+    "plan": null,
+    "active_claim": {
+      "agent_id": "cline",
+      "claimed_at_epoch_ms": 1794553448948,
+      "lease_expires_at_epoch_ms": 1794557048948,
+      "git_branch": "feat/af-99-store-records",
+      "base_commit_sha": null
+    },
+    "latest_handoff": null,
+    "verification_receipt": null,
+    "created_at_epoch_ms": 1794551825315,
+    "updated_at_epoch_ms": 1794553611049
+  },
+  "events": [
+    {
+      "event": "task_created",
+      "task": {
+        "id": "2a800042-3922-4cfe-ad95-40b43ea9cc4d",
+        "ticket_key": "AF-99",
+        "slug": "migrate-the-store-to-one-file-per-ticket-2a8000",
+        "title": "Migrate the store to one file per ticket",
+        "description": "The store is still on the pre-GB-329 layout: storypole migrate --dry-run --json reports layout Ledger with 98 tickets, no tickets/ directory, and an 811 KB-scale append-only ledger.jsonl. Nothing is corrupt, but the newer commands cannot see it: refresh-projections scans 0 records, remint and relink are inert, and every branch that touches ticket state appends to one shared file, which is the conflict GB-329 exists to remove. Measured on the sibling repo colinwolff.dev, which completed this migration as CW-88: 88 tickets became 88 records, ledger-verify went from 62 orphan plans to 0 orphans and 0 dangling, and reconcile still agreed. Two hazards that repo hit and this one may too. First, the migration aborts on any store whose handed-off tickets were never verified, because handoff events sorted at timestamp zero; that is fixed upstream as SP-54 in storypole, so migrate with the rebuilt binary and not with an older one. Second, records that cite a plan path under the pre-rename .storypole/plans prefix survive the migration as dangling pointers that relink does not repair; this repo has no plans directory today, so expect none, but check. Also note verification_commands is keyed by crate, then repo, then the reserved default key, and this config declares no default, so any unscoped ticket falls back to cargo test rather than the configured chain.",
+        "kind": "chore",
+        "status": "ready",
+        "priority": 2,
+        "scope": {
+          "repo": null,
+          "crate_name": null,
+          "module_path": null,
+          "target_files": [
+            "AGENTS.md,.gaugeblock/config.toml"
+          ],
+          "target_symbols": [],
+          "labels": [
+            "storypole"
+          ]
+        },
+        "edges": [],
+        "decisions": [],
+        "acceptance_criteria": [
+          "storypole migrate --dry-run --json reports layout Records and tickets/ holds 98 records",
+          "the old ledger is preserved under ledger-archive/ and nothing is lost from it",
+          "ledger-verify reports 0 unparsable, 0 duplicate, 0 orphans, 0 dangling, and ledger-reconcile agrees",
+          "verification_commands declares a default chain so unscoped tickets run the configured gate",
+          "AGENTS.md line 208 no longer describes the ledger as append-only"
+        ],
+        "plan": null,
+        "active_claim": null,
+        "latest_handoff": null,
+        "verification_receipt": null,
+        "created_at_epoch_ms": 1794551825315,
+        "updated_at_epoch_ms": 1794551825315
+      }
+    },
+    {
+      "event": "task_claimed",
+      "task_id": "2a800042-3922-4cfe-ad95-40b43ea9cc4d",
+      "claim": {
+        "agent_id": "cline",
+        "claimed_at_epoch_ms": 1794553448948,
+        "lease_expires_at_epoch_ms": 1794557048948,
+        "git_branch": "feat/af-99-store-records",
+        "base_commit_sha": null
+      }
+    },
+    {
+      "event": "status_changed",
+      "task_id": "2a800042-3922-4cfe-ad95-40b43ea9cc4d",
+      "from": "ready",
+      "to": "in_progress",
+      "reason": "Claimed by cline",
+      "timestamp_ms": 1794553448948
+    },
+    {
+      "event": "task_updated",
+      "task_id": "2a800042-3922-4cfe-ad95-40b43ea9cc4d",
+      "title": null,
+      "description": "The store is still on the pre-GB-329 layout: storypole migrate --dry-run --json reports layout Ledger with 98 tickets, no tickets/ directory, and an 811 KB-scale append-only ledger.jsonl. Nothing is corrupt, but the newer commands cannot see it: refresh-projections scans 0 records, remint and relink are inert, and every branch that touches ticket state appends to one shared file, which is the conflict GB-329 exists to remove. Measured on the sibling repo colinwolff.dev, which completed this migration as CW-88: 88 tickets became 88 records, ledger-verify went from 62 orphan plans to 0 orphans and 0 dangling, and reconcile still agreed. Two hazards that repo hit and this one may too. First, the migration aborts on any store whose handed-off tickets were never verified, because handoff events sorted at timestamp zero; that is fixed upstream as SP-54 in storypole, so migrate with the rebuilt binary and not with an older one. Second, records that cite a plan path under the pre-rename .storypole/plans prefix survive the migration as dangling pointers that relink does not repair; this repo has no plans directory today, so expect none, but check. Also note verification_commands is keyed by crate, then repo, then the reserved default key, and this config declares no default, so any unscoped ticket falls back to cargo test rather than the configured chain.\n\nOUTCOME 2026-11-12 - completed on feat/af-99-store-records, measured after the run:\n\n  migrate --dry-run --json      layout Ledger -> staying 99, moving 0, adopted 0 (99 rows, no member\n                                destination, so no member store was created)\n  migrate                       wrote 99 records; ledger archived to ledger-archive/ledger-migrated.jsonl\n  migrate --dry-run --json      layout Records\n  ledger-verify                 542 events across 99 files: 0 unparsable, 0 duplicate; replay 99 tasks\n  ledger-reconcile              index and ledger agree\n  refresh-projections           99 record(s) scanned, none disagree with their events (was 0 scanned)\n  config check                  0 findings, 0 errors\n\nBoth recorded hazards did not apply, and this is now evidence rather than expectation: the 540-event\nledger held zero task_handoff events and zero of its task_created records carried a non-null\nlatest_handoff, so SP-54 had no path to trigger; and no record carried a plan or plan_file_path, so\nthere was no .storypole/plans pointer to dangle. The only string matching that prefix was this\nticket's own description, quoting the hazard.\n\nRan with the rebuilt binary (suite HEAD 6623ebf, target/release, 1m55s), not the installed 19:27\nbuild, per the instruction above. The count is 99 rather than the 98 named in the acceptance\ncriteria: this ticket is itself the 99th.\n\nThe default verification chain is now declared, so an unscoped ticket executes cargo nextest run\n--workspace through the reserved default key instead of falling through to the hardcoded cargo test.",
+      "priority": null,
+      "scope": {
+        "repo": null,
+        "crate_name": null,
+        "module_path": null,
+        "target_files": [
+          "AGENTS.md",
+          ".gaugeblock/config.toml",
+          ".gitignore",
+          ".gaugeblock/storypole/.gitignore",
+          "CHANGELOG.md"
+        ],
+        "target_symbols": [],
+        "labels": [
+          "storypole"
+        ]
+      },
+      "acceptance_criteria": [
+        "storypole migrate --dry-run --json reports layout Records and tickets/ holds one record per ticket (99, this one included)",
+        "the superseded ledger is preserved under ledger-archive/ with nothing lost (542 events, 0 unparsable, 0 duplicate)",
+        "ledger-verify reports 0 unparsable and 0 duplicate, and ledger-reconcile agrees",
+        "verification_commands declares a reserved default chain so an unscoped ticket executes the configured gate",
+        "no document still describes the store as an append-only ledger (AGENTS.md section 4, the tracked-state list, and the root .gitignore comment)"
+      ],
+      "timestamp_ms": 1794553611049
+    }
+  ]
+}

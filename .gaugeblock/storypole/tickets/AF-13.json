@@ -1,0 +1,178 @@
+{
+  "ticket": {
+    "id": "5c6a3e64-52b1-405c-98a9-475e1df3e2cf",
+    "ticket_key": "AF-13",
+    "slug": "implement-uat-framing-de-interleaving-and-reed-solomon-geometry-validation-5c6a3e",
+    "title": "Implement UAT framing, de-interleaving and Reed-Solomon geometry validation",
+    "description": "",
+    "kind": "feature",
+    "status": "verified",
+    "priority": 2,
+    "scope": {
+      "repo": "aerofoil",
+      "crate_name": "aerofoil-978",
+      "module_path": null,
+      "target_files": [
+        "crates/978/src/frame.rs"
+      ],
+      "target_symbols": [],
+      "labels": [
+        "m1,978"
+      ]
+    },
+    "edges": [
+      {
+        "kind": "parent_epic",
+        "target_id": "fa37c8db-1bee-463e-8c0d-4f4746d5b8e8",
+        "target_ticket_key": "AF-5",
+        "target_repo": "aerofoil"
+      },
+      {
+        "kind": "blocked_by",
+        "target_id": "5d30f8be-8968-4f04-81a4-0f20e78fab15",
+        "target_ticket_key": "AF-12",
+        "target_repo": "aerofoil"
+      }
+    ],
+    "decisions": [],
+    "acceptance_criteria": [
+      "fixed permutation not a sort; payload and geometry mismatch rejected before FEC (SPEC Invariant 8); corrected_symbols reported"
+    ],
+    "plan": null,
+    "active_claim": null,
+    "latest_handoff": null,
+    "verification_receipt": {
+      "verifier": "storypole-verify",
+      "command": "cargo nextest run -p aerofoil-978",
+      "exit_code": 0,
+      "diagnostic_count": null,
+      "summary": "[window: no base commit could be named, so this receipt covers HEAD only]\n",
+      "verified_at_epoch_ms": 1794268299535,
+      "git_branch": "main",
+      "base_commit_sha": null,
+      "head_commit_sha": "a9299a0b21a484d9969bc3b325901f08d72368a8",
+      "commit_shas": [
+        "a9299a0b21a484d9969bc3b325901f08d72368a8"
+      ],
+      "repo": "aerofoil",
+      "chain_key": "aerofoil-978"
+    },
+    "created_at_epoch_ms": 1793818874000,
+    "updated_at_epoch_ms": 1794268299535
+  },
+  "events": [
+    {
+      "event": "task_created",
+      "task": {
+        "id": "5c6a3e64-52b1-405c-98a9-475e1df3e2cf",
+        "ticket_key": "AF-13",
+        "slug": "implement-uat-framing-de-interleaving-and-reed-solomon-geometry-validation-5c6a3e",
+        "title": "Implement UAT framing, de-interleaving and Reed-Solomon geometry validation",
+        "description": "",
+        "kind": "feature",
+        "status": "ready",
+        "priority": 2,
+        "scope": {
+          "repo": "aerofoil",
+          "crate_name": "aerofoil-978",
+          "module_path": null,
+          "target_files": [
+            "crates/978/src/frame.rs"
+          ],
+          "target_symbols": [],
+          "labels": [
+            "m1,978"
+          ]
+        },
+        "edges": [],
+        "decisions": [],
+        "acceptance_criteria": [
+          "fixed permutation not a sort; payload and geometry mismatch rejected before FEC (SPEC Invariant 8); corrected_symbols reported"
+        ],
+        "plan": null,
+        "active_claim": null,
+        "latest_handoff": null,
+        "verification_receipt": null,
+        "created_at_epoch_ms": 1793818874000,
+        "updated_at_epoch_ms": 1793818874000
+      }
+    },
+    {
+      "event": "edge_added",
+      "task_id": "5c6a3e64-52b1-405c-98a9-475e1df3e2cf",
+      "edge": {
+        "kind": "parent_epic",
+        "target_id": "fa37c8db-1bee-463e-8c0d-4f4746d5b8e8",
+        "target_ticket_key": "AF-5",
+        "target_repo": "aerofoil"
+      },
+      "timestamp_ms": 1793818893970
+    },
+    {
+      "event": "edge_added",
+      "task_id": "5c6a3e64-52b1-405c-98a9-475e1df3e2cf",
+      "edge": {
+        "kind": "blocked_by",
+        "target_id": "5d30f8be-8968-4f04-81a4-0f20e78fab15",
+        "target_ticket_key": "AF-12",
+        "target_repo": "aerofoil"
+      },
+      "timestamp_ms": 1793818902173
+    },
+    {
+      "event": "status_changed",
+      "task_id": "5c6a3e64-52b1-405c-98a9-475e1df3e2cf",
+      "from": "ready",
+      "to": "blocked",
+      "reason": "Blocked by unverified task AF-12",
+      "timestamp_ms": 1793818902173
+    },
+    {
+      "event": "status_changed",
+      "task_id": "5c6a3e64-52b1-405c-98a9-475e1df3e2cf",
+      "from": "blocked",
+      "to": "ready",
+      "reason": "Dependency AF-12 verified",
+      "timestamp_ms": 1794267422816
+    },
+    {
+      "event": "task_claimed",
+      "task_id": "5c6a3e64-52b1-405c-98a9-475e1df3e2cf",
+      "claim": {
+        "agent_id": "gemini",
+        "claimed_at_epoch_ms": 1794267757426,
+        "lease_expires_at_epoch_ms": 1794271357426,
+        "git_branch": "feat/af-13-uat-framing",
+        "base_commit_sha": null
+      }
+    },
+    {
+      "event": "status_changed",
+      "task_id": "5c6a3e64-52b1-405c-98a9-475e1df3e2cf",
+      "from": "ready",
+      "to": "in_progress",
+      "reason": "Claimed by gemini",
+      "timestamp_ms": 1794267757426
+    },
+    {
+      "event": "task_verified",
+      "task_id": "5c6a3e64-52b1-405c-98a9-475e1df3e2cf",
+      "receipt": {
+        "verifier": "storypole-verify",
+        "command": "cargo nextest run -p aerofoil-978",
+        "exit_code": 0,
+        "diagnostic_count": null,
+        "summary": "[window: no base commit could be named, so this receipt covers HEAD only]\n",
+        "verified_at_epoch_ms": 1794268299535,
+        "git_branch": "main",
+        "base_commit_sha": null,
+        "head_commit_sha": "a9299a0b21a484d9969bc3b325901f08d72368a8",
+        "commit_shas": [
+          "a9299a0b21a484d9969bc3b325901f08d72368a8"
+        ],
+        "repo": "aerofoil",
+        "chain_key": "aerofoil-978"
+      }
+    }
+  ]
+}
