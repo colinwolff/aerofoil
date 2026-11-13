@@ -4,16 +4,18 @@
     "ticket_key": "AF-19",
     "slug": "make-the-gaugeblock-suite-gates-installable-in-ci-b7dd76",
     "title": "Make the gaugeblock suite gates installable in CI",
-    "description": "CI runs the cargo gates and the no_std target build, but miter audit, miter deps and chalkline docs check cannot run there: the tools are built from local sibling checkouts under ~/dev2026/neurosymbolic-suite and are not on crates.io, so a runner has no way to obtain them. The suite-gates job exists but is disabled so the omission is visible rather than implied coverage. Close by publishing the tools or by documenting a git-based install pinned to a release tag, then flip the job on.",
+    "description": "CI runs the cargo gates and the no_std target build, but miter audit, miter deps and chalkline docs check cannot run there: the tools are built from local sibling checkouts under ~/dev2026/neurosymbolic-suite and are not on crates.io, so a runner has no way to obtain them. The suite-gates job exists but is disabled so the omission is visible rather than implied coverage. Close by publishing the tools or by documenting a git-based install pinned to a release tag, then flip the job on.\n\nOUTCOME 2026-11-12 - completed on feat/af-19-suite-gates-in-ci, measured by installing the exact pinned\nversions from crates.io into a clean root and running each step:\n\n  cargo install miter-cli     --version 0.1.0-beta.4 --locked   -> installed (executable miter)\n  cargo install chalkline-cli --version 0.1.0-beta.4 --locked   -> installed (executable chalkline)\n  miter audit --path . --threshold 250                          -> exit 0, no files exceed 250 lines\n  chalkline docs check -d .                                     -> exit 0, 9 present, 0 missing, 0 drifted\n\nThe premise was partly stale in the useful direction: both tools ARE on crates.io at 0.1.0-beta.4\n(published 2026-10-14 and 2026-10-22), so the job installs from the registry instead of building\nfrom sibling checkouts, which is what the ticket hoped for.\n\nOne gate could not join them. miter deps --unused is absent from the published miter: its\nv0.1.0-beta.4 tag predates the subcommand by 87 commits. Installing miter from git at HEAD does not\nwork either, and that is the more interesting result, because it is structural rather than a version\nlag: miter's workspace takes gaugeblock-security by relative path into the sibling common repository,\nso a clone of miter alone cannot resolve its own manifests. Measured:\n\n  cargo install --git https://github.com/gaugeblock/miter --rev 2c6f9b0 --locked miter-cli\n  error: failed to load manifest for workspace member .../crates/engine\n  Caused by: failed to read .../common/crates/gaugeblock-security/Cargo.toml (No such file)\n\nThe tools are self-contained only as published packages. So miter deps --unused stays a local Tier 3\ngate and joins CI when a miter release carries it; the workflow comment and AGENTS.md section 7 both\nname the reason, so the omission cannot read as coverage we do not have. Reported upstream to the\nsuite as its own ticket.",
     "kind": "tech_debt",
-    "status": "triage",
+    "status": "in_progress",
     "priority": 3,
     "scope": {
       "repo": null,
       "crate_name": null,
       "module_path": null,
       "target_files": [
-        ".github/workflows/ci.yml"
+        ".github/workflows/ci.yml",
+        "AGENTS.md",
+        "CHANGELOG.md"
       ],
       "target_symbols": [],
       "labels": [
@@ -27,13 +29,24 @@
       }
     ],
     "decisions": [],
-    "acceptance_criteria": [],
+    "acceptance_criteria": [
+      "the suite-gates job runs on every push and pull request with no if: false guard",
+      "miter audit --threshold 250 and chalkline docs check -d . execute against crates.io-pinned tool versions and pass",
+      "the absent miter deps gate is explained in the workflow and in AGENTS.md section 7, so its absence cannot read as coverage",
+      "AGENTS.md section 7 no longer records the CI gap as open for the gates that now run"
+    ],
     "plan": null,
-    "active_claim": null,
+    "active_claim": {
+      "agent_id": "cline",
+      "claimed_at_epoch_ms": 1794554070676,
+      "lease_expires_at_epoch_ms": 1794557670676,
+      "git_branch": "feat/af-19-suite-gates-in-ci",
+      "base_commit_sha": null
+    },
     "latest_handoff": null,
     "verification_receipt": null,
     "created_at_epoch_ms": 1793820108375,
-    "updated_at_epoch_ms": 1793820108375
+    "updated_at_epoch_ms": 1794555650227
   },
   "events": [
     {
@@ -76,6 +89,63 @@
       },
       "captured_by_agent": "cline",
       "discovered_from_task_id": "9e26c463-84ea-4cf7-ab09-6a5891ddc43d"
+    },
+    {
+      "event": "task_claimed",
+      "task_id": "b7dd7642-73dd-48ed-a218-b79fa53d8c26",
+      "claim": {
+        "agent_id": "cline",
+        "claimed_at_epoch_ms": 1794554070676,
+        "lease_expires_at_epoch_ms": 1794557670676,
+        "git_branch": "feat/af-19-suite-gates-in-ci",
+        "base_commit_sha": null
+      }
+    },
+    {
+      "event": "status_changed",
+      "task_id": "b7dd7642-73dd-48ed-a218-b79fa53d8c26",
+      "from": "triage",
+      "to": "in_progress",
+      "reason": "Claimed by cline",
+      "timestamp_ms": 1794554070676
+    },
+    {
+      "event": "task_updated",
+      "task_id": "b7dd7642-73dd-48ed-a218-b79fa53d8c26",
+      "title": null,
+      "description": "",
+      "priority": null,
+      "scope": {
+        "repo": null,
+        "crate_name": null,
+        "module_path": null,
+        "target_files": [
+          ".github/workflows/ci.yml",
+          "AGENTS.md",
+          "CHANGELOG.md"
+        ],
+        "target_symbols": [],
+        "labels": [
+          "ci,suite"
+        ]
+      },
+      "acceptance_criteria": [
+        "the suite-gates job runs on every push and pull request with no if: false guard",
+        "miter audit --threshold 250 and chalkline docs check -d . execute against crates.io-pinned tool versions and pass",
+        "the absent miter deps gate is explained in the workflow and in AGENTS.md section 7, so its absence cannot read as coverage",
+        "AGENTS.md section 7 no longer records the CI gap as open for the gates that now run"
+      ],
+      "timestamp_ms": 1794555645960
+    },
+    {
+      "event": "task_updated",
+      "task_id": "b7dd7642-73dd-48ed-a218-b79fa53d8c26",
+      "title": null,
+      "description": "CI runs the cargo gates and the no_std target build, but miter audit, miter deps and chalkline docs check cannot run there: the tools are built from local sibling checkouts under ~/dev2026/neurosymbolic-suite and are not on crates.io, so a runner has no way to obtain them. The suite-gates job exists but is disabled so the omission is visible rather than implied coverage. Close by publishing the tools or by documenting a git-based install pinned to a release tag, then flip the job on.\n\nOUTCOME 2026-11-12 - completed on feat/af-19-suite-gates-in-ci, measured by installing the exact pinned\nversions from crates.io into a clean root and running each step:\n\n  cargo install miter-cli     --version 0.1.0-beta.4 --locked   -> installed (executable miter)\n  cargo install chalkline-cli --version 0.1.0-beta.4 --locked   -> installed (executable chalkline)\n  miter audit --path . --threshold 250                          -> exit 0, no files exceed 250 lines\n  chalkline docs check -d .                                     -> exit 0, 9 present, 0 missing, 0 drifted\n\nThe premise was partly stale in the useful direction: both tools ARE on crates.io at 0.1.0-beta.4\n(published 2026-10-14 and 2026-10-22), so the job installs from the registry instead of building\nfrom sibling checkouts, which is what the ticket hoped for.\n\nOne gate could not join them. miter deps --unused is absent from the published miter: its\nv0.1.0-beta.4 tag predates the subcommand by 87 commits. Installing miter from git at HEAD does not\nwork either, and that is the more interesting result, because it is structural rather than a version\nlag: miter's workspace takes gaugeblock-security by relative path into the sibling common repository,\nso a clone of miter alone cannot resolve its own manifests. Measured:\n\n  cargo install --git https://github.com/gaugeblock/miter --rev 2c6f9b0 --locked miter-cli\n  error: failed to load manifest for workspace member .../crates/engine\n  Caused by: failed to read .../common/crates/gaugeblock-security/Cargo.toml (No such file)\n\nThe tools are self-contained only as published packages. So miter deps --unused stays a local Tier 3\ngate and joins CI when a miter release carries it; the workflow comment and AGENTS.md section 7 both\nname the reason, so the omission cannot read as coverage we do not have. Reported upstream to the\nsuite as its own ticket.",
+      "priority": null,
+      "scope": null,
+      "acceptance_criteria": null,
+      "timestamp_ms": 1794555650227
     }
   ]
 }

@@ -78,15 +78,42 @@ jobs:
       - run: cargo check -p aerofoil-common --target thumbv7em-none-eabi
 
   suite-gates:
-    # miter (file-length ceiling, dependency hygiene) and chalkline (nine-document audit) are built
-    # from this workspace's sibling repositories today and are not installable from a registry, so
-    # they cannot run here yet. Left as a visibly disabled job instead of an omitted gate: a silent
-    # omission would read as coverage we do not have. Flip to `if: true` once every tool installs.
+    # The gates that cargo alone cannot express: miter's file-length ceiling and chalkline's
+    # nine-document audit. Both are installed from crates.io at the exact versions this repository's
+    # gates were verified against (2026-11-12) rather than tracking latest — an unpinned gate
+    # silently redefines what "green" means here every time a tool releases.
+    #
+    # `miter deps --unused` is deliberately absent rather than quietly failing: `miter-cli
+    # 0.1.0-beta.4` on crates.io predates that subcommand by 87 commits, and installing from git
+    # does not work either — miter's workspace takes `gaugeblock-security` by relative path into the
+    # sibling `common` repository, so a clone of miter alone fails to resolve its manifests
+    # (measured: `failed to read .../common/crates/gaugeblock-security/Cargo.toml`). Until a miter
+    # release carries the command it stays a local Tier 3 gate. See AGENTS.md §7.
     name: Suite gates (miter, chalkline)
-    if: false
     runs-on: ubuntu-latest
+    env:
+      MITER_VERSION: 0.1.0-beta.4
+      CHALKLINE_VERSION: 0.1.0-beta.4
     steps:
-      - run: |
-          echo "Blocked: gaugeblock suite tools are not distributable yet."
-          echo "See AGENTS.md §7 for the recorded gap."
-          exit 1
+      - uses: actions/checkout@v4
+
+      - uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: "1.99"
+
+      - uses: Swatinem/rust-cache@v2
+
+      # `--locked` so each tool's published lockfile decides its own dependencies — without it a
+      # transitive release can break a gate on a commit that changed nothing but the calendar.
+      - name: Install the suite gates
+        run: |
+          cargo install miter-cli --version "$MITER_VERSION" --locked
+          cargo install chalkline-cli --version "$CHALKLINE_VERSION" --locked
+
+      # Hard ceiling: a file at 250 lines cannot land (AGENTS.md §3.2). The 200-line sweep stays a
+      # local advisory, because it is evidence for planning a split rather than a verdict.
+      - name: miter audit (250-line ceiling)
+        run: miter audit --path . --threshold 250
+
+      - name: chalkline docs check (nine-document audit)
+        run: chalkline docs check -d .
