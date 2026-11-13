@@ -11,6 +11,10 @@ crates, in the imperative, one line each, with the `storypole` task key in paren
 
 ## [Unreleased]
 
+### Changed
+
+- Correct the repository-state section of `AGENTS.md`, which had described the repository as it stood at bootstrap: twelve crates and two release tags now exist, `verification_commands` covers every member plus a reserved `default`, `enforce_readme_cli_flags` is enabled, and the backlog no longer claims to hold only the first wave (`AF-101`).
+
 ## [0.1.0-beta.2] - 2026-11-13
 
 ### Added

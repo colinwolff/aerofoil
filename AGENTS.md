@@ -217,10 +217,10 @@ State lives under `.gaugeblock/` and is split by ownership:
 | `rabbet` | Telemetry roll-up from `.gaugeblock/spool/outbox.jsonl` into training corpora. Downstream of the work; never a gate. |
 | `sawhorse` | Provider runtime for the synthesis tools. Not invoked directly by hand-written changes. |
 
-**Backlog state:** the first wave is open — `AF-1`…`AF-18` cover M0 close-out and M1, and
-`storypole next` returns one actionable leaf (start with `AF-2`, the workspace manifest). M2–M4 exist
-as epics whose children are added when the preceding milestone verifies, so no leaf is written a
-milestone ahead of the constraints that decide it.
+**Backlog state:** every ticket is a record under `tickets/`, and `storypole next` returns the one
+actionable leaf. Milestones 0–5 are closed and verified; Milestone 6 is the open wave. An epic gains
+children when the preceding milestone verifies, so no leaf is written a milestone ahead of the
+constraints that decide it.
 
 ## 5. Agent Execution Loop
 
@@ -296,20 +296,22 @@ its first member. `chalkline docs check` now runs and reports 9 present, 0 missi
    `thumbv7em-none-eabi` and passed on the first push to `main`. No such target is installed on the
    development machine, so a local `cargo check` proves nothing about it — trust the job, or
    `rustup target add thumbv7em-none-eabi` first.
-3. **`verification_commands` covers one crate.** `.gaugeblock/config.toml` maps
-   `aerofoil-common` to `cargo nextest run -p aerofoil-common` and falls back to
-   `cargo nextest run --workspace` for the repository, so `storypole verify --run` now executes a
-   command and records its exit code. Add an entry per crate as it lands, before treating that
-   crate's receipts as evidence.
-4. **`enforce_readme_cli_flags` is off** in `.gaugeblock/docs.toml` because no CLI crate exists.
-   Flip it to `true` when `aerofoil-cli` lands, so every subcommand and long flag is documented.
-5. **No crates published.** Nothing has been tagged; the first release tag (`v0.1.0`) is Milestone 4.
-6. **The backlog holds the M0 and M1 wave only.** `AF-1`–`AF-18` are open; M2–M4 are epics awaiting
-   children on milestone entry. Nothing is created to fill a gap, and no leaf is invented for a
-   milestone whose constraints are still unknown.
-7. **One member crate exists.** `aerofoil-1090`, `aerofoil-978`, `aerofoil-tracker`, `aerofoil-server`
-   and the two apps join the workspace as their milestones land; until then `cargo check --workspace`
-   proves only what is present.
+3. **`verification_commands` covers the whole roster.** `.gaugeblock/config.toml` maps every member
+   crate, the `aerofoil` repository, and a reserved `default` chain for unscoped tickets, so
+   `storypole verify` executes a configured command for any task instead of falling back to
+   `cargo test` (`AF-99`). A new crate needs its entry in the same commit that lands it.
+4. **`enforce_readme_cli_flags` is on** (`.gaugeblock/docs.toml`), so every `aerofoil-cli` subcommand
+   and long flag must be documented in `README.md`.
+5. **Twelve crates are published; two tags exist.** `v0.1.0-beta.1` (Milestone 4, 2026-11-10) and
+   `v0.1.0-beta.2` (Milestone 5, 2026-11-13) put every workspace member on crates.io under lockstep
+   SemVer, with `aerofoil-mlat` publishing for the first time in beta.2. The `aerofoil` umbrella name
+   is still a `0.1.0-alpha.1` reservation placeholder — no umbrella crate exists yet.
+6. **The backlog is the record of the work.** Milestones 0–5 are closed and verified and Milestone 6 is
+   in progress; an epic gains children only when the milestone before it verifies. Nothing is created
+   to fill a gap.
+7. **Twelve member crates exist** — `aerofoil-common`, `-1090`, `-978`, `-tracker`, `-mlat`,
+   `-persistence`, `-sdr`, `-server`, and the `cli`, `tui`, `mcp` and `replay` apps — so
+   `cargo check --workspace` proves the whole tree, and the `no_std` job proves `aerofoil-common`.
 
 ## 8. Definition of Done for Any Task
 
