@@ -6,7 +6,7 @@
     "title": "Release 0.1.0-beta.2: publish all twelve members to crates.io and tag the GitHub release",
     "description": "Release 0.1.0-beta.2 across the workspace, publishing all twelve members to crates.io and tagging\nv0.1.0-beta.2 on GitHub.\n\nWHY BETA.2 AND NOT LATER\ndocs/ROADMAP.md section 5 names 0.1.0-beta.2 as the target for Milestone 5, whose exit criteria include\n\"MLAT TDOA solver verified against multi-receiver synthetic vectors\" and \"0.1.0-beta.2 tagged with\nlockstep SemVer\". Every item in that milestone is checked, and Milestone 6 (target 0.1.0-beta.3) is still\nin progress, so beta.2 is the version the roadmap already promised for the work that exists.\n\nMEASURED STATE BEFORE THE RELEASE, 2026-11-13\n  crates.io: eleven members at 0.1.0-beta.1, all created 2026-11-04 except aerofoil-tui and\n             aerofoil-replay (2026-11-10); the umbrella name `aerofoil` holds only the 0.1.0-alpha.1\n             reservation placeholder, and no umbrella crate exists in this workspace\n  aerofoil-mlat: FREE on crates.io - this release is its first publication\n\n  aerofoil-mlat is implemented, not scaffolded: registry, clock-drift synchronisation, geodetic helpers,\n  and a closed-form Bancroft TDOA solver over 502 lines, with four tests passing (receiver registry,\n  WGS84 roundtrip over airports, Bancroft synthetic quad solve, insufficient-receivers error). It is\n  consumed by aerofoil-server, so leaving it unpublished leaves a workspace member that cannot be built\n  from the registry.\n\nPUBLISH ORDER (intra-workspace edges)\n  aerofoil-common, aerofoil-sdr\n  then aerofoil-1090, aerofoil-978, aerofoil-mlat, aerofoil-persistence, aerofoil-tracker\n  then aerofoil-server, aerofoil-cli, aerofoil-mcp, aerofoil-tui, aerofoil-replay\n\nEXPECTED RATE LIMITING\ncrates.io allows a burst of five new publications inside a ten-minute window and returns 429 with a reset\ntimestamp. Twelve crates therefore need at least three windows; honour the reset header rather than\nguessing a delay (the repository's own reservation script records the same lesson).\n\nNOT IN SCOPE\nCutting 0.1.0-beta.3 for Milestone 6. This ticket moves the version the roadmap already assigned.",
     "kind": "chore",
-    "status": "in_progress",
+    "status": "verified",
     "priority": 1,
     "scope": {
       "repo": null,
@@ -33,17 +33,27 @@
       "annotated tag v0.1.0-beta.2 exists on main and a GitHub release is published against it"
     ],
     "plan": null,
-    "active_claim": {
-      "agent_id": "cline",
-      "claimed_at_epoch_ms": 1794607244244,
-      "lease_expires_at_epoch_ms": 1794610844244,
-      "git_branch": "release/0.1.0-beta.2",
-      "base_commit_sha": null
-    },
+    "active_claim": null,
     "latest_handoff": null,
-    "verification_receipt": null,
+    "verification_receipt": {
+      "verifier": "storypole-verify",
+      "command": "cargo nextest run --workspace",
+      "exit_code": 0,
+      "diagnostic_count": null,
+      "summary": "[window: no base commit could be named, so this receipt covers HEAD only]\n",
+      "verified_at_epoch_ms": 1794607486458,
+      "git_branch": "main",
+      "base_commit_sha": null,
+      "head_commit_sha": "22931e5049c543d81a5dcb938fc8ddc67f2aa8f2",
+      "commit_shas": [
+        "22931e5049c543d81a5dcb938fc8ddc67f2aa8f2"
+      ],
+      "repo": null,
+      "chain_key": "default",
+      "window_intact": true
+    },
     "created_at_epoch_ms": 1794607241426,
-    "updated_at_epoch_ms": 1794607244244
+    "updated_at_epoch_ms": 1794607486458
   },
   "events": [
     {
@@ -107,6 +117,27 @@
       "to": "in_progress",
       "reason": "Claimed by cline",
       "timestamp_ms": 1794607244244
+    },
+    {
+      "event": "task_verified",
+      "task_id": "a96699dd-caf2-4afd-b4e0-78994c7efb31",
+      "receipt": {
+        "verifier": "storypole-verify",
+        "command": "cargo nextest run --workspace",
+        "exit_code": 0,
+        "diagnostic_count": null,
+        "summary": "[window: no base commit could be named, so this receipt covers HEAD only]\n",
+        "verified_at_epoch_ms": 1794607486458,
+        "git_branch": "main",
+        "base_commit_sha": null,
+        "head_commit_sha": "22931e5049c543d81a5dcb938fc8ddc67f2aa8f2",
+        "commit_shas": [
+          "22931e5049c543d81a5dcb938fc8ddc67f2aa8f2"
+        ],
+        "repo": null,
+        "chain_key": "default",
+        "window_intact": true
+      }
     }
   ]
 }
