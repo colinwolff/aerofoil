@@ -281,11 +281,16 @@ its first member. `chalkline docs check` now runs and reports 9 present, 0 missi
 
 **Still open.** Close these; never paper over one by weakening a gate in §3.6:
 
-1. **CI runs the cargo gates only.** `.github/workflows/ci.yml` enforces format, clippy, nextest,
-   doc tests, a release build, the MSRV build and the `no_std` target. `miter audit`,
-   `miter deps` and `chalkline docs check` are present as a deliberately disabled job, because the
-   suite tools are built from local checkouts and are not installable from a registry; the gap is
-   tracked as `AF-19`. Do not delete the disabled job to make the pipeline look complete.
+1. **Two of the three suite gates now run in CI** (closed as `AF-19`). `.github/workflows/ci.yml`
+   enforces format, clippy, nextest, doc tests, a release build, the MSRV build, the `no_std` target,
+   and — new — `miter audit --threshold 250` and `chalkline docs check`, installing `miter-cli` and
+   `chalkline-cli` from crates.io pinned in the job's `env` block. The earlier claim that they were
+   not installable at all stopped being true once they were published. `miter deps --unused` is the
+   exception and stays a local Tier 3 gate: the published miter predates the subcommand by 87
+   commits, and a git install cannot stand in, because miter's workspace takes `gaugeblock-security`
+   by relative path into the sibling `common` repository. It joins CI when a miter release carries
+   the command. Keep the pin current: bumping it changes what green means, so it is a reviewed
+   change, never routine maintenance. Do not weaken the job to make the pipeline look green.
 2. **`no_std` is proven in CI, not locally.** `aerofoil-common` is `#![no_std]` and keeps the
    attribute unconditional by putting its tests in `tests/`; the `no_std` CI job compiles it for
    `thumbv7em-none-eabi` and passed on the first push to `main`. No such target is installed on the
