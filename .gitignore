@@ -29,8 +29,9 @@ target/
 #   .gaugeblock/config.toml
 #   .gaugeblock/docs.toml            (once adopted)
 #   .gaugeblock/miter/*.toml         (allowlists are gate inputs, not machine state)
-#   .gaugeblock/storypole/ledger.jsonl
+#   .gaugeblock/storypole/tickets/<KEY>.json   (one record per ticket)
 #   .gaugeblock/storypole/plans/
+#   .gaugeblock/storypole/ledger-archive/      (pre-migration ledger, read-only history)
 # Everything below is per-machine output. An exception that lives on one machine
 # is a gate nobody else can reproduce.
 .gaugeblock/spool/
